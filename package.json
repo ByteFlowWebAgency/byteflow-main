@@ -30,7 +30,7 @@
     "react-calendly": "^4.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",
-    "sweetalert2": "^11.14.5"
+    "sweetalert2": "^11.22.4"
   },
   "devDependencies": {
     "@slicemachine/adapter-next": "^0.3.53",
