@@ -1,46 +1,97 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* ===========================================
+   BYTEFLOW — Global Reset & Design Tokens
+   CSS Modules approach: No utility classes.
+   =========================================== */
 
-.glass-container {
-  position: relative;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+:root {
+  /* Backgrounds */
+  --bg-primary: #000000;
+  --bg-panel: #0A1628;
+  --bg-card: rgba(255, 255, 255, 0.04);
+
+  /* Borders */
+  --border-card: 1px solid rgba(255, 255, 255, 0.08);
+  --border-card-hover: 1px solid rgba(0, 87, 255, 0.4);
+
+  /* Brand accent */
+  --accent-blue: #0057FF;
+  --accent-cyan: #00C2FF;
+
+  /* Typography */
+  --text-primary: #FFFFFF;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --text-label: #0057FF;
+
+  /* Effects */
+  --glow-blue: rgba(0, 87, 255, 0.15);
+
+  /* Layout */
+  --max-width: 1200px;
+  --section-padding: 120px 24px;
+  --nav-height: 72px;
+
+  /* Motion */
+  --transition: 200ms ease;
+
+  /* Font */
+  --font: 'Inter', sans-serif;
 }
 
-.glass-container::before {
-  @apply absolute -inset-[10px] -z-10 rounded-xl border border-slate-100/20 bg-slate-200/10 backdrop-blur-md;
-  content: "";
+/* ——— Reset ——— */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.signal-line {
-  --rotation: 90deg;
-  @apply h-[20px] w-[1.5px] bg-gradient-to-t md:h-[1.5px] md:w-[30px] lg:w-[40px] xl:w-[50px];
-  background-color: hsla(0, 0%, 100%, 0.1);
-  background-image: linear-gradient(
-    var(--rotation),
-    rgba(255, 255, 255, 0) 50%,
-    #bfdbfe 50%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  background-size: 400% 400%;
+html {
+  scroll-behavior: smooth;
 }
 
-@media (max-width: 767px) {
-  .signal-line {
-    --rotation: 0deg;
-  }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1); 
-    opacity: 1; 
-  }
-  50% {
-    transform: scale(1.1); 
-    opacity: 0.8; 
-  }
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-.pulsing-icon {
-  animation: pulse 2.0s infinite; 
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+/* ——— Scroll Animations ——— */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }

@@ -1,0 +1,114 @@
+.hero {
+    background: var(--bg-primary);
+    padding: 120px 0 60px;
+}
+
+.container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.title {
+    font-size: 64px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    font-size: 24px;
+    color: var(--text-muted);
+    max-width: 700px;
+    line-height: 1.5;
+}
+
+.filterSection {
+    background: var(--bg-primary);
+    padding-bottom: 40px;
+}
+
+.filterBar {
+    display: flex;
+    gap: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.filterBar::-webkit-scrollbar {
+    display: none;
+    /* Safari and Chrome */
+}
+
+.filterBtn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    padding: 8px 16px;
+    white-space: nowrap;
+    transition: var(--transition);
+    border-radius: 4px;
+}
+
+.filterBtn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.active {
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.resultsStrip {
+    background: var(--bg-panel);
+    padding: 80px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.resultsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    text-align: center;
+}
+
+.resultItem h3 {
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.resultItem p {
+    color: var(--text-muted);
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 48px;
+    }
+
+    .subtitle {
+        font-size: 20px;
+    }
+
+    .resultsGrid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+    }
+}

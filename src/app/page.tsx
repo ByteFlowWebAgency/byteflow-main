@@ -1,35 +1,36 @@
-import { Metadata } from "next";
+'use client';
 
-import { SliceZone } from "@prismicio/react";
-import * as prismic from "@prismicio/client";
+import { useEffect } from 'react';
+import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import Hero from '@/components/Hero/Hero';
+import StatsStrip from '@/components/StatsStrip/StatsStrip';
+import ServiceGrid from '@/components/ServiceGrid/ServiceGrid';
+import WhyByteflow from '@/components/WhyByteflow/WhyByteflow';
+import CTABanner from '@/components/CTABanner/CTABanner';
+import PortfolioGrid from '@/components/PortfolioGrid/PortfolioGrid';
 
-import { createClient } from "@/prismicio";
-import { components } from "@/slices";
+export default function Home() {
+  useScrollAnimation();
 
-// This component renders your homepage.
-//
-// Use Next's generateMetadata function to render page metadata.
-//
-// Use the SliceZone to render the content of the page.
-
-export async function generateMetadata(): Promise<Metadata> {
-  const client = createClient();
-  const home = await client.getByUID("page", "home");
-
-  return {
-    title: prismic.asText(home.data.title),
-    description: home.data.meta_description,
-    openGraph: {
-      title: home.data.meta_title ?? undefined,
-      images: [{ url: home.data.meta_image.url ?? "" }],
-    },
-  };
-}
-
-export default async function Index() {
-  // The client queries content from the Prismic API
-  const client = createClient();
-  const home = await client.getByUID("page", "home");
-
-  return <SliceZone slices={home.data.slices} components={components} />;
+  return (
+    <>
+      <Hero />
+      <StatsStrip />
+      <ServiceGrid />
+      <WhyByteflow />
+      <CTABanner
+        heading="Ready to Build Your Engineering Capabilities?"
+        subtext="Let's discuss how BYTEFLOW can accelerate your digital transformation and build technology that scales with your business."
+        buttonLabel="Schedule a Consultation"
+        buttonHref="/contact"
+      />
+      <PortfolioGrid limit={3} showHeader={true} />
+      <CTABanner
+        heading="Partner with Proven Engineering Leaders."
+        subtext="We don't just write code. We architect solutions to complex enterprise problems."
+        buttonLabel="Explore Our Services"
+        buttonHref="/services"
+      />
+    </>
+  );
 }
