@@ -1,64 +1,36 @@
-/* ===========================================
-   BYTEFLOW — Global Reset & Design Tokens
-   CSS Modules approach: No utility classes.
-   =========================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-
 :root {
-  /* Backgrounds */
-  --bg-primary: #000000;
-  --bg-panel: #0A1628;
-  --bg-card: rgba(255, 255, 255, 0.04);
-
-  /* Borders */
-  --border-card: 1px solid rgba(255, 255, 255, 0.08);
-  --border-card-hover: 1px solid rgba(0, 87, 255, 0.4);
-
-  /* Brand accent */
-  --accent-blue: #0057FF;
-  --accent-cyan: #00C2FF;
-
-  /* Typography */
-  --text-primary: #FFFFFF;
-  --text-muted: rgba(255, 255, 255, 0.7);
-  --text-label: #0057FF;
-
-  /* Effects */
-  --glow-blue: rgba(0, 87, 255, 0.15);
-
-  /* Layout */
-  --max-width: 1200px;
-  --section-padding: 120px 24px;
-  --nav-height: 72px;
-
-  /* Motion */
-  --transition: 200ms ease;
-
-  /* Font */
-  --font: 'Inter', sans-serif;
+  --indigo: #3b3bbf;
+  --purple: #7b4fd4;
+  --cyan: #00d4e8;
+  --bg: #050508;
+  --bg2: #0a0a12;
+  --text: #e8e8f0;
+  --muted: #6b6b88;
+  --grad: linear-gradient(105deg, #3b3bbf 0%, #7b4fd4 50%, #00d4e8 100%);
+  --grad-text: linear-gradient(105deg, #5b5bdf 0%, #9b6ff4 50%, #00d4e8 100%);
 }
 
-/* ——— Reset ——— */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-dm-sans), sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: auto;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 1000;
 }
 
 a {
@@ -66,8 +38,7 @@ a {
   color: inherit;
 }
 
-ul,
-ol {
+ul, ol {
   list-style: none;
 }
 
@@ -75,23 +46,4 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
-}
-
-button,
-input,
-textarea,
-select {
-  font-family: inherit;
-}
-
-/* ——— Scroll Animations ——— */
-[data-animate] {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-[data-animate].is-visible {
-  opacity: 1;
-  transform: translateY(0);
 }

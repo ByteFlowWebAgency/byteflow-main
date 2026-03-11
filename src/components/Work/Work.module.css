@@ -1,0 +1,151 @@
+.work {
+  background: var(--bg2);
+  padding: 7rem 4rem;
+}
+
+.workHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3.5rem;
+}
+
+.sectionEyebrow {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--cyan);
+  flex-shrink: 0;
+}
+
+.sectionH2 {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  max-width: 600px;
+}
+
+.btnGhost {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid rgba(107, 107, 136, 0.3);
+  padding: 0.9rem 2.2rem;
+  text-decoration: none;
+  display: inline-block;
+  transition: color 0.2s, border-color 0.2s;
+  cursor: none;
+}
+
+.btnGhost:hover {
+  color: var(--text);
+  border-color: rgba(107, 107, 136, 0.6);
+}
+
+.workGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1px;
+  background: rgba(107, 107, 136, 0.08);
+}
+
+.workCard {
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+}
+
+.workCardLarge {
+  grid-row: span 2;
+}
+
+.workImgWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+}
+
+.workCardLarge .workImgWrap {
+  min-height: 500px;
+}
+
+.workImg {
+  object-fit: cover;
+  filter: grayscale(40%) brightness(0.7);
+  transition: filter 0.4s, transform 0.6s;
+}
+
+.workCard:hover .workImg {
+  filter: grayscale(0%) brightness(0.85);
+  transform: scale(1.04);
+}
+
+.workOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(5, 5, 8, 0.9) 0%, transparent 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+}
+
+.workTag {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.workTitle {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.workMeta {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.3rem;
+}
+
+@media (max-width: 900px) {
+  .work {
+    padding: 5rem 1.5rem;
+  }
+
+  .workGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .workCardLarge {
+    grid-row: span 1;
+  }
+
+  .workCardLarge .workImgWrap {
+    min-height: 220px;
+  }
+}

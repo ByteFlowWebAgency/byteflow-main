@@ -1,0 +1,145 @@
+.why {
+  padding: 7rem 4rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8rem;
+  align-items: center;
+}
+
+.sectionEyebrow {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--cyan);
+  flex-shrink: 0;
+}
+
+.sectionH2 {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  max-width: 600px;
+}
+
+.whyLeft {
+  display: flex;
+  flex-direction: column;
+}
+
+.whyPara {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 0.95rem;
+  margin-bottom: 2.5rem;
+  margin-top: 1.5rem;
+}
+
+.btnPrimary {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--grad);
+  border: none;
+  padding: 0.9rem 2.2rem;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: none;
+  align-self: flex-start;
+}
+
+.btnPrimary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 212, 232, 0.25);
+}
+
+.btnPrimary:hover::after {
+  opacity: 1;
+}
+
+.whyRight {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.whyCard {
+  padding: 1.8rem;
+  border: 1px solid rgba(59, 59, 191, 0.15);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.whyCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--grad);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.whyCard:hover {
+  border-color: rgba(59, 59, 191, 0.35);
+}
+
+.whyCard:hover::after {
+  transform: scaleX(1);
+}
+
+.whyCardTitle {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem;
+}
+
+.whyCardDesc {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+@media (max-width: 900px) {
+  .why {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 5rem 1.5rem;
+  }
+
+  .whyRight {
+    grid-template-columns: 1fr;
+  }
+}

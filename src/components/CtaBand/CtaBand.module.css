@@ -1,0 +1,84 @@
+.ctaBand {
+  padding: 6rem 4rem;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.ctaBandBg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(59, 59, 191, 0.12) 0%, rgba(0, 212, 232, 0.06) 100%);
+  border-top: 1px solid rgba(59, 59, 191, 0.15);
+  border-bottom: 1px solid rgba(59, 59, 191, 0.15);
+}
+
+.ctaBandContent {
+  position: relative;
+  z-index: 1;
+}
+
+.ctaH2 {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 1.2rem;
+}
+
+.gradText {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.ctaPara {
+  color: var(--muted);
+  font-size: 1rem;
+  max-width: 480px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.7;
+}
+
+.btnPrimary {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--grad);
+  border: none;
+  padding: 0.9rem 2.2rem;
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: none;
+}
+
+.btnPrimary::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.15);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0, 212, 232, 0.25);
+}
+
+.btnPrimary:hover::after {
+  opacity: 1;
+}
+
+@media (max-width: 900px) {
+  .ctaBand {
+    padding: 5rem 1.5rem;
+  }
+}

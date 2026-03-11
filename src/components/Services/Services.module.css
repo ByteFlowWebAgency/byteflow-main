@@ -1,0 +1,155 @@
+.services {
+  background: var(--bg2);
+  padding: 7rem 4rem;
+}
+
+.servicesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+}
+
+.servicesHeaderRight {
+  max-width: 320px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  text-align: right;
+}
+
+.sectionEyebrow {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.sectionEyebrow::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--cyan);
+  flex-shrink: 0;
+}
+
+.sectionH2 {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  max-width: 600px;
+}
+
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(107, 107, 136, 0.1);
+}
+
+/* Each ScrollReveal wrapper needs to pass background through */
+.servicesGrid > * {
+  background: var(--bg2);
+}
+
+.serviceCard {
+  background: var(--bg2);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+
+.serviceCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(59, 59, 191, 0.08) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.serviceCard:hover {
+  background: #0d0d18;
+}
+
+.serviceCard:hover::before {
+  opacity: 1;
+}
+
+.serviceCard:hover .serviceArrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.serviceNum {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 2rem;
+}
+
+.serviceIcon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+
+.serviceTitle {
+  font-family: var(--font-syne), sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  letter-spacing: -0.01em;
+}
+
+.serviceDesc {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.serviceArrow {
+  position: absolute;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(107, 107, 136, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+@media (max-width: 900px) {
+  .services {
+    padding: 5rem 1.5rem;
+  }
+
+  .servicesHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .servicesHeaderRight {
+    text-align: left;
+  }
+
+  .servicesGrid {
+    grid-template-columns: 1fr;
+  }
+}

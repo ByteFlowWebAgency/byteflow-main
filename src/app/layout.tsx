@@ -1,27 +1,40 @@
 import './globals.css';
-import { Metadata } from 'next';
-import Navbar from '@/components/Navbar/Navbar';
+import { Syne, DM_Mono, DM_Sans } from 'next/font/google';
+import Nav from '@/components/Nav/Nav';
 import Footer from '@/components/Footer/Footer';
 
-export const metadata: Metadata = {
-  title: {
-    default: 'BYTEFLOW | Intelligent Technology Solutions',
-    template: '%s | BYTEFLOW',
-  },
-  description:
-    'BYTEFLOW partners with organizations to design, build, and deploy enterprise-grade technology — from AI integration to cloud infrastructure — with precision and speed.',
+const syne = Syne({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-syne',
+});
+
+const dmMono = DM_Mono({
+  subsets: ['latin'],
+  weight: ['300', '400', '500'],
+  variable: '--font-dm-mono',
+});
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['300', '400', '500'],
+  variable: '--font-dm-sans',
+});
+
+export const metadata = {
+  title: 'BYTEFLOW — Intelligent Technology Solutions',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${syne.variable} ${dmMono.variable} ${dmSans.variable}`}>
       <body>
-        <Navbar />
-        <main>{children}</main>
+        <Nav />
+        {children}
         <Footer />
       </body>
     </html>

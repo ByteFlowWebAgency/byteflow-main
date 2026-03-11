@@ -1,0 +1,74 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 4rem;
+  background: linear-gradient(to bottom, rgba(5, 5, 8, 0.95) 0%, transparent 100%);
+  backdrop-filter: blur(2px);
+}
+
+.navLogo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.navLogo:hover {
+  opacity: 0.85;
+}
+
+.navLinks {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.navLinks a {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.navLinks a:hover {
+  color: var(--cyan);
+}
+
+.navCta {
+  font-family: var(--font-dm-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--grad);
+  padding: 0.6rem 1.4rem;
+  text-decoration: none;
+  border-radius: 0;
+  transition: opacity 0.2s, transform 0.2s;
+  display: inline-block;
+}
+
+.navCta:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .nav {
+    padding: 1.2rem 1.5rem;
+  }
+
+  .navLinks {
+    display: none;
+  }
+}

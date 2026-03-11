@@ -1,0 +1,31 @@
+.cursor {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: var(--cyan);
+  border-radius: 50%;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.cursorRing {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(0, 212, 232, 0.4);
+  border-radius: 50%;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s, height 0.2s;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .cursor,
+  .cursorRing {
+    display: none;
+  }
+}
