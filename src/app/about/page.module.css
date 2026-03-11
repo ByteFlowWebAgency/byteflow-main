@@ -75,6 +75,7 @@
   max-width: 780px;
   position: relative;
   z-index: 1;
+  overflow-wrap: break-word;
 }
 
 .gradText {
@@ -329,7 +330,7 @@
   position: relative;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
-  cursor: none;
+  cursor: pointer;
 }
 
 .btnPrimary::after {
@@ -352,7 +353,7 @@
 
 @media (max-width: 900px) {
   .hero {
-    padding: 8rem 1.5rem 4rem;
+    padding: 9.5rem 1.5rem 4rem;
   }
 
   .story,
@@ -383,5 +384,20 @@
   .approachGrid,
   .valuesGrid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 8rem 1.25rem 3rem;
+  }
+
+  .h1 {
+    font-size: clamp(1.4rem, 7.5vw, 2.8rem);
+    line-height: 1.1;
+  }
+
+  .sub {
+    font-size: 0.9rem;
   }
 }

@@ -97,3 +97,14 @@
     padding: 1.5rem;
   }
 }
+
+@media (max-width: 480px) {
+  .footer {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .footerDesc {
+    max-width: 100%;
+  }
+}
