@@ -10,23 +10,46 @@ interface FormState {
   message: string;
 }
 
+type Status = 'idle' | 'loading' | 'success' | 'error';
+
+/**
+ * Contact form that POSTs to /api/contact.
+ * The API route logs the submission to Google Sheets and fires a SendGrid notification.
+ */
 export default function ContactForm() {
   const [form, setForm] = useState<FormState>({ name: '', email: '', company: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // mailto fallback — replace with API route as needed
-    const mailto = `mailto:support@byteflowsolutions.com?subject=Inquiry from ${encodeURIComponent(form.name)} — ${encodeURIComponent(form.company)}&body=${encodeURIComponent(form.message)}`;
-    window.location.href = mailto;
-    setSubmitted(true);
+    setStatus('loading');
+    setErrorMsg('');
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? 'Something went wrong. Please try again.');
+      }
+
+      setStatus('success');
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      setStatus('error');
+    }
   };
 
-  if (submitted) {
+  if (status === 'success') {
     return (
       <div className={styles.success}>
         <p className={styles.successText}>Your message is on the way. We&apos;ll be in touch shortly.</p>
@@ -89,8 +112,13 @@ export default function ContactForm() {
           placeholder="Tell us about your project..."
         />
       </div>
-      <button type="submit" className={styles.submit}>
-        Send Message
+
+      {status === 'error' && (
+        <p className={styles.errorMsg}>{errorMsg}</p>
+      )}
+
+      <button type="submit" className={styles.submit} disabled={status === 'loading'}>
+        {status === 'loading' ? 'Sending…' : 'Send Message'}
       </button>
     </form>
   );

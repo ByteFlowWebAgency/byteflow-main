@@ -146,6 +146,13 @@
   order: 1;
 }
 
+.projectImgLink {
+  display: block;
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+}
+
 .projectImgWrap {
   position: relative;
   min-height: 380px;
@@ -156,6 +163,11 @@
   object-fit: cover;
   filter: grayscale(30%) brightness(0.7);
   transition: filter 0.4s, transform 0.6s;
+}
+
+.projectCard:first-child .projectImg {
+  object-fit: contain;
+  object-position: center center;
 }
 
 .projectCard:hover .projectImg {
