@@ -1,119 +1,118 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
+  gap: 20px;
 }
 
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.4rem;
+  gap: 16px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .label {
-  font-family: var(--font-dm-mono), monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.14em;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--violet-400);
 }
 
 .input,
 .textarea {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(107, 107, 136, 0.25);
-  color: var(--text);
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 0.9rem;
-  font-weight: 300;
-  padding: 0.85rem 1rem;
-  outline: none;
-  transition: border-color 0.2s;
   width: 100%;
-  resize: none;
+  padding: 14px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--fg);
+  font-size: 15px;
+  font-family: inherit;
+  transition: border-color 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              background 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .input::placeholder,
 .textarea::placeholder {
-  color: rgba(107, 107, 136, 0.6);
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .input:focus,
 .textarea:focus {
-  border-color: rgba(59, 59, 191, 0.5);
+  outline: none;
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.submit {
-  font-family: var(--font-dm-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--bg);
-  background: var(--grad);
-  border: none;
-  padding: 0.9rem 2.2rem;
-  align-self: flex-start;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
-
-.submit::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.15);
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.submit:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 212, 232, 0.25);
-}
-
-.submit:hover::after {
-  opacity: 1;
-}
-
-.submit:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.55;
 }
 
 .errorMsg {
-  font-family: var(--font-dm-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  color: #ff6b6b;
-  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #F87171;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+}
+
+.submit {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 28px;
+  border-radius: 999px;
+  border: none;
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--fg);
+  background: var(--grad-primary);
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.6);
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 180ms;
+}
+
+.submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 48px -10px rgba(99, 102, 241, 0.75);
+}
+
+.submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .success {
-  padding: 3rem;
-  border: 1px solid rgba(0, 212, 232, 0.3);
-  background: rgba(0, 212, 232, 0.04);
+  padding: 40px 28px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(139, 92, 246, 0.1));
+  border: 1px solid rgba(34, 211, 238, 0.2);
   text-align: center;
 }
 
 .successText {
-  font-family: var(--font-dm-mono), monospace;
-  font-size: 0.82rem;
-  letter-spacing: 0.06em;
-  color: var(--cyan);
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--fg);
 }
 
-@media (max-width: 600px) {
-  .row {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 640px) {
+  .row { grid-template-columns: 1fr; }
 }

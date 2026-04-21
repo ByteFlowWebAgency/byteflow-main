@@ -7,8 +7,8 @@ import styles from './Nav.module.css';
 
 const links = [
   { label: 'Services', href: '/services' },
-  { label: 'About', href: '/about' },
   { label: 'Work', href: '/work' },
+  { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -17,21 +17,30 @@ export default function Nav() {
 
   return (
     <>
-      <nav className={`${styles.nav} ${open ? styles.navMenuOpen : ''}`}>
-        <Link href="/" className={styles.navLogo} onClick={() => setOpen(false)}>
-          <Image src="/BYTEFLOW_LOGO.png" alt="BYTEFLOW" width={100} height={20} priority />
+      <nav className={styles.nav} aria-label="Primary">
+        <Link href="/" className={styles.logo} onClick={() => setOpen(false)}>
+          <Image
+            src="/BYTEFLOW_LOGO.png"
+            alt="ByteFlow"
+            width={280}
+            height={56}
+            priority
+            className={styles.logoImg}
+          />
         </Link>
 
-        <ul className={styles.navLinks}>
+        <ul className={styles.links}>
           {links.map((link) => (
             <li key={link.href}>
-              <Link href={link.href}>{link.label}</Link>
+              <Link href={link.href} className={styles.link}>
+                {link.label}
+              </Link>
             </li>
           ))}
         </ul>
 
-        <Link href="/contact" className={styles.navCta}>
-          Get in Touch
+        <Link href="/contact" className={styles.cta}>
+          Start a project
         </Link>
 
         <button
@@ -42,13 +51,12 @@ export default function Nav() {
         >
           <span />
           <span />
-          <span />
         </button>
       </nav>
 
       {open && (
         <div className={styles.mobileMenu}>
-          <ul>
+          <ul className={styles.mobileLinks}>
             {links.map((link) => (
               <li key={link.href}>
                 <Link href={link.href} onClick={() => setOpen(false)}>
@@ -58,7 +66,7 @@ export default function Nav() {
             ))}
           </ul>
           <Link href="/contact" className={styles.mobileCta} onClick={() => setOpen(false)}>
-            Get in Touch
+            Start a project
           </Link>
         </div>
       )}

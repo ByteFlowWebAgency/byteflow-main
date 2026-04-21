@@ -1,43 +1,48 @@
+import ScrollReveal from '@/components/ScrollReveal/ScrollReveal';
 import styles from './Why.module.css';
 
-const cards = [
+const values = [
   {
-    title: 'Precision Engineering',
-    desc: 'Clean architectures and robust codebases that stand the test of time.',
+    title: 'Senior-only team',
+    desc: 'No pyramid. The people who scope your project are the people who build it and the people who support it six months from now.',
   },
   {
-    title: 'Speed to Market',
-    desc: 'Agile methodologies that deliver working software to users faster.',
+    title: 'Written, not vibed',
+    desc: 'Every engagement begins with a technical memo. Every sprint ends with one. Decisions live on paper, not in someone\u2019s head.',
   },
   {
-    title: 'Strategic Partnership',
-    desc: 'We act as an extension of your engineering and leadership teams.',
+    title: 'Cloud-native by default',
+    desc: 'Infrastructure as code, zero-downtime deploys, and observability from day one — not bolted on at the enterprise readiness review.',
   },
   {
-    title: 'Enterprise Security',
-    desc: 'Security-first development protecting your vital data assets.',
+    title: 'Built to be handed over',
+    desc: 'We document as we go and leave a codebase your team can own. A good engagement ends with us needed less, not more.',
   },
 ];
 
 export default function Why() {
   return (
-    <section className={styles.why} id="about">
-      <div className={styles.whyLeft}>
-        <p className={styles.sectionEyebrow}>Why BYTEFLOW</p>
-        <h2 className={styles.sectionH2}>Built for Scale. Designed for Results.</h2>
-        <p className={styles.whyPara}>
-          We don&apos;t just write code. We architect solutions to complex enterprise problems — acting as an extension of your own engineering and leadership team from day one.
-        </p>
-        <a href="#contact" className={styles.btnPrimary}>Partner With Us</a>
-      </div>
+    <section className={styles.why} id="why">
+      <div className={styles.inner}>
+        <div className={styles.header}>
+          <p className={styles.eyebrow}>WHY BYTEFLOW</p>
+          <h2 className={styles.h2}>
+            Senior partners, <span className={styles.gradText}>end-to-end</span>,
+            on every engagement.
+          </h2>
+        </div>
 
-      <div className={styles.whyRight}>
-        {cards.map((card) => (
-          <div key={card.title} className={styles.whyCard}>
-            <h3 className={styles.whyCardTitle}>{card.title}</h3>
-            <p className={styles.whyCardDesc}>{card.desc}</p>
-          </div>
-        ))}
+        <div className={styles.grid}>
+          {values.map((value, i) => (
+            <ScrollReveal key={value.title} delay={i * 60}>
+              <div className={styles.card}>
+                <div className={`${styles.tile} ${styles[`tile${i}`]}`} aria-hidden />
+                <h3 className={styles.cardTitle}>{value.title}</h3>
+                <p className={styles.cardDesc}>{value.desc}</p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
       </div>
     </section>
   );

@@ -6,46 +6,70 @@ function getCurrentYear() {
   return new Date().getFullYear();
 }
 
+const columns = [
+  {
+    header: 'Services',
+    links: [
+      { label: 'Enterprise Software', href: '/services' },
+      { label: 'Custom Development', href: '/services' },
+      { label: 'AI Integration', href: '/services' },
+      { label: 'Cloud Solutions', href: '/services' },
+      { label: 'SEO & Digital Growth', href: '/services' },
+      { label: 'Consulting', href: '/services' },
+    ],
+  },
+  {
+    header: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Work', href: '/work' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+];
+
 export default function Footer() {
   return (
-    <>
-      <footer className={styles.footer}>
-        <div className={styles.footerBrand}>
-          <Link href="/" className={styles.logoLink}>
-            <Image src="/BYTEFLOW_LOGO.png" alt="BYTEFLOW" width={140} height={32} />
-          </Link>
-          <p className={styles.footerDesc}>
-            BYTEFLOW partners with organizations to design, build, and deploy enterprise-grade technology — with precision and speed.
-          </p>
+    <footer className={styles.footer}>
+      <div className={styles.inner}>
+        <div className={styles.grid}>
+          <div className={styles.brand}>
+            <Link href="/" className={styles.logo}>
+              <Image
+                src="/BYTEFLOW_LOGO.png"
+                alt="ByteFlow"
+                width={320}
+                height={64}
+                className={styles.logoImg}
+              />
+            </Link>
+            <p className={styles.tagline}>
+              Software engineering for teams that take shipping seriously.
+            </p>
+          </div>
+
+          {columns.map((col) => (
+            <div key={col.header} className={styles.col}>
+              <h4 className={styles.colHeader}>{col.header}</h4>
+              <ul>
+                {col.links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className={styles.link}>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
-        <div className={styles.linkCol}>
-          <h4 className={styles.colHeader}>Services</h4>
-          <ul>
-            <li><Link href="/services" className={styles.link}>Enterprise Software</Link></li>
-            <li><Link href="/services" className={styles.link}>AI Integration</Link></li>
-            <li><Link href="/services" className={styles.link}>Cloud Solutions</Link></li>
-            <li><Link href="/services" className={styles.link}>Consulting</Link></li>
-          </ul>
+        <div className={styles.bottom}>
+          <span className={styles.copyLeft}>
+            © {getCurrentYear()} ByteFlow Solutions, LLC. All rights reserved.
+          </span>
         </div>
-
-        <div className={styles.linkCol}>
-          <h4 className={styles.colHeader}>Connect</h4>
-          <ul>
-            <li><Link href="/contact" className={styles.link}>Contact Us</Link></li>
-            <li>
-              <a href="mailto:support@byteflowsolutions.com" className={styles.link}>
-                support@byteflowsolutions.com
-              </a>
-            </li>
-          </ul>
-        </div>
-      </footer>
-
-      <div className={styles.footerBottom}>
-        <span className={styles.footerBottomText}>© {getCurrentYear()} BYTEFLOW. All rights reserved.</span>
-        <div className={styles.footerBottomLine} />
       </div>
-    </>
+    </footer>
   );
 }

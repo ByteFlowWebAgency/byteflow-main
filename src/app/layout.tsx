@@ -1,28 +1,26 @@
 import './globals.css';
-import { Syne, DM_Mono, DM_Sans } from 'next/font/google';
+import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import Nav from '@/components/Nav/Nav';
 import Footer from '@/components/Footer/Footer';
 
-const syne = Syne({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
-  variable: '--font-syne',
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-jakarta',
+  display: 'swap',
 });
 
-const dmMono = DM_Mono({
+const mono = JetBrains_Mono({
   subsets: ['latin'],
-  weight: ['300', '400', '500'],
-  variable: '--font-dm-mono',
-});
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500'],
-  variable: '--font-dm-sans',
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
 });
 
 export const metadata = {
-  title: 'BYTEFLOW — Intelligent Technology Solutions',
+  title: 'ByteFlow Solutions — senior engineering, delivered beautifully.',
+  description:
+    'Enterprise software, custom development, and AI integration for teams that care how things are built. Partner with senior engineers from first sketch to production.',
 };
 
 export default function RootLayout({
@@ -31,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmMono.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${jakarta.variable} ${mono.variable}`}>
       <body>
         <Nav />
         {children}

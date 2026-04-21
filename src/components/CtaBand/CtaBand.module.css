@@ -1,84 +1,137 @@
 .ctaBand {
-  padding: 6rem 4rem;
-  position: relative;
-  overflow: hidden;
-  text-align: center;
-}
-
-.ctaBandBg {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(59, 59, 191, 0.12) 0%, rgba(0, 212, 232, 0.06) 100%);
-  border-top: 1px solid rgba(59, 59, 191, 0.15);
-  border-bottom: 1px solid rgba(59, 59, 191, 0.15);
-}
-
-.ctaBandContent {
+  padding: 64px;
   position: relative;
   z-index: 1;
 }
 
-.ctaH2 {
-  font-family: var(--font-syne), sans-serif;
-  font-weight: 800;
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  letter-spacing: -0.03em;
+.container {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 40px;
+  padding: 96px 64px;
+  background: var(--grad-cta-container);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  overflow: hidden;
+  text-align: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(139, 92, 246, 0.22),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--cyan-400);
+  margin-bottom: 20px;
+}
+
+.h2 {
+  max-width: 900px;
+  font-size: clamp(36px, 7vw, 76px);
+  font-weight: 700;
   line-height: 1;
-  margin-bottom: 1.2rem;
+  letter-spacing: -3px;
+  color: var(--fg);
 }
 
 .gradText {
   background: var(--grad-text);
   -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
-.ctaPara {
-  color: var(--muted);
-  font-size: 1rem;
-  max-width: 480px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.7;
+.lede {
+  max-width: 640px;
+  margin-top: 24px;
+  font-size: clamp(17px, 2vw, 22px);
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 44px;
+}
+
+.btnPrimary,
+.btnGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 32px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--fg);
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1),
+              background 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btnPrimary {
-  font-family: var(--font-dm-mono), monospace;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--bg);
-  background: var(--grad);
-  border: none;
-  padding: 0.9rem 2.2rem;
-  text-decoration: none;
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
-  cursor: pointer;
-}
-
-.btnPrimary::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.15);
-  opacity: 0;
-  transition: opacity 0.2s;
+  background: var(--grad-primary);
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.6);
 }
 
 .btnPrimary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 212, 232, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 48px -10px rgba(99, 102, 241, 0.75);
 }
 
-.btnPrimary:hover::after {
-  opacity: 1;
+.btnGhost {
+  background: var(--glass-solid);
+  border: 1px solid var(--line-strong);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-@media (max-width: 900px) {
-  .ctaBand {
-    padding: 5rem 1.5rem;
+.btnGhost:hover {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.arrow {
+  display: inline-block;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.btnPrimary:hover .arrow { transform: translateX(3px); }
+
+@media (max-width: 1024px) {
+  .ctaBand { padding: 48px 32px; }
+  .container { padding: 72px 40px; border-radius: 32px; }
+}
+
+@media (max-width: 768px) {
+  .ctaBand { padding: 32px 20px; }
+  .container { padding: 56px 24px; border-radius: 28px; }
+  .h2 { letter-spacing: -1.4px; }
+  .btnPrimary,
+  .btnGhost {
+    width: 100%;
+    justify-content: center;
+    padding: 16px 24px;
   }
 }

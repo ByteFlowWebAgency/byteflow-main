@@ -1,13 +1,43 @@
 :root {
-  --indigo: #3b3bbf;
-  --purple: #7b4fd4;
-  --cyan: #00d4e8;
-  --bg: #050508;
-  --bg2: #0a0a12;
-  --text: #e8e8f0;
-  --muted: #6b6b88;
-  --grad: linear-gradient(105deg, #3b3bbf 0%, #7b4fd4 50%, #00d4e8 100%);
-  --grad-text: linear-gradient(105deg, #5b5bdf 0%, #9b6ff4 50%, #00d4e8 100%);
+  color-scheme: dark;
+
+  /* Ink canvas */
+  --ink: #0B0F1F;
+  --ink-2: #1a1f3a;
+
+  /* Brand */
+  --indigo: #6366F1;
+  --indigo-400: #818CF8;
+  --violet: #8B5CF6;
+  --violet-400: #A78BFA;
+  --cyan: #06B6D4;
+  --cyan-400: #22D3EE;
+  --blue: #3B82F6;
+  --pink: #EC4899;
+
+  /* Neutrals */
+  --fg: #FFFFFF;
+  --fg-muted: rgba(255, 255, 255, 0.70);
+  --fg-soft: rgba(255, 255, 255, 0.60);
+  --fg-dim: rgba(255, 255, 255, 0.50);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-solid: rgba(255, 255, 255, 0.06);
+
+  /* Signature gradients */
+  --grad-primary: linear-gradient(105deg, #6366F1 0%, #8B5CF6 50%, #06B6D4 100%);
+  --grad-text: linear-gradient(105deg, #818CF8 0%, #A78BFA 40%, #22D3EE 100%);
+  --grad-brand-tile: linear-gradient(135deg, #6366F1, #06B6D4);
+  --grad-cta-container: linear-gradient(135deg, #312E81 0%, #1E1B4B 40%, #164E63 100%);
+
+  /* Legacy aliases kept so nothing breaks mid-migration */
+  --purple: var(--violet);
+  --bg: var(--ink);
+  --bg2: var(--ink-2);
+  --text: var(--fg);
+  --muted: var(--fg-soft);
+  --grad: var(--grad-primary);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,35 +45,65 @@
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-dm-sans), sans-serif;
-  font-weight: 300;
+  background: var(--ink);
+  color: var(--fg);
+  font-family: var(--font-jakarta), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  cursor: auto;
 }
 
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  opacity: 0.025;
+a { text-decoration: none; color: inherit; }
+ul, ol { list-style: none; }
+img { max-width: 100%; height: auto; display: block; }
+
+/* Gradient text utility */
+.gradText,
+.grad-text {
+  background: var(--grad-text);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glass panel */
+.glass {
+  background: var(--glass);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Ambient blob animation */
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(40px, -30px) scale(1.08); }
+}
+
+.blob {
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.55;
   pointer-events: none;
-  z-index: 1000;
+  animation: drift 22s ease-in-out infinite;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--cyan-400);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-ul, ol {
-  list-style: none;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0ms !important;
+    transition-duration: 0ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  .blob { animation: none; }
 }
