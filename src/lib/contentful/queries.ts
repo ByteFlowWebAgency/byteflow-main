@@ -1,0 +1,2 @@
+import { getContentfulClient } from "./client";
+
