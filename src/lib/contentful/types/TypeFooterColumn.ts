@@ -9,6 +9,12 @@ import type { TypeNavLinkSkeleton } from "./TypeNavLink";
  */
 export interface TypeFooterColumnFields {
     /**
+     * Field type definition for field 'name' (Name)
+     * @name Name
+     * @localized false
+     */
+    name?: EntryFieldTypes.Symbol;
+    /**
      * Field type definition for field 'title' (Title)
      * @name Title
      * @localized false
@@ -28,7 +34,7 @@ export interface TypeFooterColumnFields {
  * @type {TypeFooterColumnSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:50:59.043Z
- * @version 1
+ * @version 3
  */
 export type TypeFooterColumnSkeleton = EntrySkeletonType<TypeFooterColumnFields, "footerColumn">;
 /**
@@ -37,7 +43,7 @@ export type TypeFooterColumnSkeleton = EntrySkeletonType<TypeFooterColumnFields,
  * @type {TypeFooterColumn}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:50:59.043Z
- * @version 1
+ * @version 3
  */
 export type TypeFooterColumn<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeFooterColumnSkeleton, Modifiers, Locales>;
 

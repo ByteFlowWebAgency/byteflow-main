@@ -1,5 +1,6 @@
 import type { ChainModifiers, Entry, EntryFieldTypes, EntrySkeletonType, LocaleCode } from "contentful";
 import type { TypeSectionSkeleton } from "./TypeSection";
+import type { TypeSeoSkeleton } from "./TypeSeo";
 
 /**
  * Fields type definition for content type 'TypePage'
@@ -26,6 +27,12 @@ export interface TypePageFields {
      * @localized false
      */
     sections?: EntryFieldTypes.Array<EntryFieldTypes.EntryLink<TypeSectionSkeleton>>;
+    /**
+     * Field type definition for field 'pageSeo' (Page SEO)
+     * @name Page SEO
+     * @localized false
+     */
+    pageSeo?: EntryFieldTypes.EntryLink<TypeSeoSkeleton>;
 }
 
 /**
@@ -34,7 +41,7 @@ export interface TypePageFields {
  * @type {TypePageSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:29:11.020Z
- * @version 1
+ * @version 3
  */
 export type TypePageSkeleton = EntrySkeletonType<TypePageFields, "page">;
 /**
@@ -43,7 +50,7 @@ export type TypePageSkeleton = EntrySkeletonType<TypePageFields, "page">;
  * @type {TypePage}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:29:11.020Z
- * @version 1
+ * @version 3
  */
 export type TypePage<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypePageSkeleton, Modifiers, Locales>;
 

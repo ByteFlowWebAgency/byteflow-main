@@ -1,6 +1,7 @@
 import type { ChainModifiers, Entry, EntryFieldTypes, EntrySkeletonType, LocaleCode } from "contentful";
 import type { TypeCaseStudySkeleton } from "./TypeCaseStudy";
 import type { TypeFeatureCardSkeleton } from "./TypeFeatureCard";
+import type { TypeHeroSkeleton } from "./TypeHero";
 import type { TypeSectionHeaderSkeleton } from "./TypeSectionHeader";
 
 /**
@@ -21,7 +22,7 @@ export interface TypeSectionFields {
      * @name Header
      * @localized false
      */
-    header?: EntryFieldTypes.EntryLink<TypeSectionHeaderSkeleton>;
+    header?: EntryFieldTypes.EntryLink<TypeHeroSkeleton | TypeSectionHeaderSkeleton>;
     /**
      * Field type definition for field 'cards' (Cards)
      * @name Cards
@@ -42,7 +43,7 @@ export interface TypeSectionFields {
  * @type {TypeSectionSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:23:57.304Z
- * @version 3
+ * @version 5
  */
 export type TypeSectionSkeleton = EntrySkeletonType<TypeSectionFields, "section">;
 /**
@@ -51,7 +52,7 @@ export type TypeSectionSkeleton = EntrySkeletonType<TypeSectionFields, "section"
  * @type {TypeSection}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:23:57.304Z
- * @version 3
+ * @version 5
  */
 export type TypeSection<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeSectionSkeleton, Modifiers, Locales>;
 

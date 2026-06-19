@@ -14,17 +14,23 @@ export interface TypeCaseStudyFields {
      */
     name?: EntryFieldTypes.Symbol;
     /**
-     * Field type definition for field 'title' (Title)
-     * @name Title
+     * Field type definition for field 'eyebrow' (Eyebrow)
+     * @name Eyebrow
      * @localized false
      */
-    title?: EntryFieldTypes.Symbol;
+    eyebrow?: EntryFieldTypes.Symbol;
     /**
-     * Field type definition for field 'category' (Category)
-     * @name Category
+     * Field type definition for field 'companyName' (Company Name)
+     * @name Company Name
      * @localized false
      */
-    category?: EntryFieldTypes.Symbol;
+    companyName?: EntryFieldTypes.Symbol;
+    /**
+     * Field type definition for field 'tagline' (Tagline)
+     * @name Tagline
+     * @localized false
+     */
+    tagline?: EntryFieldTypes.Symbol;
     /**
      * Field type definition for field 'description' (Description)
      * @name Description
@@ -51,7 +57,7 @@ export interface TypeCaseStudyFields {
  * @type {TypeCaseStudySkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:16:23.782Z
- * @version 1
+ * @version 7
  */
 export type TypeCaseStudySkeleton = EntrySkeletonType<TypeCaseStudyFields, "caseStudy">;
 /**
@@ -60,7 +66,7 @@ export type TypeCaseStudySkeleton = EntrySkeletonType<TypeCaseStudyFields, "case
  * @type {TypeCaseStudy}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:16:23.782Z
- * @version 1
+ * @version 7
  */
 export type TypeCaseStudy<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeCaseStudySkeleton, Modifiers, Locales>;
 
