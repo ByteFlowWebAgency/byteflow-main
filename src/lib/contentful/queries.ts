@@ -1,82 +1,49 @@
-// lib/contentful/queries.ts
-
 import { getContentfulClient } from './client';
 
+// All page content resolves via include: 10
+// sections → sectionHeaders → featureCards all come with this one call
 export async function getPage(slug: string) {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'page',
-        'fields.slug': slug,
-        include: 10,
-    })
-    return entries.items[0]
+  const entries = await getContentfulClient().getEntries({
+    content_type: 'page',
+    'fields.slug': slug,
+    include: 10,
+  })
+  return entries.items[0]
 }
 
-export async function getCaseStudy() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'caseStudy',
-    })
-    return entries.items
-}
-
-export async function getCtaCard() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'ctaCard',
-    })
-    return entries.items
-}
-
-export async function getFeatureCard() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'featureCard',
-    })
-    return entries.items
-}
-
-export async function getFooter() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'footer',
-    })
-    return entries.items
-}
-
-export async function getFooterColumn() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'footerColumn',
-    })
-    return entries.items
-}
-
+// Header lives in root layout, fetched once
 export async function getHeader() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'header',
-    })
-    return entries.items
+  const entries = await getContentfulClient().getEntries({
+    content_type: 'header',
+    limit: 1,
+    include: 3,
+  })
+  return entries.items[0]  // single entry, not array
 }
 
-export async function getHero() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'hero',
-    })
-    return entries.items
+// Footer lives in root layout, fetched once
+export async function getFooter() {
+  const entries = await getContentfulClient().getEntries({
+    content_type: 'footer',
+    limit: 1,
+    include: 3,
+  })
+  return entries.items[0]  // single entry, not array
 }
 
-export async function getNavLink() {
-    const entries =await getContentfulClient().getEntries({
-        content_type: 'navLink',
-    })
-    return entries.items
+// Case studies fetched as a collection
+export async function getCaseStudies() {
+  const entries = await getContentfulClient().getEntries({
+    content_type: 'caseStudy',
+  })
+  return entries.items
 }
 
-export async function getSection() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'section',
-    })
-    return entries.items
-}
-
-export async function getSeo() {
-    const entries = await getContentfulClient().getEntries({
-        content_type: 'seo',
-    })
-    return entries.items
+// For generateStaticParams in Next.js
+export async function getAllPageSlugs() {
+  const entries = await getContentfulClient().getEntries({
+    content_type: 'page',
+    select: ['fields.slug'],
+  })
+  return entries.items.map((item) => item.fields.slug)
 }
