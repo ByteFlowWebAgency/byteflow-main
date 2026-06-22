@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import ContactForm from '@/components/ContactForm/ContactForm';
 import styles from './page.module.css';
+import { getPage } from '@/lib/contentful/queries';
+import { cardsOf, headerOf, sectionsOf } from '@/lib/contentful/extract';
 
 export const metadata: Metadata = {
   title: 'Contact · ByteFlow Solutions',
@@ -8,7 +10,16 @@ export const metadata: Metadata = {
     'Get in touch with ByteFlow — schedule a consultation or reach out directly to discuss your technology needs.',
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const page = await getPage('contact');
+  const sections = sectionsOf(page);
+
+  const header = headerOf(sections[0]);
+  const info = cardsOf(sections[0]).map((c) => ({
+    label: c.eyebrow ?? '',
+    value: c.tagline ?? '',
+  }));
+
   return (
     <section className={styles.page}>
       <div className={styles.blobWrap} aria-hidden>
@@ -18,41 +29,23 @@ export default function ContactPage() {
 
       <div className={styles.grid}>
         <div className={styles.textCol}>
-          <p className={styles.eyebrow}>GET IN TOUCH</p>
-          <h1 className={styles.h1}>
-            Let&apos;s build something{' '}
-            <span className={styles.gradText}>exceptional.</span>
-          </h1>
-          <p className={styles.sub}>
-            Whether you need to modernize legacy systems, integrate AI, or
-            build a scalable cloud architecture from scratch — our engineering
-            team is ready to help.
-          </p>
+          <p className={styles.eyebrow}>{header?.eyebrow}</p>
+          <h1 className={styles.h1}>{header?.heading}</h1>
+          <p className={styles.sub}>{header?.subText}</p>
 
           <div className={styles.infoList}>
-            <div className={styles.infoBlock}>
-              <span className={styles.infoLabel}>Email</span>
-              <a
-                href="mailto:support@byteflowsolutions.com"
-                className={styles.infoLink}
-              >
-                support@byteflowsolutions.com
-              </a>
-            </div>
-
-            <div className={styles.infoBlock}>
-              <span className={styles.infoLabel}>Services</span>
-              <span className={styles.infoText}>
-                Enterprise Software · AI Integration
-                <br />
-                Cloud Solutions · Consulting
-              </span>
-            </div>
-
-            <div className={styles.infoBlock}>
-              <span className={styles.infoLabel}>Response time</span>
-              <span className={styles.infoText}>Within 1 business day</span>
-            </div>
+            {info.map((item) => (
+              <div key={item.label} className={styles.infoBlock}>
+                <span className={styles.infoLabel}>{item.label}</span>
+                {item.value.includes('@') ? (
+                  <a href={`mailto:${item.value}`} className={styles.infoLink}>
+                    {item.value}
+                  </a>
+                ) : (
+                  <span className={styles.infoText}>{item.value}</span>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 

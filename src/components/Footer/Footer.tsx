@@ -1,34 +1,16 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Footer.module.css';
+import type { FooterColumnData, LogoData } from '@/lib/contentful/props';
 
-function getCurrentYear() {
-  return new Date().getFullYear();
+interface FooterProps {
+  logo: LogoData | null;
+  tagline: string;
+  columns: FooterColumnData[];
+  copyrightText: string;
 }
 
-const columns = [
-  {
-    header: 'Services',
-    links: [
-      { label: 'Enterprise Software', href: '/services' },
-      { label: 'Custom Development', href: '/services' },
-      { label: 'AI Integration', href: '/services' },
-      { label: 'Cloud Solutions', href: '/services' },
-      { label: 'SEO & Digital Growth', href: '/services' },
-      { label: 'Consulting', href: '/services' },
-    ],
-  },
-  {
-    header: 'Company',
-    links: [
-      { label: 'About', href: '/about' },
-      { label: 'Work', href: '/work' },
-      { label: 'Contact', href: '/contact' },
-    ],
-  },
-];
-
-export default function Footer() {
+export default function Footer({ logo, tagline, columns, copyrightText }: FooterProps) {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
@@ -36,25 +18,23 @@ export default function Footer() {
           <div className={styles.brand}>
             <Link href="/" className={styles.logo}>
               <Image
-                src="/BYTEFLOW_LOGO.png"
-                alt="ByteFlow"
-                width={320}
-                height={64}
+                src={logo?.url ?? '/BYTEFLOW_LOGO.png'}
+                alt={logo?.alt ?? 'ByteFlow'}
+                width={logo?.width ?? 320}
+                height={logo?.height ?? 64}
                 className={styles.logoImg}
               />
             </Link>
-            <p className={styles.tagline}>
-              Software engineering for teams that take shipping seriously.
-            </p>
+            <p className={styles.tagline}>{tagline}</p>
           </div>
 
           {columns.map((col) => (
-            <div key={col.header} className={styles.col}>
-              <h4 className={styles.colHeader}>{col.header}</h4>
+            <div key={col.title} className={styles.col}>
+              <h4 className={styles.colHeader}>{col.title}</h4>
               <ul>
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <Link href={link.href} className={styles.link}>
+                    <Link href={link.url} className={styles.link}>
                       {link.label}
                     </Link>
                   </li>
@@ -65,9 +45,7 @@ export default function Footer() {
         </div>
 
         <div className={styles.bottom}>
-          <span className={styles.copyLeft}>
-            © {getCurrentYear()} ByteFlow Solutions, LLC. All rights reserved.
-          </span>
+          <span className={styles.copyLeft}>{copyrightText}</span>
         </div>
       </div>
     </footer>

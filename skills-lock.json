@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "skills": {
+    "contentful-api": {
+      "source": "contentful/skills",
+      "sourceType": "github",
+      "skillPath": "skills/contentful-api/SKILL.md",
+      "computedHash": "8ea46cf25f8b40768bb32167cf849f5ff6e739d56c0a83650b8470f5ad54d66a"
+    },
+    "contentful-custom-app-enhancement": {
+      "source": "contentful/skills",
+      "sourceType": "github",
+      "skillPath": "skills/contentful-apps/contentful-custom-app-enhancement/SKILL.md",
+      "computedHash": "27a1e56aef246d07069c79a4292fd0923f4e8013a80a70c2ce4a206b9d0e5ced"
+    },
+    "contentful-custom-app-from-scratch": {
+      "source": "contentful/skills",
+      "sourceType": "github",
+      "skillPath": "skills/contentful-apps/contentful-custom-app-from-scratch/SKILL.md",
+      "computedHash": "0355e839b6d1169f9a24510d37d8ba7e0ca6cef9431b8326d1a0ccec8f005365"
+    },
+    "contentful-guide": {
+      "source": "contentful/skills",
+      "sourceType": "github",
+      "skillPath": "skills/contentful-guide/SKILL.md",
+      "computedHash": "d9b288cb7b94a3c04e8e0cee9b16974d13bcfab811fa5ed7f3db7678708edfe8"
+    },
+    "contentful-migration": {
+      "source": "contentful/skills",
+      "sourceType": "github",
+      "skillPath": "skills/contentful-migration/SKILL.md",
+      "computedHash": "88f8a9b845d6fbfd321b6625c44fdb75517096f276eb77f4b0dfffbe0dff4658"
+    },
+    "contentful-nextjs": {
+      "source": "contentful/skills",
+      "sourceType": "github",
+      "skillPath": "skills/contentful-nextjs/SKILL.md",
+      "computedHash": "c525fc873269fbbb567b09029732dda29000be69d2c0cd00ce13c55489c2e31a"
+    },
+    "contentful-personalization": {
+      "source": "contentful/skills",
+      "sourceType": "github",
+      "skillPath": "skills/contentful-personalization/SKILL.md",
+      "computedHash": "0e5ce2b5fa0d43b0e38405c50d266fe37320ee54521d6f5f1abe4995282fe399"
+    }
+  }
+}

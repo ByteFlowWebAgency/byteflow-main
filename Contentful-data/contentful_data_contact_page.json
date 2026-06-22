@@ -1,0 +1,248 @@
+{
+  "metadata": {
+    "tags": [],
+    "concepts": []
+  },
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "l4ua62z6xa9f"
+      }
+    },
+    "id": "GIRSOMplw0YnorIfUKQH1",
+    "type": "Entry",
+    "createdAt": "2026-06-18T23:28:59.614Z",
+    "updatedAt": "2026-06-18T23:28:59.614Z",
+    "environment": {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "publishedVersion": 4,
+    "revision": 1,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "page"
+      }
+    },
+    "locale": "en-US"
+  },
+  "fields": {
+    "name": "Contact page",
+    "slug": "contact",
+    "sections": [
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "l4ua62z6xa9f"
+            }
+          },
+          "id": "5mqs8d66anr6F49UnsBsos",
+          "type": "Entry",
+          "createdAt": "2026-06-18T23:28:54.101Z",
+          "updatedAt": "2026-06-18T23:28:54.101Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 6,
+          "revision": 1,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "section"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "name": "Contact Page 1st Section",
+          "header": {
+            "metadata": {
+              "tags": [],
+              "concepts": []
+            },
+            "sys": {
+              "space": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "Space",
+                  "id": "l4ua62z6xa9f"
+                }
+              },
+              "id": "5NeTpPm07ztqu9a4pL78Rt",
+              "type": "Entry",
+              "createdAt": "2026-06-18T23:23:46.412Z",
+              "updatedAt": "2026-06-18T23:23:46.412Z",
+              "environment": {
+                "sys": {
+                  "id": "master",
+                  "type": "Link",
+                  "linkType": "Environment"
+                }
+              },
+              "publishedVersion": 5,
+              "revision": 1,
+              "contentType": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "ContentType",
+                  "id": "sectionHeader"
+                }
+              },
+              "locale": "en-US"
+            },
+            "fields": {
+              "name": "Contact Page 1st Section | Hero",
+              "eyebrow": "GET IN TOUCH",
+              "heading": "Let's build something exceptional.",
+              "subText": "Whether you need to modernize legacy systems, integrate AI, or build a scalable cloud architecture from scratch — our engineering team is ready to help."
+            }
+          },
+          "cards": [
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "36vEgHMI2CElBZuetveq5",
+                "type": "Entry",
+                "createdAt": "2026-06-18T23:26:48.838Z",
+                "updatedAt": "2026-06-18T23:26:48.838Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 6,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Contact Page 1st Section | Feature Card 1",
+                "eyebrow": "EMAIL",
+                "tagline": "support@byteflowsolutions.com"
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "6PYZCBddWogx6KSD4WJmyV",
+                "type": "Entry",
+                "createdAt": "2026-06-18T23:27:56.874Z",
+                "updatedAt": "2026-06-18T23:27:56.874Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 7,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Contact Page 1st Section | Feature Card 2",
+                "eyebrow": "SERVICES",
+                "tagline": "Enterprise Software · AI Integration Cloud Solutions · Consulting"
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "1qFWppqwNLaItysHW4xtRG",
+                "type": "Entry",
+                "createdAt": "2026-06-18T23:28:45.774Z",
+                "updatedAt": "2026-06-18T23:28:45.774Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 7,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Contact Page 1st Section | Feature Card 3",
+                "eyebrow": "RESPONSE TIME",
+                "tagline": "Within 1 business day"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
