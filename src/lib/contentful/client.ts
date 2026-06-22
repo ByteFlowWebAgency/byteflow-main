@@ -7,8 +7,9 @@ const clientCache: {
 
 export const getContentfulClient = (isDraft?: boolean) => {
   const cacheKey = isDraft ? "preview" : "published";
-  if (clientCache[cacheKey]) {
-    return clientCache[cacheKey];
+  const cached = clientCache[cacheKey];
+  if (cached) {
+    return cached;
   }
 
   const accessToken = process.env.CONTENTFUL_ACCESS_TOKEN;

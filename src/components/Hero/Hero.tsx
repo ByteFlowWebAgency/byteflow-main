@@ -1,24 +1,27 @@
 import styles from './Hero.module.css';
+import { linkAttrs, type NavLinkData, type StepData } from '@/lib/contentful/props';
 
-const steps = [
-  {
-    num: '01',
-    title: 'Discover',
-    desc: 'Strategic architecture, technical scoping, and a written memo before any code is committed.',
-  },
-  {
-    num: '02',
-    title: 'Build',
-    desc: 'Precision engineering shipped in weekly sprints, with senior partners on every review.',
-  },
-  {
-    num: '03',
-    title: 'Scale',
-    desc: 'Cloud-native infrastructure, always-on support, and a partnership that grows with you.',
-  },
-];
+interface HeroProps {
+  eyebrow: string;
+  heading: string;
+  subText: string;
+  primaryCta?: NavLinkData;
+  secondaryCta?: NavLinkData;
+  showcaseEyebrow: string;
+  showcaseTitle: string;
+  steps: StepData[];
+}
 
-export default function Hero() {
+export default function Hero({
+  eyebrow,
+  heading,
+  subText,
+  primaryCta,
+  secondaryCta,
+  showcaseEyebrow,
+  showcaseTitle,
+  steps,
+}: HeroProps) {
   return (
     <section className={styles.hero}>
       {/* Ambient blobs */}
@@ -31,42 +34,36 @@ export default function Hero() {
       <div className={styles.inner}>
         <div className={styles.eyebrowPill}>
           <span className={styles.sparkle}>✦</span>
-          Enterprise software, delivered beautifully
+          {eyebrow}
         </div>
 
-        <h1 className={styles.h1}>
-          Building your solutions,{' '}
-          <span className={styles.gradText}>Byte By Byte</span>
-        </h1>
+        <h1 className={styles.h1}>{heading}</h1>
 
-        <p className={styles.sub}>
-          ByteFlow Solutions partners with ambitious teams to design, engineer,
-          and scale the products that matter — from first architectural sketch
-          to production deployment.
-        </p>
+        <p className={styles.sub}>{subText}</p>
 
         <div className={styles.actions}>
-          <a href="/contact" className={styles.btnPrimary}>
-            Start a project
-            <span className={styles.arrow} aria-hidden>→</span>
-          </a>
-          <a href="/work" className={styles.btnGhost}>
-            See our work
-          </a>
+          {primaryCta && (
+            <a {...linkAttrs(primaryCta)} className={styles.btnPrimary}>
+              {primaryCta.label}
+              <span className={styles.arrow} aria-hidden>→</span>
+            </a>
+          )}
+          {secondaryCta && (
+            <a {...linkAttrs(secondaryCta)} className={styles.btnGhost}>
+              {secondaryCta.label}
+            </a>
+          )}
         </div>
 
         {/* Showcase: The ByteFlow Way */}
         <div className={styles.showcase}>
           <div className={styles.showcaseInner}>
             <div className={styles.showcaseHead}>
-              <span className={styles.eyebrow}>THE BYTEFLOW WAY</span>
+              <span className={styles.eyebrow}>{showcaseEyebrow}</span>
               <span className={styles.showcaseSub}>A three-phase engagement</span>
             </div>
 
-            <h2 className={styles.showcaseTitle}>
-              From <span className={styles.gradText}>first byte</span> to full
-              deployment — we architect every layer.
-            </h2>
+            <h2 className={styles.showcaseTitle}>{showcaseTitle}</h2>
 
             <div className={styles.steps}>
               {steps.map((step, i) => (
