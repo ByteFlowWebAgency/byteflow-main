@@ -189,6 +189,26 @@
   margin-bottom: 24px;
 }
 
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cyan-400);
+  border-bottom: 1px solid transparent;
+  transition: border-color 180ms ease;
+}
+
+.readMore:hover { border-color: var(--cyan-400); }
+
+.readMoreArrow {
+  display: inline-block;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.readMore:hover .readMoreArrow { transform: translateX(3px); }
+
 .resultList {
   display: flex;
   flex-direction: column;
