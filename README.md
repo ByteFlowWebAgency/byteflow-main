@@ -1,124 +1,141 @@
-# Prismic + Next.js Minimal Starter
+# ByteFlow
 
-Want to quickly get started building your own project with [Prismic][prismic] and [Next.js][nextjs]? This project includes basic configurations and nothing else. The project includes one Rich Text Slice, a homepage, and a dynamic page.
+The marketing website for **ByteFlow Solutions** — a [Next.js][nextjs] App Router
+site with all content managed in [Contentful][contentful] and delivered through
+the Content Delivery API.
 
-- **Demo**: [Open live demo][live-demo]
-- **Learn more about Prismic and Next.js**: [Prismic Next.js Documentation][prismic-docs]
+> **Live site:** https://www.byteflow.us
 
-&nbsp;
+## Tech stack
 
-![Website screenshot](https://user-images.githubusercontent.com/31219208/228821412-fdde92b2-c13c-4287-b799-611fa96a5fd6.png)
+- **[Next.js 15][nextjs]** (App Router, React 19, Server Components)
+- **TypeScript**
+- **[Contentful][contentful]** headless CMS via the Content Delivery API (CDA),
+  with a Preview API client for drafts
+- **CSS Modules** + CSS custom properties — design tokens live in
+  [`src/app/globals.css`](src/app/globals.css) (dark, glass, gradient aesthetic)
+- **`next/image`** for optimized images served from Contentful's asset CDN
+- **Google Fonts** — Plus Jakarta Sans (UI) and JetBrains Mono (accents)
+- **[SendGrid][sendgrid]** for the contact form
 
-&nbsp;
+## Getting started
 
-## 🚀 Quick Start
+### Prerequisites
 
-To start a new project using this starter, run the following commands in your terminal:
+- Node.js **20+** (Next.js 15 requires 18.18+)
+- A Contentful space with the content models this site expects (see
+  [Content model](#content-model))
+
+### 1. Install dependencies
 
 ```sh
-npx degit prismicio-community/nextjs-starter-prismic-minimal your-project-name
-cd your-project-name
-npx @slicemachine/init@latest
+npm install
 ```
 
-The commands will do the following:
+### 2. Configure environment variables
 
-1. Start a new Next.js project using this starter.
-2. Ask you to log in to Prismic or [create an account][prismic-sign-up].
-3. Create a new Prismic content repository with sample content.
+Create a `.env.local` file in the project root:
 
-When you're ready to start your project, run the following command:
+```sh
+# Contentful — required
+CONTENTFUL_SPACE_ID=your_space_id
+CONTENTFUL_ACCESS_TOKEN=your_content_delivery_token
+
+# Contact form (SendGrid) — required for /contact submissions
+SENDGRID_API_KEY=your_sendgrid_api_key
+SENDGRID_FROM_EMAIL=hello@byteflow.us
+SENDGRID_TEMPLATE_ID=your_dynamic_template_id
+
+# Contact form — optional (mirrors submissions to a Google Sheet)
+GOOGLE_SHEET_WEBHOOK_URL=
+
+# Type generation only (see `npm run generate:types`)
+CONTENTFUL_PERSONAL_ACCESS_TOKEN=your_cma_personal_access_token
+```
+
+### 3. Run the dev server
 
 ```sh
 npm run dev
 ```
 
-## How to use your project
+Open [http://localhost:3000](http://localhost:3000).
 
-To edit the content of this project, go to [prismic.io/dashboard](https://prismic.io/dashboard), click on the repository for this website, and start editing.
+## Scripts
 
-### Create a page
+| Script                    | Description                                                              |
+| ------------------------- | ------------------------------------------------------------------------ |
+| `npm run dev`             | Start the local dev server                                               |
+| `npm run build`           | Production build                                                         |
+| `npm run start`           | Serve the production build                                              |
+| `npm run lint`            | Run ESLint (`eslint-config-next`)                                        |
+| `npm run format`          | Format the codebase with Prettier                                       |
+| `npm run generate:types`  | Regenerate Contentful content-model types into `src/lib/contentful/types` |
 
-To create a page, click on the green pencil icon, then select **Page**.
+## Project structure
 
-Pages are made of Slices. You can add and rearrange Slices to your pages.
+```
+src/
+├── app/                     # App Router routes
+│   ├── layout.tsx           # Root layout — fetches header/footer from Contentful
+│   ├── page.tsx             # Home
+│   ├── about/               # About
+│   ├── services/            # Services
+│   ├── work/                # Work / portfolio
+│   ├── contact/             # Contact (form posts to the API route below)
+│   ├── api/contact/         # SendGrid contact-form handler
+│   └── globals.css          # Design tokens + base styles
+├── components/              # Presentational components (Nav, Footer, Hero,
+│   │                        #   Services, Why, CtaBand, ScrollReveal) — each
+│   │                        #   paired with a *.module.css file
+└── lib/contentful/
+    ├── client.ts            # CDA / Preview client (cached)
+    ├── queries.ts           # Typed content queries (getPage, getHeader, …)
+    ├── extract.ts           # Unwrap nested entries → loose CMS field shapes
+    ├── props.ts             # Plain, serializable prop shapes + transforms
+    └── types/               # Generated content-model types
+```
 
-Your new page will be accessible by its URL, but it won't appear on the website automatically. To let users discover it, add it to the navigation.
+## How content works
 
-### Preview documents
+Content flows from Contentful to the UI through a small boundary layer so the
+presentational components never need to know the Contentful entry shape:
 
-If you chose this starter when you created a new repository from the Prismic Dashboard, then your repository is preconfigured with previews on localhost. To change the preview configuration or add previews to your production or staging environments, see [Preview Drafts in Next.js](https://prismic.io/docs/technologies/preview-content-nextjs) in the Prismic documentation.
+1. **Fetch** — server components call helpers in
+   [`queries.ts`](src/lib/contentful/queries.ts) (e.g. `getPage('/')`), which
+   request entries with links resolved.
+2. **Unwrap** — [`extract.ts`](src/lib/contentful/extract.ts) flattens the deeply
+   nested `entry.fields.…` structure into loose, typed field shapes.
+3. **Normalize** — [`props.ts`](src/lib/contentful/props.ts) maps those fields into
+   clean, serializable props (and normalizes URLs, image assets, etc.).
+4. **Render** — components in [`src/components/`](src/components) receive plain
+   props and render the page.
 
-### Customize this website
+When the content models change in Contentful, run `npm run generate:types` to
+refresh the typed definitions in `src/lib/contentful/types`.
 
-This website is preconfigured with Prismic. It has three Prismic packages installed:
+## Content model
 
-- `@prismicio/client` provides helpers for fetching content from Prismic
-- `@prismicio/react` provides React components for rendering content from Prismic
-- `@prismicio/next` provides a wrapper component to configure Prismic previews
+| Content type             | Role                                                              |
+| ------------------------ | ----------------------------------------------------------------- |
+| `page`                   | A page composed of ordered `section`s                             |
+| `section`                | A `header` (hero/sectionHeader) plus a list of `cards`            |
+| `hero` / `sectionHeader` | Section header: eyebrow, heading, sub-text, CTAs                  |
+| `featureCard` / `caseStudy` | Card content (titles, descriptions, thumbnails, links)         |
+| `header` / `footer`      | Global navigation, logo, and footer columns                       |
+| `navLink`                | A label + URL used in nav and CTAs                                |
+| `seo`                    | Per-page metadata                                                 |
 
-These packages are already integrated and employed in this app. Take a look at the code to see how they're used.
+## Deployment
 
-### Edit the code
-
-There are two steps to rendering content from Prismic in your Next.js project:
-
-1. Fetch content from the Prismic API using `@prismicio/client`.
-2. Template the content using components from `@prismicio/react`.
-
-Here are some of the files in your project that you can edit:
-
-- `prismicio.ts` - This file includes configuration for `@prismicio/client` and exports useful API helpers.
-- `app/layout.tsx` - This is your layout component, which includes configuration for `@prismicio/react` and `@prismicio/next`.
-- `app/page.tsx` - This is the app homepage. It queries and renders a page document with the UID (unique identifier) "home" from the Prismic API.
-- `app/[uid]/page.tsx` - This is the page component, which queries and renders a page document from your Prismic repository based on the UID.
-- `slices/*/index.tsx` - Each Slice in your project has an index.tsx file that renders the Slice component. Edit this file to customize your Slices.
-
-These are important files that you should leave as-is:
-
-- `app/api/exit-preview/route.ts` - Do not edit or delete this file. This is the API endpoint to close a Prismic preview session.
-- `app/api/preview/route.ts` - Do not edit or delete this file. This is the API endpoint to launch a Prismic preview session.
-- `app/slice-simulator/page.tsx` - Do not edit or delete this file. This file simulates your Slice components in development.
-- `slices/` - This directory contains Slice components, which are generated programmatically by Slice Machine. To customize a Slice template, you can edit the Slice's index.tsx file. To add Slices, delete Slices, or edit Slice models, use Slice Machine (more info below).
-
-Learn more about how to edit your components with [Fetch Data in Next.js](https://prismic.io/docs/technologies/fetch-data-nextjs) and [Template Content in Next.js](https://prismic.io/docs/technologies/template-content-nextjs).
-
-Learn more about how to use [TypeScript with Prismic](https://prismic.io/docs/typescript-nextjs).
-
-### Deploy to the web
-
-To put your project online, see [Deploy your Next.js App](https://prismic.io/docs/technologies/deploy-nextjs).
-
-### Edit content models with Slice Machine
-
-This project includes an application called Slice Machine, which generates models for your Custom Types and Slices. Slice Machine stores the models locally in your codebase, so you can save and version them. It also syncs your models to Prismic. To learn how to use Slice Machine, read [Model Content in Next.js](https://prismic.io/docs/technologies/model-content-nextjs).
-
-If you change or add to your Custom Types, you'll need to update your route handling to match. To learn how to do that, read [Define Paths in Next.js](https://prismic.io/docs/technologies/define-paths-nextjs).
-
-## Documentation
-
-For the official Prismic documentation, see [Prismic's guide for Next.js][prismic-docs] or the [technical references for the installed Prismic packages](https://prismic.io/docs/technologies/technical-references).
+Deploy to any Next.js-compatible host (e.g. Vercel). Set the same environment
+variables from [step 2](#2-configure-environment-variables) in your hosting
+provider, then build with `npm run build`.
 
 ## License
 
-```
-Copyright 2013-2022 Prismic <contact@prismic.io> (https://prismic.io)
+MIT — see [`package.json`](package.json).
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
-
-[prismic]: https://prismic.io/
-[prismic-docs]: https://prismic.io/docs/technologies/nextjs
-[prismic-sign-up]: https://prismic.io/dashboard/signup
 [nextjs]: https://nextjs.org/
-[live-demo]: https://nextjs-starter-prismic-minimal.vercel.app/
+[contentful]: https://www.contentful.com/
+[sendgrid]: https://sendgrid.com/
