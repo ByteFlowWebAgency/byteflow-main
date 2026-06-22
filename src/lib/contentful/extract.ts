@@ -33,6 +33,7 @@ export interface CardFields {
   companyName?: string;
   thumbnail?: AssetLike;
   url?: string;
+  slug?: string;
 }
 
 export interface SectionFields {

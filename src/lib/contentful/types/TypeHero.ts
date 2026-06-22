@@ -52,7 +52,7 @@ export interface TypeHeroFields {
  * @type {TypeHeroSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:53:52.308Z
- * @version 17
+ * @version 19
  */
 export type TypeHeroSkeleton = EntrySkeletonType<TypeHeroFields, "hero">;
 /**
@@ -61,7 +61,7 @@ export type TypeHeroSkeleton = EntrySkeletonType<TypeHeroFields, "hero">;
  * @type {TypeHero}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:53:52.308Z
- * @version 17
+ * @version 19
  */
 export type TypeHero<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeHeroSkeleton, Modifiers, Locales>;
 

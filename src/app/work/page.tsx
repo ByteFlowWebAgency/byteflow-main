@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import ScrollReveal from '@/components/ScrollReveal/ScrollReveal';
 import styles from './page.module.css';
 import { getPage } from '@/lib/contentful/queries';
@@ -26,6 +27,7 @@ export default async function WorkPage() {
     body: c.description ?? '',
     src: assetUrl(c.thumbnail),
     url: c.url,
+    slug: c.slug,
   }));
 
   return (
@@ -87,6 +89,15 @@ export default async function WorkPage() {
                   <h2 className={styles.projectTitle}>{p.title}</h2>
                   <p className={styles.projectMeta}>{p.meta}</p>
                   <p className={styles.projectBody}>{p.body}</p>
+                  {p.slug && (
+                    <Link
+                      href={`/work/case-studies/${p.slug}`}
+                      className={styles.readMore}
+                    >
+                      Read more
+                      <span className={styles.readMoreArrow} aria-hidden>→</span>
+                    </Link>
+                  )}
                 </div>
               </div>
             </ScrollReveal>

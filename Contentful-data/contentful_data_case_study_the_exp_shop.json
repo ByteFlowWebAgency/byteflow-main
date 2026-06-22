@@ -1,0 +1,91 @@
+{
+  "metadata": {
+    "tags": [],
+    "concepts": []
+  },
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "l4ua62z6xa9f"
+      }
+    },
+    "id": "7mRiYXL2KNqL1XYhQxvisM",
+    "type": "Entry",
+    "createdAt": "2026-06-13T02:10:29.259Z",
+    "updatedAt": "2026-06-22T22:57:31.253Z",
+    "environment": {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "publishedVersion": 39,
+    "revision": 5,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "caseStudy"
+      }
+    },
+    "locale": "en-US"
+  },
+  "fields": {
+    "name": "Work Page 2nd Section | Case Study 2",
+    "eyebrow": "Hair & Salon",
+    "companyName": "The Experience Barber & Beauty Shop",
+    "tagline": "SEO optimized website",
+    "description": "Full-stack application for The Experience Barber & Beauty Shop in downtown Akron, Ohio. Kitted with Google Reviews, optimized SEO and Google Business Profile Setup.",
+    "thumbnail": {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "l4ua62z6xa9f"
+          }
+        },
+        "id": "1vAvZxnX23Rq3negNozF9h",
+        "type": "Asset",
+        "createdAt": "2026-06-13T02:10:21.493Z",
+        "updatedAt": "2026-06-13T02:10:21.493Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 1,
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "The Experience Barber & Beauty Shop Homepage",
+        "description": "",
+        "file": {
+          "url": "//images.ctfassets.net/l4ua62z6xa9f/1vAvZxnX23Rq3negNozF9h/e91967501dc44e57aa2f594a75df4199/The-experience-barber-and-beauty-shop-homepage.png",
+          "details": {
+            "size": 1500699,
+            "image": {
+              "width": 1688,
+              "height": 775
+            }
+          },
+          "fileName": "The-experience-barber-and-beauty-shop-homepage.png",
+          "contentType": "image/png"
+        }
+      }
+    },
+    "url": "https://www.theexpshop.com",
+    "slug": "the-experience-barber-and-beauty-shop",
+    "body": "# The Experience Barber & Beauty Shop: Local Web Presence and SEO Growth\n\n## Overview\n\nThe Experience Barber & Beauty Shop is an Akron, Ohio-based barbershop and beauty salon serving the local community out of their location on East Mill Street in downtown Akron. They came to BYTEFLOW Solutions looking for two things: a professional web presence that reflected the quality of their shop, and a strategy to make sure people in the area could actually find them.\n\nBYTEFLOW delivered both — a custom-built website and an ongoing local SEO retainer focused on getting The Experience in front of Akron residents searching for barbers and beauty services in their area.\n\n---\n\n## The Problem\n\nThe Experience had built a strong reputation through word of mouth and a loyal customer base, but their digital footprint didn't reflect the quality of the shop. Without a professional website or a structured local SEO presence, they were invisible to the growing number of potential customers who start their search online — and leaving real business on the table as a result.\n\nThe opportunity was clear: build a web presence that matched the shop's reputation and make sure it showed up when and where it mattered most.\n\n---\n\n## The Solution\n\nBYTEFLOW approached The Experience engagement in two stages that work together as a complete local marketing foundation.\n\n### The Website\n\nBYTEFLOW designed and developed a custom website for The Experience that gives the shop a professional digital home. The site showcases the barbers and stylists, highlights services, and makes it easy for visitors to find the shop's location, hours, and contact information. The design reflects the culture and character of the shop — not a generic template, but a site that actually feels like The Experience.\n\n### Local SEO Retainer\n\nThe website alone isn't enough if nobody finds it. BYTEFLOW manages an ongoing local SEO retainer for The Experience focused on building and maintaining the search visibility that drives real foot traffic.\n\nThe retainer covers the full picture of local search — optimizing and maintaining their Google Business Profile, building citation and directory presence across the web, tracking local keyword rankings, monitoring reviews, and executing a month-by-month strategy designed to move The Experience up in local search results for the terms Akron residents are actually searching.\n\nThe goal is simple: when someone in Akron searches for a barber, The Experience should be one of the first names they see.\n\n---\n\n## The Engagement\n\n**Type:** Website design and development + ongoing local SEO retainer\n**Location:** Akron, Ohio\n**Focus:** Local search visibility and digital presence\n\nByteFlow treats The Experience as a long-term partner, not a one-time project. The retainer model means the strategy evolves month over month — tracking what's working, adjusting what isn't, and continuously building the kind of local search authority that compounds over time.\n\n---\n\n## Outcome\n\nThe Experience now has a professional web presence that reflects the quality of the shop and a dedicated local SEO strategy working in the background every month. ByteFlow continues to manage and grow their local search footprint as an ongoing partner — building the kind of digital foundation that turns online searches into chairs filled."
+  }
+}

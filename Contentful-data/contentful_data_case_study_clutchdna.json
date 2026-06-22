@@ -1,0 +1,91 @@
+{
+  "metadata": {
+    "tags": [],
+    "concepts": []
+  },
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "l4ua62z6xa9f"
+      }
+    },
+    "id": "4TD63G1OYDpoKVefIQmrDf",
+    "type": "Entry",
+    "createdAt": "2026-06-13T02:04:06.699Z",
+    "updatedAt": "2026-06-22T22:58:01.896Z",
+    "environment": {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "publishedVersion": 37,
+    "revision": 5,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "caseStudy"
+      }
+    },
+    "locale": "en-US"
+  },
+  "fields": {
+    "name": "Work Page 2nd Section | Case Study 1",
+    "eyebrow": "EDUCATION",
+    "companyName": "ClutchDNA",
+    "tagline": "S.E.L Curriculum platform",
+    "description": "Architected a full-stack application for the ClutchDNA S.E.L Curriculum platform. Kitted with payment infrastructure and user/organization onboarding to lesson plans",
+    "thumbnail": {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "l4ua62z6xa9f"
+          }
+        },
+        "id": "38FXJOVSh6JpF7b3duuGu9",
+        "type": "Asset",
+        "createdAt": "2026-06-13T02:03:50.560Z",
+        "updatedAt": "2026-06-13T02:03:50.560Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 6,
+        "revision": 1,
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "Clutch DNA Home Page Screenshot",
+        "description": "Clutch DNA Homepage",
+        "file": {
+          "url": "//images.ctfassets.net/l4ua62z6xa9f/38FXJOVSh6JpF7b3duuGu9/452581e107c062cf4b30352b0aa7dc10/ClutchDNA.webp",
+          "details": {
+            "size": 52690,
+            "image": {
+              "width": 1200,
+              "height": 595
+            }
+          },
+          "fileName": "ClutchDNA.webp",
+          "contentType": "image/webp"
+        }
+      }
+    },
+    "url": "https://www.clutchdna.com/",
+    "slug": "clutchdna",
+    "body": "# ClutchDNA: A Sports-Based SEL Curriculum Platform\n\n## Overview\n\nClutchDNA is a Social-Emotional Learning platform that uses sports as the vehicle for teaching. The idea is straightforward — students who check out during traditional classroom instruction often re-engage the moment sports enter the conversation. ClutchDNA meets them there, using the language, stories, and culture of athletics to deliver structured SEL curriculum that actually lands.\n\nThe platform gives educators, schools, and youth organizations a digital home for sports-based SEL content. Modules and lessons draw on real athletic scenarios and the competitive experience to teach self-awareness, emotional regulation, teamwork, resilience, and responsible decision-making. Sports aren't the subject. They're the hook that makes the subject stick.\n\nBYTEFLOW Solutions partnered with ClutchDNA founder Kenneth Smith to design and build the complete platform over a four-month engagement — from concept to production launch.\n\n---\n\n## The Problem\n\nTraditional SEL curriculum has a reach problem. The frameworks are solid and the research is strong, but the delivery often fails to connect with students who aren't already academically engaged. The students who need SEL the most are frequently the ones least reached by worksheets and reflection journals.\n\nKenneth recognized that sports naturally create context for every core SEL competency. Handling a loss is emotional regulation. Playing through conflict with a teammate is relationship skills in real time. The competencies are already present in athletic experience — they just needed a curriculum framework that speaks that language and a platform to deliver it at scale.\n\n---\n\n## The Solution\n\nBYTEFLOW built ClutchDNA as a full-featured web platform with everything Kenneth needed to bring the concept to life and grow it into a sustainable business:\n\n- A structured curriculum library of SEL modules and lessons, each framed through a sports lens and fully managed by Kenneth through a content management system — no developer required\n- An organization-based access model that allows schools and youth programs to purchase seats and distribute access to their members\n- Progress tracking so educators and org administrators can see how their students and teams are engaging with the curriculum\n- A clean, public-facing marketing experience that communicates the ClutchDNA mission to prospective partners and organizations\n\nThe platform was built to scale. Adding new organizations, new curriculum content, or new seat tiers requires no engineering work — Kenneth runs the day-to-day entirely on his own.\n\n---\n\n## The Engagement\n\n**Duration:** 4 months\n**Type:** Full-stack design and development\n**From:** Concept to production launch\n\nThe engagement ran in three phases. The first focused on planning — content structure, user flows, and platform architecture — with Kenneth directly involved so the editorial experience matched how he thinks about organizing curriculum. The middle phase was the full platform build, with Kenneth reviewing work in progress throughout via live preview deployments. The final stretch was QA, content population, and launch preparation. Kenneth authored the initial curriculum library entirely in the CMS on his own — the clearest sign the platform delivered on its promise of editorial independence.\n\n---\n\n## Outcome\n\nClutchDNA launched on schedule at the end of month four. Kenneth went from concept to a fully operational, production-deployed platform with paying organizational customers — built on an architecture designed to grow with the business without requiring ongoing developer involvement.\n\nByteFlow delivered ClutchDNA as a complete, handoff-ready product: designed, built, and made for a founder to run independently at scale."
+  }
+}
