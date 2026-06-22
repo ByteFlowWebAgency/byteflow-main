@@ -49,6 +49,18 @@ export interface TypeCaseStudyFields {
      * @localized false
      */
     url?: EntryFieldTypes.Symbol;
+    /**
+     * Field type definition for field 'slug' (Slug)
+     * @name Slug
+     * @localized false
+     */
+    slug?: EntryFieldTypes.Symbol;
+    /**
+     * Field type definition for field 'body' (Body)
+     * @name Body
+     * @localized false
+     */
+    body?: EntryFieldTypes.Text;
 }
 
 /**
@@ -57,7 +69,7 @@ export interface TypeCaseStudyFields {
  * @type {TypeCaseStudySkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:16:23.782Z
- * @version 7
+ * @version 19
  */
 export type TypeCaseStudySkeleton = EntrySkeletonType<TypeCaseStudyFields, "caseStudy">;
 /**
@@ -66,7 +78,7 @@ export type TypeCaseStudySkeleton = EntrySkeletonType<TypeCaseStudyFields, "case
  * @type {TypeCaseStudy}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:16:23.782Z
- * @version 7
+ * @version 19
  */
 export type TypeCaseStudy<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeCaseStudySkeleton, Modifiers, Locales>;
 

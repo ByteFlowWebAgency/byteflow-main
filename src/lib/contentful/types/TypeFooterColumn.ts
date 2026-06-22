@@ -34,7 +34,7 @@ export interface TypeFooterColumnFields {
  * @type {TypeFooterColumnSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:50:59.043Z
- * @version 3
+ * @version 5
  */
 export type TypeFooterColumnSkeleton = EntrySkeletonType<TypeFooterColumnFields, "footerColumn">;
 /**
@@ -43,7 +43,7 @@ export type TypeFooterColumnSkeleton = EntrySkeletonType<TypeFooterColumnFields,
  * @type {TypeFooterColumn}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:50:59.043Z
- * @version 3
+ * @version 5
  */
 export type TypeFooterColumn<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeFooterColumnSkeleton, Modifiers, Locales>;
 

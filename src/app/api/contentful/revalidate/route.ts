@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 // nested entry (a feature card, CTA, header, or footer) that isn't itself a page, and
 // header/footer live in the shared root layout — so any change refreshes the whole set
 // rather than trying to map a nested entry back to a single page.
-const PATHS = ["/", "/about", "/services", "/work", "/contact"];
+const PATHS = ["/", "/about", "/services", "/work", "/work/case-studies", "/contact"];
 
 export async function POST(req: NextRequest) {
   const secret = process.env.CONTENTFUL_REVALIDATE_SECRET;

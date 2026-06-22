@@ -69,7 +69,7 @@ export interface TypeSeoFields {
  * @type {TypeSeoSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:41:48.777Z
- * @version 1
+ * @version 3
  */
 export type TypeSeoSkeleton = EntrySkeletonType<TypeSeoFields, "seo">;
 /**
@@ -78,7 +78,7 @@ export type TypeSeoSkeleton = EntrySkeletonType<TypeSeoFields, "seo">;
  * @type {TypeSeo}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:41:48.777Z
- * @version 1
+ * @version 3
  */
 export type TypeSeo<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeSeoSkeleton, Modifiers, Locales>;
 

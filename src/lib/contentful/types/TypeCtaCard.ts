@@ -52,7 +52,7 @@ export interface TypeCtaCardFields {
  * @type {TypeCtaCardSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:04:40.060Z
- * @version 1
+ * @version 3
  */
 export type TypeCtaCardSkeleton = EntrySkeletonType<TypeCtaCardFields, "ctaCard">;
 /**
@@ -61,7 +61,7 @@ export type TypeCtaCardSkeleton = EntrySkeletonType<TypeCtaCardFields, "ctaCard"
  * @type {TypeCtaCard}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:04:40.060Z
- * @version 1
+ * @version 3
  */
 export type TypeCtaCard<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeCtaCardSkeleton, Modifiers, Locales>;
 
