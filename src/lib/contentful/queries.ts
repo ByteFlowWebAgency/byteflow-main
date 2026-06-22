@@ -32,11 +32,20 @@ export async function getFooter() {
 }
 
 // Case studies fetched as a collection
-export async function getCaseStudies() {
+export async function getCaseStudyBySlug(slug: string) {
+  const entries = await getContentfulClient().getEntries({
+    content_type: 'caseStudy',
+    'fields.slug': slug,
+    limit: 1,
+  })
+  return entries.items[0] ?? null
+}
+
+export async function getAllCaseStudies() {
   const entries = await getContentfulClient().getEntries({
     content_type: 'caseStudy',
   })
-  return entries.items
+  return entries.items ?? null
 }
 
 // For generateStaticParams in Next.js

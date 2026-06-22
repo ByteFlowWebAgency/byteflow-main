@@ -46,7 +46,7 @@ export interface TypeFooterFields {
  * @type {TypeFooterSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:52:06.752Z
- * @version 1
+ * @version 3
  */
 export type TypeFooterSkeleton = EntrySkeletonType<TypeFooterFields, "footer">;
 /**
@@ -55,7 +55,7 @@ export type TypeFooterSkeleton = EntrySkeletonType<TypeFooterFields, "footer">;
  * @type {TypeFooter}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:52:06.752Z
- * @version 1
+ * @version 3
  */
 export type TypeFooter<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeFooterSkeleton, Modifiers, Locales>;
 

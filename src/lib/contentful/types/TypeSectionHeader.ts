@@ -39,7 +39,7 @@ export interface TypeSectionHeaderFields {
  * @type {TypeSectionHeaderSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:22:51.917Z
- * @version 1
+ * @version 3
  */
 export type TypeSectionHeaderSkeleton = EntrySkeletonType<TypeSectionHeaderFields, "sectionHeader">;
 /**
@@ -48,7 +48,7 @@ export type TypeSectionHeaderSkeleton = EntrySkeletonType<TypeSectionHeaderField
  * @type {TypeSectionHeader}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T02:22:51.917Z
- * @version 1
+ * @version 3
  */
 export type TypeSectionHeader<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeSectionHeaderSkeleton, Modifiers, Locales>;
 

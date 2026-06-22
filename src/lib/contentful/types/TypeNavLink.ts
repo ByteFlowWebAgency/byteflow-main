@@ -33,7 +33,7 @@ export interface TypeNavLinkFields {
  * @type {TypeNavLinkSkeleton}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:46:30.456Z
- * @version 1
+ * @version 3
  */
 export type TypeNavLinkSkeleton = EntrySkeletonType<TypeNavLinkFields, "navLink">;
 /**
@@ -42,7 +42,7 @@ export type TypeNavLinkSkeleton = EntrySkeletonType<TypeNavLinkFields, "navLink"
  * @type {TypeNavLink}
  * @author 5ysrXkNSKQJJcrbYtc8Yxs
  * @since 2026-06-12T01:46:30.456Z
- * @version 1
+ * @version 3
  */
 export type TypeNavLink<Modifiers extends ChainModifiers, Locales extends LocaleCode = LocaleCode> = Entry<TypeNavLinkSkeleton, Modifiers, Locales>;
 
