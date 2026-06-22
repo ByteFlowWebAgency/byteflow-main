@@ -1,0 +1,541 @@
+{
+  "metadata": {
+    "tags": [],
+    "concepts": []
+  },
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "l4ua62z6xa9f"
+      }
+    },
+    "id": "7zQwhixXIvvQEMWRo9iO5q",
+    "type": "Entry",
+    "createdAt": "2026-06-19T00:42:41.510Z",
+    "updatedAt": "2026-06-19T00:42:41.510Z",
+    "environment": {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "publishedVersion": 9,
+    "revision": 1,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "footer"
+      }
+    },
+    "locale": "en-US"
+  },
+  "fields": {
+    "name": "Footer",
+    "logo": {
+      "metadata": {
+        "tags": [],
+        "concepts": []
+      },
+      "sys": {
+        "space": {
+          "sys": {
+            "type": "Link",
+            "linkType": "Space",
+            "id": "l4ua62z6xa9f"
+          }
+        },
+        "id": "5oZPgJCocUoB4xAa1tbnct",
+        "type": "Asset",
+        "createdAt": "2026-06-19T00:38:18.576Z",
+        "updatedAt": "2026-06-19T00:38:18.576Z",
+        "environment": {
+          "sys": {
+            "id": "master",
+            "type": "Link",
+            "linkType": "Environment"
+          }
+        },
+        "publishedVersion": 5,
+        "revision": 1,
+        "locale": "en-US"
+      },
+      "fields": {
+        "title": "BYTEFLOW Logo",
+        "description": "The official logo of BYTEFLOW",
+        "file": {
+          "url": "//images.ctfassets.net/l4ua62z6xa9f/5oZPgJCocUoB4xAa1tbnct/b88b5947f8a9e04b86a76e39dd53f575/Byteflo-logo-Alpha__1_.png",
+          "details": {
+            "size": 117583,
+            "image": {
+              "width": 757,
+              "height": 742
+            }
+          },
+          "fileName": "Byteflo-logo-Alpha (1).png",
+          "contentType": "image/png"
+        }
+      }
+    },
+    "tagline": "Software engineering for teams that take shipping seriously.",
+    "columns": [
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "l4ua62z6xa9f"
+            }
+          },
+          "id": "2OXXhPBA0OjWNYmlMgE3ow",
+          "type": "Entry",
+          "createdAt": "2026-06-19T00:41:12.588Z",
+          "updatedAt": "2026-06-19T00:48:59.341Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 11,
+          "revision": 2,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "footerColumn"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "name": "Footer Column 1",
+          "title": "SERVICES",
+          "links": [
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "4Tq9aUsU1604V41w2ALDwA",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:39:45.136Z",
+                "updatedAt": "2026-06-19T00:39:45.136Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 4,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "Enterprise Software",
+                "url": "https://www.byteflow.us/services",
+                "openInNewTab": false
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "51B3yxpyJED4OPLiw26l8Y",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:40:13.159Z",
+                "updatedAt": "2026-06-19T00:40:13.159Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 3,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "Custom Development",
+                "url": "https://www.byteflow.us/services",
+                "openInNewTab": false
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "7u42zh8zr70UzYn2QtFfOu",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:40:25.223Z",
+                "updatedAt": "2026-06-19T00:40:25.223Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 2,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "AI Integration",
+                "url": "https://www.byteflow.us/services",
+                "openInNewTab": false
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "7EHTF23PrKx2Kpnae7ayZR",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:40:40.703Z",
+                "updatedAt": "2026-06-19T00:40:40.703Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 2,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "Cloud Solutions",
+                "url": "https://www.byteflow.us/services",
+                "openInNewTab": false
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "7zihlb0YYTsv1h4D0vq42D",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:40:56.598Z",
+                "updatedAt": "2026-06-19T00:40:56.598Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 3,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "SEO & Digital Growth",
+                "url": "https://www.byteflow.us/services",
+                "openInNewTab": false
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "55imUW87uZL2GWwLmfdqWt",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:41:08.906Z",
+                "updatedAt": "2026-06-19T00:41:08.906Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 2,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "Consulting",
+                "url": "https://www.byteflow.us/services",
+                "openInNewTab": false
+              }
+            }
+          ]
+        }
+      },
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "l4ua62z6xa9f"
+            }
+          },
+          "id": "30FLq1zqy6GKzBEjVUf01H",
+          "type": "Entry",
+          "createdAt": "2026-06-19T00:42:32.186Z",
+          "updatedAt": "2026-06-19T00:48:44.440Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 6,
+          "revision": 2,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "footerColumn"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "name": "Footer Column 2",
+          "title": "COMPANY",
+          "links": [
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "4bHXa0wwdoYf55x9UGUHoh",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:41:34.695Z",
+                "updatedAt": "2026-06-19T00:41:34.695Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 3,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "About",
+                "url": "https://www.byteflow.us/about",
+                "openInNewTab": false
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "7CmJepBpSfJ1vSHmeEE5Qf",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:41:51.773Z",
+                "updatedAt": "2026-06-19T00:41:51.773Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 3,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "Work",
+                "url": "https://www.byteflow.us/work",
+                "openInNewTab": false
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "4P8BHMElIphXMXe6JEGyQg",
+                "type": "Entry",
+                "createdAt": "2026-06-19T00:42:15.488Z",
+                "updatedAt": "2026-06-19T00:42:15.488Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 2,
+                "revision": 1,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "navLink"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "label": "Contact",
+                "url": "https://www.byteflow.us/contact",
+                "openInNewTab": false
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "copyrightText": "© 2026 BYTEFLOW Solutions, LLC. All rights reserved."
+  }
+}

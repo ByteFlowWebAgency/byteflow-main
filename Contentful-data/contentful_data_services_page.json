@@ -1,0 +1,621 @@
+{
+  "metadata": {
+    "tags": [],
+    "concepts": []
+  },
+  "sys": {
+    "space": {
+      "sys": {
+        "type": "Link",
+        "linkType": "Space",
+        "id": "l4ua62z6xa9f"
+      }
+    },
+    "id": "3RrLlUOOoiVWQ7oJibwwyR",
+    "type": "Entry",
+    "createdAt": "2026-06-13T00:27:22.087Z",
+    "updatedAt": "2026-06-13T00:30:39.375Z",
+    "environment": {
+      "sys": {
+        "id": "master",
+        "type": "Link",
+        "linkType": "Environment"
+      }
+    },
+    "publishedVersion": 10,
+    "revision": 2,
+    "contentType": {
+      "sys": {
+        "type": "Link",
+        "linkType": "ContentType",
+        "id": "page"
+      }
+    },
+    "locale": "en-US"
+  },
+  "fields": {
+    "name": "Services Page",
+    "slug": "services",
+    "sections": [
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "l4ua62z6xa9f"
+            }
+          },
+          "id": "1tC7j0LQI96uS1JkrrVWz7",
+          "type": "Entry",
+          "createdAt": "2026-06-13T00:15:10.603Z",
+          "updatedAt": "2026-06-13T00:28:28.869Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 6,
+          "revision": 2,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "section"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "name": "Services Page 1st Section ",
+          "header": {
+            "metadata": {
+              "tags": [],
+              "concepts": []
+            },
+            "sys": {
+              "space": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "Space",
+                  "id": "l4ua62z6xa9f"
+                }
+              },
+              "id": "5ew5ANhRLtuhBcRneV6uBl",
+              "type": "Entry",
+              "createdAt": "2026-06-13T00:14:56.505Z",
+              "updatedAt": "2026-06-13T00:28:24.549Z",
+              "environment": {
+                "sys": {
+                  "id": "master",
+                  "type": "Link",
+                  "linkType": "Environment"
+                }
+              },
+              "publishedVersion": 10,
+              "revision": 2,
+              "contentType": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "ContentType",
+                  "id": "sectionHeader"
+                }
+              },
+              "locale": "en-US"
+            },
+            "fields": {
+              "name": "Services Page 1st Section | Hero ",
+              "eyebrow": "OUR CAPABILITIES",
+              "heading": "End-to-end technology capabilities.",
+              "subText": "Comprehensive engineering across the full modern tech stack — from resilient cloud infrastructure to intelligent data systems."
+            }
+          }
+        }
+      },
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "l4ua62z6xa9f"
+            }
+          },
+          "id": "1h0IffHdDZ5erP6Po7JWyJ",
+          "type": "Entry",
+          "createdAt": "2026-06-13T00:25:20.680Z",
+          "updatedAt": "2026-06-13T00:28:40.501Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 10,
+          "revision": 2,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "section"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "name": "Services Page 2nd Section",
+          "cards": [
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "6Bd6Entjc6nBWlxUAFG4fp",
+                "type": "Entry",
+                "createdAt": "2026-06-13T00:17:03.470Z",
+                "updatedAt": "2026-06-13T00:28:52.384Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 15,
+                "revision": 2,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Services Page 2nd Section | Feature Card 1",
+                "eyebrow": "01",
+                "title": "Enterprise Software Solutions",
+                "tagline": "Architecting the backbone of your business",
+                "description": "We build scalable, custom enterprise platforms that unify your operations. Our team designs resilient architectures capable of handling massive data throughput, integrating seamlessly with your legacy systems, and providing a single source of truth across your organization.",
+                "bullets": [
+                  "Microservices Architecture",
+                  "Legacy System Modernization",
+                  "High-Volume Data Processing",
+                  "API Ecosystems"
+                ]
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "10WyND96wMF8WoPVyWFDO5",
+                "type": "Entry",
+                "createdAt": "2026-06-13T00:19:10.584Z",
+                "updatedAt": "2026-06-13T00:29:03.854Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 12,
+                "revision": 2,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Services Page 2nd Section | Feature Card 2",
+                "eyebrow": "02",
+                "title": "Custom Development",
+                "tagline": "Bespoke solutions for unique challenges",
+                "description": "Off-the-shelf software forces you to compromise. We build custom applications tailored to your exact specifications — from complex internal dashboards to customer-facing platforms. Clean, performant, and secure code, delivered through an agile methodology.",
+                "bullets": [
+                  "Full-Stack Web Development",
+                  "Progressive Web Apps",
+                  "Internal Tooling",
+                  "MVP Development"
+                ]
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "YV6WrtRGKSF7XPVk6v3iW",
+                "type": "Entry",
+                "createdAt": "2026-06-13T00:20:29.305Z",
+                "updatedAt": "2026-06-13T00:29:15.954Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 14,
+                "revision": 2,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Services Page 2nd Section | Feature Card 3",
+                "eyebrow": "03",
+                "title": "AI Integration",
+                "tagline": "Embedding intelligence into operations",
+                "description": "We integrate cutting-edge AI and ML models directly into your existing workflows. Predictive analytics for supply chain optimization, NLP for automated customer support, or custom LLM deployment — we turn data into actionable intelligence.",
+                "bullets": [
+                  "LLM Integration (GPT, Claude)",
+                  "Predictive Analytics",
+                  "Computer Vision Systems",
+                  "Process Automation"
+                ]
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "31ELBiCYfkIL4XPXnK7NXG",
+                "type": "Entry",
+                "createdAt": "2026-06-13T00:21:33.894Z",
+                "updatedAt": "2026-06-13T00:29:24.692Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 11,
+                "revision": 2,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Services Page 2nd Section | Feature Card 4",
+                "eyebrow": "04",
+                "title": "Cloud Solutions",
+                "tagline": "Resilient infrastructure at scale",
+                "description": "We design, build, and deploy cloud environments on AWS, Azure, and GCP that prioritize high availability, robust security, and cost optimization. Infrastructure as code enables rapid deployments, automated scaling, and full disaster recovery.",
+                "bullets": [
+                  "Cloud Migration Strategy",
+                  "Infrastructure as Code (Terraform)",
+                  "Kubernetes Orchestration",
+                  "Serverless Architectures"
+                ]
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "2C80H3tfOL4Q2MIFS8iy77",
+                "type": "Entry",
+                "createdAt": "2026-06-13T00:24:07.482Z",
+                "updatedAt": "2026-06-13T00:29:35.239Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 13,
+                "revision": 2,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Services Page 2nd Section | Feature Card 5",
+                "eyebrow": "05",
+                "title": "SEO & Digital Growth",
+                "tagline": "Data-driven visibility at scale",
+                "description": "Technical SEO, content architecture, and conversion optimization working in concert. We build organic visibility strategies grounded in data and tied directly to business outcomes — not vanity metrics.",
+                "bullets": [
+                  "Technical SEO Audits",
+                  "Content Architecture",
+                  "Core Web Vitals Optimization",
+                  "Conversion Rate Strategy"
+                ]
+              }
+            },
+            {
+              "metadata": {
+                "tags": [],
+                "concepts": []
+              },
+              "sys": {
+                "space": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "Space",
+                    "id": "l4ua62z6xa9f"
+                  }
+                },
+                "id": "1YsEUPk0OurbV06U8adV7x",
+                "type": "Entry",
+                "createdAt": "2026-06-13T00:25:14.533Z",
+                "updatedAt": "2026-06-13T00:29:45.259Z",
+                "environment": {
+                  "sys": {
+                    "id": "master",
+                    "type": "Link",
+                    "linkType": "Environment"
+                  }
+                },
+                "publishedVersion": 11,
+                "revision": 2,
+                "contentType": {
+                  "sys": {
+                    "type": "Link",
+                    "linkType": "ContentType",
+                    "id": "featureCard"
+                  }
+                },
+                "locale": "en-US"
+              },
+              "fields": {
+                "name": "Services Page 2nd Section | Feature Card 6",
+                "eyebrow": "06",
+                "title": "Consulting & Host Management",
+                "tagline": "Strategic advisory and always-on support",
+                "description": "We act as strategic partners providing architectural reviews, technology stack audits, and technical debt reduction strategies. Our host management teams provide 24/7 monitoring, incident response, and continuous optimization.",
+                "bullets": [
+                  "Architecture Audits",
+                  "CTO Advisory Services",
+                  "24/7 Monitoring & Alerting",
+                  "Continuous Optimization"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "metadata": {
+          "tags": [],
+          "concepts": []
+        },
+        "sys": {
+          "space": {
+            "sys": {
+              "type": "Link",
+              "linkType": "Space",
+              "id": "l4ua62z6xa9f"
+            }
+          },
+          "id": "9aQJuVO8lNOMOirz4NKcD",
+          "type": "Entry",
+          "createdAt": "2026-06-13T00:27:18.440Z",
+          "updatedAt": "2026-06-13T00:30:35.118Z",
+          "environment": {
+            "sys": {
+              "id": "master",
+              "type": "Link",
+              "linkType": "Environment"
+            }
+          },
+          "publishedVersion": 5,
+          "revision": 2,
+          "contentType": {
+            "sys": {
+              "type": "Link",
+              "linkType": "ContentType",
+              "id": "section"
+            }
+          },
+          "locale": "en-US"
+        },
+        "fields": {
+          "name": "Services Page 3rd Section",
+          "header": {
+            "metadata": {
+              "tags": [],
+              "concepts": []
+            },
+            "sys": {
+              "space": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "Space",
+                  "id": "l4ua62z6xa9f"
+                }
+              },
+              "id": "3yzDx9vTp5RRFIPCVghVmL",
+              "type": "Entry",
+              "createdAt": "2026-06-13T00:27:09.968Z",
+              "updatedAt": "2026-06-13T00:30:31.937Z",
+              "environment": {
+                "sys": {
+                  "id": "master",
+                  "type": "Link",
+                  "linkType": "Environment"
+                }
+              },
+              "publishedVersion": 8,
+              "revision": 2,
+              "contentType": {
+                "sys": {
+                  "type": "Link",
+                  "linkType": "ContentType",
+                  "id": "hero"
+                }
+              },
+              "locale": "en-US"
+            },
+            "fields": {
+              "name": "Services Page 3rd Section | Hero CTA",
+              "heading": "Ready to optimize your systems?",
+              "eyebrow": "READY TO SHIP",
+              "subText": "Contact our engineering team to discuss your architecture and see how we can help you scale.",
+              "primaryCta": {
+                "metadata": {
+                  "tags": [],
+                  "concepts": []
+                },
+                "sys": {
+                  "space": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "Space",
+                      "id": "l4ua62z6xa9f"
+                    }
+                  },
+                  "id": "4dzkqbMJa8dU5HnYS7NImg",
+                  "type": "Entry",
+                  "createdAt": "2026-06-13T00:26:29.708Z",
+                  "updatedAt": "2026-06-13T00:26:29.708Z",
+                  "environment": {
+                    "sys": {
+                      "id": "master",
+                      "type": "Link",
+                      "linkType": "Environment"
+                    }
+                  },
+                  "publishedVersion": 3,
+                  "revision": 1,
+                  "contentType": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "ContentType",
+                      "id": "navLink"
+                    }
+                  },
+                  "locale": "en-US"
+                },
+                "fields": {
+                  "label": "Request a consultation",
+                  "url": "https://www.byteflow.us/contact",
+                  "openInNewTab": false
+                }
+              },
+              "secondaryCta": {
+                "metadata": {
+                  "tags": [],
+                  "concepts": []
+                },
+                "sys": {
+                  "space": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "Space",
+                      "id": "l4ua62z6xa9f"
+                    }
+                  },
+                  "id": "64tiOea7SL8xkDTX0WmXkE",
+                  "type": "Entry",
+                  "createdAt": "2026-06-13T00:27:02.750Z",
+                  "updatedAt": "2026-06-13T00:27:02.750Z",
+                  "environment": {
+                    "sys": {
+                      "id": "master",
+                      "type": "Link",
+                      "linkType": "Environment"
+                    }
+                  },
+                  "publishedVersion": 4,
+                  "revision": 1,
+                  "contentType": {
+                    "sys": {
+                      "type": "Link",
+                      "linkType": "ContentType",
+                      "id": "navLink"
+                    }
+                  },
+                  "locale": "en-US"
+                },
+                "fields": {
+                  "label": "See our work",
+                  "url": "https://www.byteflow.us/work",
+                  "openInNewTab": false
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

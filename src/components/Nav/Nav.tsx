@@ -4,15 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Nav.module.css';
+import type { LogoData, NavLinkData } from '@/lib/contentful/props';
 
-const links = [
-  { label: 'Services', href: '/services' },
-  { label: 'Work', href: '/work' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-];
+interface NavProps {
+  logo: LogoData | null;
+  navLinks: NavLinkData[];
+  cta?: NavLinkData;
+}
 
-export default function Nav() {
+export default function Nav({ logo, navLinks, cta }: NavProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -20,28 +20,30 @@ export default function Nav() {
       <nav className={styles.nav} aria-label="Primary">
         <Link href="/" className={styles.logo} onClick={() => setOpen(false)}>
           <Image
-            src="/BYTEFLOW_LOGO.png"
-            alt="ByteFlow"
-            width={280}
-            height={56}
+            src={logo?.url ?? '/BYTEFLOW_LOGO.png'}
+            alt={logo?.alt ?? 'ByteFlow'}
+            width={logo?.width ?? 280}
+            height={logo?.height ?? 56}
             priority
             className={styles.logoImg}
           />
         </Link>
 
         <ul className={styles.links}>
-          {links.map((link) => (
-            <li key={link.href}>
-              <Link href={link.href} className={styles.link}>
+          {navLinks.map((link) => (
+            <li key={link.url}>
+              <Link href={link.url} className={styles.link}>
                 {link.label}
               </Link>
             </li>
           ))}
         </ul>
 
-        <Link href="/contact" className={styles.cta}>
-          Start a project
-        </Link>
+        {cta && (
+          <Link href={cta.url} className={styles.cta}>
+            {cta.label}
+          </Link>
+        )}
 
         <button
           className={`${styles.hamburger} ${open ? styles.hamburgerOpen : ''}`}
@@ -57,17 +59,19 @@ export default function Nav() {
       {open && (
         <div className={styles.mobileMenu}>
           <ul className={styles.mobileLinks}>
-            {links.map((link) => (
-              <li key={link.href}>
-                <Link href={link.href} onClick={() => setOpen(false)}>
+            {navLinks.map((link) => (
+              <li key={link.url}>
+                <Link href={link.url} onClick={() => setOpen(false)}>
                   {link.label}
                 </Link>
               </li>
             ))}
           </ul>
-          <Link href="/contact" className={styles.mobileCta} onClick={() => setOpen(false)}>
-            Start a project
-          </Link>
+          {cta && (
+            <Link href={cta.url} className={styles.mobileCta} onClick={() => setOpen(false)}>
+              {cta.label}
+            </Link>
+          )}
         </div>
       )}
     </>

@@ -2,33 +2,32 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import ScrollReveal from '@/components/ScrollReveal/ScrollReveal';
 import styles from './page.module.css';
-
+import { getPage } from '@/lib/contentful/queries';
+import { cardsOf, ctaFrom, headerOf, sectionsOf } from '@/lib/contentful/extract';
+import { assetUrl, linkAttrs } from '@/lib/contentful/props';
 
 export const metadata: Metadata = {
   title: 'Work',
   description: 'Enterprise case studies and portfolio — BYTEFLOW delivering measurable results across finance, healthcare, logistics and more.',
 };
 
-const projects = [
-  {
-    tag: 'Education',
-    title: 'ClutchDNA',
-    meta: 'S.E.L Curriculum platform',
-    body: 'Architected a full-stack application for the ClutchDNA S.E.L Curriculum platform. Kitted with payment infrastructure and user/organization onboarding to lesson plans',
-    src: '/Work/ClutchDNA.png',
-    url: 'https://clutchdna.com',
-  },
-  {
-    tag: 'Service',
-    title: 'Buckeye Bin Cleaning',
-    meta: '100% automated bin cleaning service bookings',
-    body: 'Full-stack application for the Buckeye Bin Cleaning service in Northeast Ohio. Kitted with payment infrastructure and client booking with Geofencing radius checking based on address',
-    src: '/Work/BuckeyeBinCleaning.png',
-    url: 'https://buckeyebincleaning.com',
-  },
-];
+export default async function WorkPage() {
+  const page = await getPage('work');
+  const sections = sectionsOf(page);
 
-export default function WorkPage() {
+  const hero = headerOf(sections[0]);
+  const cta = headerOf(sections[2]);
+  const primaryCta = ctaFrom(cta?.primaryCta);
+
+  const projects = cardsOf(sections[1]).map((c) => ({
+    tag: c.eyebrow ?? '',
+    title: c.companyName ?? '',
+    meta: c.tagline ?? '',
+    body: c.description ?? '',
+    src: assetUrl(c.thumbnail),
+    url: c.url,
+  }));
+
   return (
     <>
       <section className={styles.hero}>
@@ -37,14 +36,9 @@ export default function WorkPage() {
           <div className={`${styles.blob} ${styles.blobTwo}`} />
         </div>
         <div className={styles.inner}>
-          <p className={styles.eyebrow}>Case Studies</p>
-          <h1 className={styles.h1}>
-            Proven Engineering.<br />
-            <span className={styles.gradText}>Measurable Impact.</span>
-          </h1>
-          <p className={styles.sub}>
-            Select case studies demonstrating our ability to solve complex technical challenges at enterprise scale.
-          </p>
+          <p className={styles.eyebrow}>{hero?.eyebrow}</p>
+          <h1 className={styles.h1}>{hero?.heading}</h1>
+          <p className={styles.sub}>{hero?.subText}</p>
         </div>
       </section>
 
@@ -62,24 +56,28 @@ export default function WorkPage() {
                       className={styles.projectImgLink}
                       aria-label={`Visit ${p.title}`}
                     >
-                      <Image
-                        src={p.src}
-                        alt={p.title}
-                        fill
-                        className={styles.projectImg}
-                        sizes="(max-width: 900px) 100vw, 50vw"
-                      />
+                      {p.src && (
+                        <Image
+                          src={p.src}
+                          alt={p.title}
+                          fill
+                          className={styles.projectImg}
+                          sizes="(max-width: 900px) 100vw, 50vw"
+                        />
+                      )}
                       <div className={styles.projectImgOverlay} />
                     </a>
                   ) : (
                     <>
-                      <Image
-                        src={p.src}
-                        alt={p.title}
-                        fill
-                        className={styles.projectImg}
-                        sizes="(max-width: 900px) 100vw, 50vw"
-                      />
+                      {p.src && (
+                        <Image
+                          src={p.src}
+                          alt={p.title}
+                          fill
+                          className={styles.projectImg}
+                          sizes="(max-width: 900px) 100vw, 50vw"
+                        />
+                      )}
                       <div className={styles.projectImgOverlay} />
                     </>
                   )}
@@ -100,17 +98,15 @@ export default function WorkPage() {
         <div className={styles.ctaContainer}>
           <div className={styles.ctaOverlay} aria-hidden />
           <div className={styles.ctaContent}>
-            <p className={styles.ctaEyebrow}>READY TO SHIP</p>
-            <h2 className={styles.ctaH2}>
-              Let&apos;s Build Your <span className={styles.gradText}>Success Story.</span>
-            </h2>
-            <p className={styles.ctaPara}>
-              Bring us your hardest technical challenges. We&apos;ll bring the engineering talent to solve them.
-            </p>
-            <a href="mailto:support@byteflowsolutions.com" className={styles.btnPrimary}>
-              Start the Conversation
-              <span className={styles.arrow} aria-hidden>→</span>
-            </a>
+            <p className={styles.ctaEyebrow}>{cta?.eyebrow}</p>
+            <h2 className={styles.ctaH2}>{cta?.heading}</h2>
+            <p className={styles.ctaPara}>{cta?.subText}</p>
+            {primaryCta && (
+              <a {...linkAttrs(primaryCta)} className={styles.btnPrimary}>
+                {primaryCta.label}
+                <span className={styles.arrow} aria-hidden>→</span>
+              </a>
+            )}
           </div>
         </div>
       </section>

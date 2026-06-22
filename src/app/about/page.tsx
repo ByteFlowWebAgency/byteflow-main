@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import ScrollReveal from '@/components/ScrollReveal/ScrollReveal';
 import styles from './page.module.css';
+import { getPage } from '@/lib/contentful/queries';
+import { cardsOf, ctaFrom, headerOf, sectionsOf } from '@/lib/contentful/extract';
+import { linkAttrs } from '@/lib/contentful/props';
 
 export const metadata: Metadata = {
   title: 'About · ByteFlow Solutions',
@@ -8,57 +11,30 @@ export const metadata: Metadata = {
     'ByteFlow Solutions — senior engineering partners who embed with your team from first sketch to production.',
 };
 
-const values = [
-  {
-    title: 'Precision engineering',
-    desc: 'Clean architectures and robust codebases that stand the test of time. Quality is never negotiated.',
-  },
-  {
-    title: 'Speed to market',
-    desc: 'Agile methodologies that deliver working software to users faster — without cutting corners.',
-  },
-  {
-    title: 'Strategic partnership',
-    desc: 'We act as an extension of your engineering and leadership teams, not just a vendor.',
-  },
-  {
-    title: 'Enterprise security',
-    desc: 'Security-first development protecting your vital data assets at every layer of the stack.',
-  },
-  {
-    title: 'Pragmatic innovation',
-    desc: 'We use cutting-edge technology when it provides competitive advantage — not for novelty.',
-  },
-  {
-    title: 'Radical transparency',
-    desc: 'Open communication about risks, progress, and challenges. No surprises — just solutions.',
-  },
-];
+export default async function AboutPage() {
+  const page = await getPage('about');
+  const sections = sectionsOf(page);
 
-const approach = [
-  {
-    num: '01',
-    title: 'Embed',
-    desc: 'We join your team as senior engineering partners, learning your domain and constraints before writing a single line of code.',
-  },
-  {
-    num: '02',
-    title: 'Architect',
-    desc: 'We design robust, scalable systems that address root causes — not symptoms. Every decision is documented and defensible.',
-  },
-  {
-    num: '03',
-    title: 'Deliver',
-    desc: 'We ship production-ready software in rapid iterations, maintaining transparency throughout the entire lifecycle.',
-  },
-  {
-    num: '04',
-    title: 'Optimize',
-    desc: 'Post-launch, we monitor, measure, and continuously improve — ensuring your investment compounds over time.',
-  },
-];
+  const hero = headerOf(sections[0]);
+  const story = headerOf(sections[1]);
+  const approachHeader = headerOf(sections[2]);
+  const valuesHeader = headerOf(sections[3]);
+  const cta = headerOf(sections[4]);
+  const primaryCta = ctaFrom(cta?.primaryCta);
+  const secondaryCta = ctaFrom(cta?.secondaryCta);
 
-export default function AboutPage() {
+  const storyParagraphs = (story?.subText ?? '').split('\n\n').filter(Boolean);
+
+  const approach = cardsOf(sections[2]).map((c) => ({
+    num: c.eyebrow ?? '',
+    title: c.title ?? '',
+    desc: c.description ?? '',
+  }));
+  const values = cardsOf(sections[3]).map((c) => ({
+    title: c.title ?? '',
+    desc: c.description ?? '',
+  }));
+
   return (
     <>
       <section className={styles.hero}>
@@ -68,15 +44,9 @@ export default function AboutPage() {
         </div>
 
         <div className={styles.inner}>
-          <p className={styles.eyebrow}>OUR STORY</p>
-          <h1 className={styles.h1}>
-            Architects of the{' '}
-            <span className={styles.gradText}>digital enterprise.</span>
-          </h1>
-          <p className={styles.sub}>
-            Founded on the principle that exceptional engineering shouldn&apos;t
-            be constrained by legacy thinking or bureaucratic friction.
-          </p>
+          <p className={styles.eyebrow}>{hero?.eyebrow}</p>
+          <h1 className={styles.h1}>{hero?.heading}</h1>
+          <p className={styles.sub}>{hero?.subText}</p>
         </div>
       </section>
 
@@ -85,27 +55,13 @@ export default function AboutPage() {
           <ScrollReveal>
             <div className={styles.storyGrid}>
               <div>
-                <p className={styles.eyebrow}>THE BYTEFLOW APPROACH</p>
-                <h2 className={styles.sectionH2}>
-                  We bridge the gap between{' '}
-                  <span className={styles.gradText}>vision and execution.</span>
-                </h2>
+                <p className={styles.eyebrow}>{story?.eyebrow}</p>
+                <h2 className={styles.sectionH2}>{story?.heading}</h2>
               </div>
               <div className={styles.storyRight}>
-                <p className={styles.body}>
-                  We observed a critical gap in the technology consulting
-                  landscape: firms either offered high-level strategic advice
-                  with no implementation capability, or provided low-cost
-                  development resources that lacked enterprise architectural
-                  vision.
-                </p>
-                <p className={styles.body}>
-                  ByteFlow bridges that gap. We are a deep-tech engineering
-                  firm that embeds with our clients to solve their hardest
-                  technical challenges. Our teams don&apos;t just take orders —
-                  we challenge assumptions, design robust architectures, and
-                  deliver production code that scales.
-                </p>
+                {storyParagraphs.map((para, i) => (
+                  <p key={i} className={styles.body}>{para}</p>
+                ))}
               </div>
             </div>
           </ScrollReveal>
@@ -115,10 +71,8 @@ export default function AboutPage() {
       <section className={styles.approach}>
         <div className={styles.inner}>
           <div className={styles.sectionHeader}>
-            <p className={styles.eyebrow}>HOW WE WORK</p>
-            <h2 className={styles.sectionH2}>
-              Four stages. <span className={styles.gradText}>One outcome.</span>
-            </h2>
+            <p className={styles.eyebrow}>{approachHeader?.eyebrow}</p>
+            <h2 className={styles.sectionH2}>{approachHeader?.heading}</h2>
           </div>
 
           <div className={styles.approachGrid}>
@@ -139,10 +93,8 @@ export default function AboutPage() {
       <section className={styles.values}>
         <div className={styles.inner}>
           <div className={styles.sectionHeader}>
-            <p className={styles.eyebrow}>OUR VALUES</p>
-            <h2 className={styles.sectionH2}>
-              What drives <span className={styles.gradText}>every decision.</span>
-            </h2>
+            <p className={styles.eyebrow}>{valuesHeader?.eyebrow}</p>
+            <h2 className={styles.sectionH2}>{valuesHeader?.heading}</h2>
           </div>
 
           <div className={styles.valuesGrid}>
@@ -163,23 +115,21 @@ export default function AboutPage() {
         <div className={styles.ctaContainer}>
           <div className={styles.ctaOverlay} aria-hidden />
           <div className={styles.ctaContent}>
-            <p className={styles.ctaEyebrow}>READY TO SHIP</p>
-            <h2 className={styles.ctaH2}>
-              Looking for a strategic{' '}
-              <span className={styles.gradText}>technology partner?</span>
-            </h2>
-            <p className={styles.ctaPara}>
-              See how our engineering teams can help you overcome technical
-              debt and scale your operations.
-            </p>
+            <p className={styles.ctaEyebrow}>{cta?.eyebrow}</p>
+            <h2 className={styles.ctaH2}>{cta?.heading}</h2>
+            <p className={styles.ctaPara}>{cta?.subText}</p>
             <div className={styles.ctaActions}>
-              <a href="/contact" className={styles.btnPrimary}>
-                Get in touch
-                <span className={styles.arrow} aria-hidden>→</span>
-              </a>
-              <a href="/work" className={styles.btnGhost}>
-                See our work
-              </a>
+              {primaryCta && (
+                <a {...linkAttrs(primaryCta)} className={styles.btnPrimary}>
+                  {primaryCta.label}
+                  <span className={styles.arrow} aria-hidden>→</span>
+                </a>
+              )}
+              {secondaryCta && (
+                <a {...linkAttrs(secondaryCta)} className={styles.btnGhost}>
+                  {secondaryCta.label}
+                </a>
+              )}
             </div>
           </div>
         </div>

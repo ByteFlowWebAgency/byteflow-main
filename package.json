@@ -8,10 +8,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "generate:types": "dotenv -e .env.local -- sh -c 'cf-content-types-generator -s $CONTENTFUL_SPACE_ID -t $CONTENTFUL_PERSONAL_ACCESS_TOKEN -o src/lib/contentful/types -d -r -g -X'"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
+    "contentful": "^11.12.5",
     "next": "^15.5.12",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
@@ -20,6 +22,8 @@
     "@types/node": "^20.14.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "cf-content-types-generator": "^2.16.1",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^15.5.12",
     "prettier": "^3.3.3",

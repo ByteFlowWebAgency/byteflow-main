@@ -1,49 +1,24 @@
 import ScrollReveal from '@/components/ScrollReveal/ScrollReveal';
 import styles from './Services.module.css';
+import type { CardData } from '@/lib/contentful/props';
 
-const services = [
-  {
-    title: 'Enterprise Software',
-    desc: 'Platforms, internal tools, and mission-critical systems built to the standards your CTO actually wants.',
-  },
-  {
-    title: 'Custom Development',
-    desc: 'Bespoke web and mobile applications, designed for the workflow you have — not the one the template assumes.',
-  },
-  {
-    title: 'AI Integration',
-    desc: 'Practical LLM tooling, retrieval pipelines, and agent workflows that ship, measured, maintained, and owned by your team.',
-  },
-  {
-    title: 'Cloud Solutions',
-    desc: 'AWS and GCP architecture with sensible defaults, cost discipline, and migration paths that do not break production.',
-  },
-  {
-    title: 'SEO & Digital Growth',
-    desc: 'Technical SEO, Core Web Vitals, and content infrastructure that compounds instead of decaying on the next algorithm update.',
-  },
-  {
-    title: 'Consulting',
-    desc: 'Fractional senior engineering and architecture reviews for teams that need a steadier hand at the wheel.',
-  },
-];
+interface ServicesProps {
+  eyebrow: string;
+  heading: string;
+  lede: string;
+  services: CardData[];
+}
 
-export default function Services() {
+export default function Services({ eyebrow, heading, lede, services }: ServicesProps) {
   return (
     <section className={styles.services} id="services">
       <div className={styles.inner}>
         <div className={styles.header}>
           <div>
-            <p className={styles.eyebrow}>WHAT WE DO</p>
-            <h2 className={styles.h2}>
-              End-to-end capabilities,{' '}
-              <span className={styles.gradText}>delivered with care.</span>
-            </h2>
+            <p className={styles.eyebrow}>{eyebrow}</p>
+            <h2 className={styles.h2}>{heading}</h2>
           </div>
-          <p className={styles.lede}>
-            Six integrated practices, one senior team. We build the things
-            other agencies sub-contract.
-          </p>
+          <p className={styles.lede}>{lede}</p>
         </div>
 
         <div className={styles.grid}>
