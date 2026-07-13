@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import '@/components/internal-tools/tokens.css';
-import HomeLink from '@/components/internal-tools/HomeLink';
 import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
 import ProposalDocument from './ProposalDocument/ProposalDocument';
@@ -217,8 +216,10 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
     <div className={`bfScope ${styles.app}`}>
       <header className={styles.toolbar}>
         <div>
-          <p className={styles.eyebrow}>ByteFlow Internal</p>
-          <h1 className={styles.title}>Proposal Tool</h1>
+          <h1 className={styles.title}>Proposals</h1>
+          <p className={styles.subtitle}>
+            Branded contract proposals with a live preview and PDF export.
+          </p>
         </div>
         <div className={styles.toolbarActions}>
           {!validation.valid && (
@@ -239,12 +240,6 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           >
             {exporting ? 'Preparing PDF…' : 'Download PDF'}
           </button>
-          <HomeLink />
-          <form method="post" action="/api/internal-logout">
-            <button type="submit" className={styles.logoutButton}>
-              Log out
-            </button>
-          </form>
         </div>
       </header>
 

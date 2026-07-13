@@ -1,0 +1,180 @@
+/* The internal tools' own chrome — a self-contained app shell (header + footer) that
+   replaces the marketing Nav/Footer for everything under /internal. Uses the .bfScope
+   brand tokens (set on the shell root in the layout). */
+
+.shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bf-color-bg);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-body);
+}
+
+/* Header */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(11, 15, 31, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--bf-color-line);
+}
+
+.headerInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.wordmark {
+  font-family: var(--bf-font-display);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.3px;
+  background: var(--bf-grad-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.brandTag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-dim);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 2px 7px;
+}
+
+.brand:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: auto;
+}
+
+.navLink {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  text-decoration: none;
+  padding: 7px 13px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass);
+}
+
+.navLink:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.navLinkActive {
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border-color: var(--bf-color-line-strong);
+}
+
+.logout {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 8px 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.logout:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.logout:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+/* Content */
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Footer */
+
+.footer {
+  border-top: 1px solid var(--bf-color-line);
+  background: rgba(11, 15, 31, 0.55);
+}
+
+.footerInner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--bf-color-fg-dim);
+}
+
+.footerBrand {
+  font-weight: 600;
+  color: var(--bf-color-fg-soft);
+}
+
+@media (max-width: 720px) {
+  .headerInner {
+    padding: 10px 16px;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+
+  .nav {
+    order: 3;
+    width: 100%;
+    margin-right: 0;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .logout {
+    margin-left: auto;
+  }
+}

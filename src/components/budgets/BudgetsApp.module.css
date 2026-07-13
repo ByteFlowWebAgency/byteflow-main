@@ -2,11 +2,8 @@
    (deliberately copied per-tool — see docs/phase2/DISCOVERY.md). */
 
 .app {
-  min-height: 100vh;
-  /* Clear the site's fixed pill Nav (top: 20px + ~80px tall). */
-  padding: 128px 24px 48px;
-  background: var(--bf-color-bg);
-  color: var(--bf-color-fg);
+  flex: 1;
+  padding: 32px 24px 48px;
   font-family: var(--bf-font-body);
 }
 
@@ -39,6 +36,12 @@
   font-weight: 700;
   letter-spacing: -0.8px;
   line-height: 1.05;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: var(--bf-color-fg-soft);
 }
 
 .toolbarActions {

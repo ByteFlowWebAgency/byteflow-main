@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import '@/components/internal-tools/tokens.css';
-import HomeLink from '@/components/internal-tools/HomeLink';
 import styles from './AuditToolApp.module.css';
 import AuditForm from './AuditForm/AuditForm';
 import AuditDocument from './AuditDocument/AuditDocument';
@@ -136,8 +135,10 @@ export default function AuditToolApp() {
     <div className={`bfScope ${styles.app}`}>
       <header className={styles.toolbar}>
         <div>
-          <p className={styles.eyebrow}>ByteFlow Internal</p>
           <h1 className={styles.title}>Site Audits</h1>
+          <p className={styles.subtitle}>
+            Prospect audit reports — findings, screenshots, and a PDF to send.
+          </p>
         </div>
         <div className={styles.toolbarActions}>
           {!validation.valid && (
@@ -158,12 +159,6 @@ export default function AuditToolApp() {
           >
             {exporting ? 'Preparing PDF…' : 'Download PDF'}
           </button>
-          <HomeLink />
-          <form method="post" action="/api/internal-logout">
-            <button type="submit" className={styles.logoutButton}>
-              Log out
-            </button>
-          </form>
         </div>
       </header>
 

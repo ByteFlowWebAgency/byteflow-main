@@ -1,9 +1,6 @@
 .page {
-  min-height: 100vh;
-  /* Clear the site's fixed pill Nav. */
-  padding: 148px 24px 64px;
-  background: var(--bf-color-bg);
-  color: var(--bf-color-fg);
+  flex: 1;
+  padding: 48px 24px 64px;
   font-family: var(--bf-font-body);
 }
 
@@ -13,24 +10,7 @@
 }
 
 .header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
   margin-bottom: 28px;
-}
-
-.wordmark {
-  font-family: var(--bf-font-display);
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  background: var(--bf-grad-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  margin-bottom: 8px;
 }
 
 .heading {
@@ -41,27 +21,12 @@
   line-height: 1.05;
 }
 
-.logoutButton {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
+.subhead {
+  margin-top: 10px;
+  max-width: 560px;
+  font-size: 15px;
+  line-height: 1.5;
   color: var(--bf-color-fg-soft);
-  background: transparent;
-  border: 1px solid var(--bf-color-line-strong);
-  border-radius: 999px;
-  padding: 9px 16px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.logoutButton:hover {
-  color: var(--bf-color-fg);
-  border-color: var(--bf-color-accent-soft);
-}
-
-.logoutButton:focus-visible {
-  outline: var(--bf-focus-ring);
-  outline-offset: 1px;
 }
 
 .grid {

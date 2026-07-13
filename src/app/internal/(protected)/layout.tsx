@@ -1,11 +1,15 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/internal-tools/session';
+import '@/components/internal-tools/tokens.css';
+import InternalHeader from '@/components/internal-tools/InternalHeader';
+import InternalFooter from '@/components/internal-tools/InternalFooter';
+import shell from '@/components/internal-tools/InternalShell.module.css';
 
-// THE shared gate for everything under /internal except the login page: the (protected)
-// route group wraps the hub and every tool without touching their URLs. Defense-in-depth
-// with src/middleware.ts, which gates the same paths before rendering — this layout is
-// the backstop if the middleware matcher ever drifts.
+// THE gate + chrome for everything under /internal except the login page. The (protected)
+// route group wraps the hub and every tool: it checks the session cookie (defense in
+// depth with src/middleware.ts) and then renders the internal app shell — its own
+// header and footer, independent of the marketing site's Contentful-driven chrome.
 export default async function InternalToolsLayout({
   children,
 }: {
@@ -18,5 +22,12 @@ export default async function InternalToolsLayout({
   if (!authenticated) {
     redirect('/internal/login');
   }
-  return <>{children}</>;
+
+  return (
+    <div className={`bfScope ${shell.shell}`}>
+      <InternalHeader />
+      <div className={shell.main}>{children}</div>
+      <InternalFooter year={new Date().getFullYear()} />
+    </div>
+  );
 }

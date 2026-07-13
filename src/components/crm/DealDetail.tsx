@@ -10,6 +10,7 @@ import styles from './CrmApp.module.css';
 import { useCrm } from './CrmContext';
 import ActivityPanel from './ActivityPanel';
 import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
+import DatePicker from '@/components/internal-tools/datepicker/DatePicker';
 import { ALL_STAGES, STAGE_LABELS } from '@/lib/crm/labels';
 import { dealReferences, describeCounts } from '@/lib/crm/references';
 import { formatDisplayDate } from '@/lib/internal-tools/format';
@@ -245,12 +246,12 @@ export default function DealDetail({
                 <label htmlFor="dd-due" className={styles.label}>
                   Next step due
                 </label>
-                <input
+                <DatePicker
                   id="dd-due"
-                  className={styles.input}
-                  type="date"
                   value={draft.nextStepDue ?? ''}
-                  onChange={(e) => set({ nextStepDue: e.target.value || undefined })}
+                  onChange={(v) => set({ nextStepDue: v || undefined })}
+                  placeholder="No due date"
+                  ariaLabel="Next step due"
                 />
               </div>
 

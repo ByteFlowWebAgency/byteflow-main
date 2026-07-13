@@ -7,7 +7,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import '@/components/internal-tools/tokens.css';
-import HomeLink from '@/components/internal-tools/HomeLink';
+import MonthPicker from '@/components/internal-tools/datepicker/MonthPicker';
 import styles from './BudgetsApp.module.css';
 import BudgetDetail from './BudgetDetail';
 import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
@@ -90,11 +90,12 @@ export default function BudgetsApp() {
           <>
             <header className={styles.toolbar}>
               <div>
-                <p className={styles.eyebrow}>ByteFlow Internal</p>
                 <h1 className={styles.title}>Budgets</h1>
+                <p className={styles.subtitle}>
+                  Planned vs. actual for project and recurring budgets.
+                </p>
               </div>
               <div className={styles.toolbarActions}>
-                <HomeLink />
                 <button
                   type="button"
                   className={styles.primaryButton}
@@ -102,11 +103,6 @@ export default function BudgetsApp() {
                 >
                   New budget
                 </button>
-                <form method="post" action="/api/internal-logout">
-                  <button type="submit" className={styles.ghostButton}>
-                    Log out
-                  </button>
-                </form>
               </div>
             </header>
 
@@ -362,12 +358,11 @@ function NewBudgetDialog({
               <label htmlFor="nb-period" className={`${styles.label} ${styles.required}`}>
                 Period
               </label>
-              <input
+              <MonthPicker
                 id="nb-period"
-                className={styles.input}
-                type="month"
                 value={period}
-                onChange={(e) => setPeriod(e.target.value)}
+                onChange={setPeriod}
+                ariaLabel="Period"
               />
             </div>
           )}
@@ -457,12 +452,11 @@ function DuplicateDialog({
               <label htmlFor="dup-period" className={`${styles.label} ${styles.required}`}>
                 Period
               </label>
-              <input
+              <MonthPicker
                 id="dup-period"
-                className={styles.input}
-                type="month"
                 value={period}
-                onChange={(e) => setPeriod(e.target.value)}
+                onChange={setPeriod}
+                ariaLabel="Period"
               />
             </div>
           )}

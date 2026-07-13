@@ -2,6 +2,7 @@
 
 import styles from './AuditForm.module.css';
 import type { AuditSectionProps } from './AuditForm';
+import DatePicker from '@/components/internal-tools/datepicker/DatePicker';
 
 export default function SiteClientSection({ audit, dispatch }: AuditSectionProps) {
   return (
@@ -75,12 +76,11 @@ export default function SiteClientSection({ audit, dispatch }: AuditSectionProps
           <label htmlFor="au-date" className={styles.label}>
             Audit date
           </label>
-          <input
+          <DatePicker
             id="au-date"
-            className={styles.input}
-            type="date"
             value={audit.auditDate}
-            onChange={(e) => dispatch({ type: 'set', patch: { auditDate: e.target.value } })}
+            onChange={(v) => dispatch({ type: 'set', patch: { auditDate: v } })}
+            ariaLabel="Audit date"
           />
         </div>
 

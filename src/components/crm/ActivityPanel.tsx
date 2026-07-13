@@ -7,6 +7,7 @@
 import { useMemo, useState } from 'react';
 import styles from './CrmApp.module.css';
 import { useCrm } from './CrmContext';
+import DateTimePicker from '@/components/internal-tools/datepicker/DateTimePicker';
 import { ACTIVITY_KIND_LABELS, ACTIVITY_KINDS } from '@/lib/crm/labels';
 import type { Activity, ActivityKind } from '@/lib/crm/types';
 
@@ -106,12 +107,11 @@ export default function ActivityPanel({
           <label htmlFor="act-at" className={styles.label}>
             When
           </label>
-          <input
-            id="act-at"
-            className={styles.input}
-            type="datetime-local"
+          <DateTimePicker
+            dateId="act-at"
             value={at}
-            onChange={(e) => setAt(e.target.value)}
+            onChange={setAt}
+            ariaLabel="Activity date"
           />
         </div>
         <div className={`${styles.field} ${styles.fieldWide}`}>

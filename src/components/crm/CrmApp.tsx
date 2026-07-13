@@ -6,7 +6,6 @@
 
 import { useState } from 'react';
 import '@/components/internal-tools/tokens.css';
-import HomeLink from '@/components/internal-tools/HomeLink';
 import styles from './CrmApp.module.css';
 import { CrmProvider, useCrm } from './CrmContext';
 import PipelineBoard from './PipelineBoard';
@@ -54,11 +53,12 @@ function CrmShell() {
       <div className={styles.inner}>
         <header className={styles.toolbar}>
           <div>
-            <p className={styles.eyebrow}>ByteFlow Internal</p>
             <h1 className={styles.title}>CRM</h1>
+            <p className={styles.subtitle}>
+              Contacts, organizations, and the deal pipeline.
+            </p>
           </div>
           <div className={styles.toolbarActions}>
-            <HomeLink />
             <button
               type="button"
               className={styles.ghostButton}
@@ -76,18 +76,8 @@ function CrmShell() {
               Deals CSV
             </button>
             <BackupControls onRestored={reload} />
-            <form method="post" action="/api/internal-logout">
-              <button type="submit" className={styles.ghostButton}>
-                Log out
-              </button>
-            </form>
           </div>
         </header>
-
-        <p className={styles.hint} style={{ marginBottom: 14 }}>
-          Data lives in ByteFlow&apos;s Supabase project — an occasional JSON backup is
-          still a good habit.
-        </p>
 
         {loading ? (
           <div className={styles.stateBox} role="status">

@@ -10,22 +10,19 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-// The /internal hub — the shared entry point to the gated tools. Calm and utilitarian by
-// design: this is an internal dashboard, not a marketing surface.
+// The /internal hub — the shared entry point to the gated tools. The app shell
+// (header/footer) is provided by the (protected) layout; this page is just the landing
+// masthead plus the tool tiles.
 export default function InternalHubPage() {
   return (
-    <main className={`bfScope ${styles.page}`}>
+    <main className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <div>
-            <p className={styles.wordmark}>BYTEFLOW</p>
-            <h1 className={styles.heading}>Internal Tools</h1>
-          </div>
-          <form method="post" action="/api/internal-logout">
-            <button type="submit" className={styles.logoutButton}>
-              Log out
-            </button>
-          </form>
+          <h1 className={styles.heading}>Internal Tools</h1>
+          <p className={styles.subhead}>
+            Everything the ByteFlow team uses to run the pipeline and produce client
+            documents — in one place.
+          </p>
         </header>
 
         <div className={styles.grid}>

@@ -8,6 +8,7 @@
 import { useState } from 'react';
 import styles from './CrmApp.module.css';
 import { useCrm } from './CrmContext';
+import DatePicker from '@/components/internal-tools/datepicker/DatePicker';
 import { PIPELINE_STAGES, STAGE_LABELS } from '@/lib/crm/labels';
 import type { DealStage } from '@/lib/crm/types';
 
@@ -282,12 +283,12 @@ export default function DealForm({
             <label htmlFor="deal-due" className={styles.label}>
               Next step due
             </label>
-            <input
+            <DatePicker
               id="deal-due"
-              className={styles.input}
-              type="date"
               value={nextStepDue}
-              onChange={(e) => setNextStepDue(e.target.value)}
+              onChange={setNextStepDue}
+              placeholder="No due date"
+              ariaLabel="Next step due"
             />
           </div>
 
