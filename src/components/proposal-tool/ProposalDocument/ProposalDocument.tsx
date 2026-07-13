@@ -40,7 +40,7 @@ const ProposalDocument = forwardRef<HTMLDivElement, ProposalDocumentProps>(
       .filter(Boolean);
 
     return (
-      <div ref={ref} className={styles.document}>
+      <div ref={ref} className={styles.document} data-pdf-document>
         <DocumentHeader proposal={proposal} />
 
         <section className={styles.section} data-pdf-block>

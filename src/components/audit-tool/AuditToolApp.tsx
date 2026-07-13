@@ -5,6 +5,8 @@ import '@/components/internal-tools/tokens.css';
 import styles from './AuditToolApp.module.css';
 import AuditForm from './AuditForm/AuditForm';
 import AuditDocument from './AuditDocument/AuditDocument';
+import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
+import { CLASSIC_THEME } from '@/components/internal-tools/themes/builtInThemes';
 import {
   generateDocumentPdf,
   sanitizeFilePart,
@@ -167,7 +169,9 @@ export default function AuditToolApp() {
           <AuditForm audit={audit} dispatch={dispatch} />
         </section>
         <section className={styles.documentPane} aria-label="Audit report preview">
-          <AuditDocument ref={documentRef} audit={audit} />
+          <ThemedDocument ref={documentRef} theme={CLASSIC_THEME}>
+            <AuditDocument audit={audit} />
+          </ThemedDocument>
         </section>
       </div>
     </div>

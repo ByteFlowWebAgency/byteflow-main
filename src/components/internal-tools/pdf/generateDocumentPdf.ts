@@ -119,6 +119,13 @@ export async function generateDocumentPdf(
   clone.style.boxShadow = 'none';
   clone.style.borderRadius = '0';
   clone.style.margin = '0';
+  // The export node may be a theme wrapper around the document sheet(s); the sheets
+  // themselves are marked data-pdf-document and lose their preview chrome too.
+  clone.querySelectorAll<HTMLElement>('[data-pdf-document]').forEach((sheet) => {
+    sheet.style.boxShadow = 'none';
+    sheet.style.borderRadius = '0';
+    sheet.style.margin = '0';
+  });
   wrapper.appendChild(clone);
   document.body.appendChild(wrapper);
 

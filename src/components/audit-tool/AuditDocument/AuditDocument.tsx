@@ -21,7 +21,7 @@ const AuditDocument = forwardRef<HTMLDivElement, { audit: AuditData }>(
       .filter(Boolean);
 
     return (
-      <div ref={ref} className={styles.document}>
+      <div ref={ref} className={styles.document} data-pdf-document>
         <header className={styles.masthead} data-pdf-block>
           <div className={styles.mastheadTop}>
             {/* unoptimized: the PDF capture needs the raw same-origin asset URL */}

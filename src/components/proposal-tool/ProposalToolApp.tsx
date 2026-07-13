@@ -5,6 +5,8 @@ import '@/components/internal-tools/tokens.css';
 import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
 import ProposalDocument from './ProposalDocument/ProposalDocument';
+import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
+import { CLASSIC_THEME } from '@/components/internal-tools/themes/builtInThemes';
 import {
   generateDocumentPdf,
   sanitizeFilePart,
@@ -253,7 +255,9 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           />
         </section>
         <section className={styles.documentPane} aria-label="Proposal preview">
-          <ProposalDocument ref={documentRef} proposal={proposal} totals={totals} />
+          <ThemedDocument ref={documentRef} theme={CLASSIC_THEME}>
+            <ProposalDocument proposal={proposal} totals={totals} />
+          </ThemedDocument>
         </section>
       </div>
     </div>

@@ -141,7 +141,8 @@
 .recsCallout {
   border: 1px solid var(--bf-paper-line-strong);
   border-left: 4px solid transparent;
-  border-image: linear-gradient(180deg, #6366f1, #06b6d4) 1;
+  /* Themeable via --bf-grad-callout; the fallback is the pre-theme literal, unchanged. */
+  border-image: var(--bf-grad-callout, linear-gradient(180deg, #6366f1, #06b6d4)) 1;
   background: var(--bf-paper-glass);
   padding: 18px 20px;
 }
