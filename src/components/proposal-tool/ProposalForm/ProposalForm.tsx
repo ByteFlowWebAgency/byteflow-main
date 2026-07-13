@@ -2,6 +2,7 @@
 
 import type { Dispatch } from 'react';
 import styles from './ProposalForm.module.css';
+import DocumentAppearanceSection from '@/components/internal-tools/themes/DocumentAppearanceSection';
 import ClientInfoSection from './ClientInfoSection';
 import ServicesSection from './ServicesSection';
 import PhasesSection from './PhasesSection';
@@ -41,6 +42,11 @@ export default function ProposalForm({
 }: ProposalFormProps) {
   return (
     <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+      <DocumentAppearanceSection
+        idPrefix="pt"
+        themeId={proposal.themeId}
+        onThemeChange={(themeId) => dispatch({ type: 'setTheme', themeId })}
+      />
       <ClientInfoSection proposal={proposal} dispatch={dispatch} />
       <ServicesSection
         proposal={proposal}

@@ -66,5 +66,7 @@ export function createDefaultProposal(): ProposalData {
     paymentTerms: '',
     proposalValidDays: DEFAULT_VALID_DAYS,
     notes: '',
+    themeId: 'classic',
+    includeCoverPage: true,
   };
 }

@@ -31,6 +31,18 @@ function lighten(hex: string, amount: number): string {
 }
 
 /**
+ * True when a hex color reads as "dark" (WCAG relative luminance below 0.35) — used to
+ * pick logo and cover treatments that stay legible on dark paper.
+ */
+export function isDarkColor(hex: string): boolean {
+  const [r, g, b] = hexToRgb(hex).map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.35;
+}
+
+/**
  * The document components read exactly these custom properties (inventory in
  * docs/phase3/DISCOVERY.md). Pinning all of them here also insulates document previews
  * and PDF exports from anything that changes variables on the surrounding chrome.

@@ -6,7 +6,8 @@ import styles from './AuditToolApp.module.css';
 import AuditForm from './AuditForm/AuditForm';
 import AuditDocument from './AuditDocument/AuditDocument';
 import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
-import { CLASSIC_THEME } from '@/components/internal-tools/themes/builtInThemes';
+import { CLASSIC_THEME, getBuiltInTheme } from '@/components/internal-tools/themes/builtInThemes';
+import { useCustomThemes } from '@/components/internal-tools/themes/themeStorage';
 import {
   generateDocumentPdf,
   sanitizeFilePart,
@@ -32,7 +33,9 @@ export type AuditAction =
   | { type: 'removeFinding'; id: string }
   | { type: 'addRecommendation' }
   | { type: 'updateRecommendation'; index: number; value: string }
-  | { type: 'removeRecommendation'; index: number };
+  | { type: 'removeRecommendation'; index: number }
+  | { type: 'setTheme'; themeId: string }
+  | { type: 'setIncludeCoverPage'; include: boolean };
 
 function reducer(audit: AuditData, action: AuditAction): AuditData {
   switch (action.type) {
@@ -88,6 +91,10 @@ function reducer(audit: AuditData, action: AuditAction): AuditData {
         ...audit,
         topRecommendations: audit.topRecommendations.filter((_, i) => i !== action.index),
       };
+    case 'setTheme':
+      return { ...audit, themeId: action.themeId };
+    case 'setIncludeCoverPage':
+      return { ...audit, includeCoverPage: action.include };
   }
 }
 
@@ -113,6 +120,16 @@ export default function AuditToolApp() {
 
   const validation = useMemo(() => validateAudit(audit), [audit]);
 
+  // Deleted custom themes fall back to Classic at render time (the form shows why).
+  const customThemes = useCustomThemes();
+  const theme = useMemo(
+    () =>
+      getBuiltInTheme(audit.themeId) ??
+      customThemes.find((t) => t.id === audit.themeId) ??
+      CLASSIC_THEME,
+    [audit.themeId, customThemes],
+  );
+
   const downloadPdf = async () => {
     if (!documentRef.current || !validation.valid || exporting) return;
     setExporting(true);
@@ -125,6 +142,7 @@ export default function AuditToolApp() {
       await generateDocumentPdf(
         documentRef.current,
         `ByteFlow-Site-Audit-${namePart}-${datePart}.pdf`,
+        { backgroundColor: theme.colors.background },
       );
     } catch {
       setExportError('PDF export failed — try again, and check the console if it persists.');
@@ -169,7 +187,7 @@ export default function AuditToolApp() {
           <AuditForm audit={audit} dispatch={dispatch} />
         </section>
         <section className={styles.documentPane} aria-label="Audit report preview">
-          <ThemedDocument ref={documentRef} theme={CLASSIC_THEME}>
+          <ThemedDocument ref={documentRef} theme={theme}>
             <AuditDocument audit={audit} />
           </ThemedDocument>
         </section>

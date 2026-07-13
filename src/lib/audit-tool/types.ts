@@ -47,4 +47,8 @@ export interface AuditData {
   findings: AuditFinding[];
   /** 3–5 prioritized "if you do nothing else, do these" action items. */
   topRecommendations: string[];
+  /** Document theme id — same semantics as ProposalData.themeId. */
+  themeId: string;
+  /** Render the shared cover page as page 1 of the document. */
+  includeCoverPage: boolean;
 }

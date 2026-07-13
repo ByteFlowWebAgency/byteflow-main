@@ -23,5 +23,7 @@ export function createDefaultAudit(): AuditData {
     summary: '[One-paragraph overview of the audit: what was reviewed and the overall state of the site]',
     findings: [],
     topRecommendations: [],
+    themeId: 'classic',
+    includeCoverPage: true,
   };
 }

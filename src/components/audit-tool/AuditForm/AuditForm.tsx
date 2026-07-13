@@ -2,6 +2,7 @@
 
 import type { Dispatch } from 'react';
 import styles from './AuditForm.module.css';
+import DocumentAppearanceSection from '@/components/internal-tools/themes/DocumentAppearanceSection';
 import SiteClientSection from './SiteClientSection';
 import SummarySection from './SummarySection';
 import FindingsSection from './FindingsSection';
@@ -17,6 +18,11 @@ export interface AuditSectionProps {
 export default function AuditForm({ audit, dispatch }: AuditSectionProps) {
   return (
     <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+      <DocumentAppearanceSection
+        idPrefix="au"
+        themeId={audit.themeId}
+        onThemeChange={(themeId) => dispatch({ type: 'setTheme', themeId })}
+      />
       <SiteClientSection audit={audit} dispatch={dispatch} />
       <SummarySection audit={audit} dispatch={dispatch} />
       <FindingsSection audit={audit} dispatch={dispatch} />

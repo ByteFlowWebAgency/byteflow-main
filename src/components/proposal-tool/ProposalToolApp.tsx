@@ -6,7 +6,8 @@ import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
 import ProposalDocument from './ProposalDocument/ProposalDocument';
 import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
-import { CLASSIC_THEME } from '@/components/internal-tools/themes/builtInThemes';
+import { CLASSIC_THEME, getBuiltInTheme } from '@/components/internal-tools/themes/builtInThemes';
+import { useCustomThemes } from '@/components/internal-tools/themes/themeStorage';
 import {
   generateDocumentPdf,
   sanitizeFilePart,
@@ -46,7 +47,9 @@ export type ProposalAction =
   | { type: 'removeLineItem'; id: string }
   | { type: 'addDeliverable' }
   | { type: 'updateDeliverable'; index: number; value: string }
-  | { type: 'removeDeliverable'; index: number };
+  | { type: 'removeDeliverable'; index: number }
+  | { type: 'setTheme'; themeId: string }
+  | { type: 'setIncludeCoverPage'; include: boolean };
 
 const PHASE_ORDER: PhaseName[] = ['Discover', 'Build', 'Scale'];
 
@@ -169,6 +172,10 @@ function reducer(proposal: ProposalData, action: ProposalAction): ProposalData {
         ...proposal,
         deliverables: proposal.deliverables.filter((_, i) => i !== action.index),
       };
+    case 'setTheme':
+      return { ...proposal, themeId: action.themeId };
+    case 'setIncludeCoverPage':
+      return { ...proposal, includeCoverPage: action.include };
   }
 }
 
@@ -197,6 +204,16 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
   const totals = useMemo(() => calculateTotals(proposal), [proposal]);
   const validation = useMemo(() => validateProposal(proposal), [proposal]);
 
+  // Deleted custom themes fall back to Classic at render time (the form shows why).
+  const customThemes = useCustomThemes();
+  const theme = useMemo(
+    () =>
+      getBuiltInTheme(proposal.themeId) ??
+      customThemes.find((t) => t.id === proposal.themeId) ??
+      CLASSIC_THEME,
+    [proposal.themeId, customThemes],
+  );
+
   const downloadPdf = async () => {
     if (!documentRef.current || !validation.valid || exporting) return;
     setExporting(true);
@@ -206,6 +223,7 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
       await generateDocumentPdf(
         documentRef.current,
         `ByteFlow-Proposal-${sanitizeFilePart(proposal.client.clientName)}-${datePart}.pdf`,
+        { backgroundColor: theme.colors.background },
       );
     } catch {
       setExportError('PDF export failed — try again, and check the console if it persists.');
@@ -255,7 +273,7 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           />
         </section>
         <section className={styles.documentPane} aria-label="Proposal preview">
-          <ThemedDocument ref={documentRef} theme={CLASSIC_THEME}>
+          <ThemedDocument ref={documentRef} theme={theme}>
             <ProposalDocument proposal={proposal} totals={totals} />
           </ThemedDocument>
         </section>

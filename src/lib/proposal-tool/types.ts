@@ -85,4 +85,12 @@ export interface ProposalData {
   proposalValidDays: number;
   /** Free-text terms / fine print. */
   notes?: string;
+  /**
+   * Document theme id — a built-in ("classic", "dark") or a custom theme saved in the
+   * theme editor. Documents store the id, not frozen values, so editing a custom theme
+   * propagates; a deleted theme falls back to classic at render time.
+   */
+  themeId: string;
+  /** Render the shared cover page as page 1 of the document. */
+  includeCoverPage: boolean;
 }

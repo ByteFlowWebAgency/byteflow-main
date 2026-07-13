@@ -100,10 +100,21 @@ export function computeCutPositions(
  * specific document type. Layout contract: elements marked data-pdf-block are never cut
  * across pages, and data-pdf-keep-next headings are never orphaned at a page bottom.
  */
+export interface GeneratePdfOptions {
+  /**
+   * Page background — fills short pages and shows behind transparent regions. Defaults
+   * to the classic paper color; themed exports pass their theme's background so dark
+   * documents never get light strips at page bottoms.
+   */
+  backgroundColor?: string;
+}
+
 export async function generateDocumentPdf(
   documentNode: HTMLElement,
   filename: string,
+  opts: GeneratePdfOptions = {},
 ): Promise<void> {
+  const pageBackground = opts.backgroundColor ?? PAPER_BG;
   // Capture a detached clone at natural size inside an off-screen .bfScope wrapper so
   // the CSS custom properties still resolve and preview scrolling/shadows don't affect
   // the output.
@@ -130,9 +141,38 @@ export async function generateDocumentPdf(
   document.body.appendChild(wrapper);
 
   try {
+    // html2canvas ignores CSS `filter` on images (e.g. the white-logo treatment on dark
+    // themes), so bake any computed filter into the pixels first. Images without a
+    // filter — every image on the classic path — are untouched.
+    const filteredImages = Array.from(clone.querySelectorAll<HTMLImageElement>('img')).filter(
+      (img) => {
+        const { filter } = getComputedStyle(img);
+        return filter !== '' && filter !== 'none';
+      },
+    );
+    await Promise.all(
+      filteredImages.map(async (img) => {
+        try {
+          await img.decode();
+          const bake = document.createElement('canvas');
+          bake.width = img.naturalWidth;
+          bake.height = img.naturalHeight;
+          const bakeContext = bake.getContext('2d');
+          if (!bakeContext || bake.width === 0) return;
+          bakeContext.filter = getComputedStyle(img).filter;
+          bakeContext.drawImage(img, 0, 0);
+          img.src = bake.toDataURL('image/png');
+          img.style.filter = 'none';
+        } catch {
+          // Unbakeable image (undecodable, tainted): capture proceeds with the
+          // unfiltered original rather than failing the whole export.
+        }
+      }),
+    );
+
     const canvas = await html2canvas(clone, {
       scale: CAPTURE_SCALE,
-      backgroundColor: PAPER_BG,
+      backgroundColor: pageBackground,
       logging: false,
     });
 
@@ -164,8 +204,8 @@ export async function generateDocumentPdf(
 
       pageCanvas.width = canvas.width;
       pageCanvas.height = Math.round(PAGE_HEIGHT_PX * pxToCanvas);
-      // Fill the full page with paper color so short pages aren't transparent.
-      context.fillStyle = PAPER_BG;
+      // Fill the full page with the page background so short pages aren't transparent.
+      context.fillStyle = pageBackground;
       context.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
 
       // Continuation pages get a little top padding when the slice leaves room for it.
