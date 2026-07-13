@@ -1,95 +1,168 @@
-# Phase 5 — Morning Handoff (run stopped at Discovery)
+# Phase 5 — Morning Handoff (CRM + Budget Tracker)
 
-**TL;DR: Nothing was built tonight.** The Supabase *runtime* prep you did is verified good,
-but the **CLI access token on this machine belongs to an account that cannot see the
-internal-tools project**, so `supabase link` fails — and every guardrail doc says to stop
-right there rather than work around it. The fix is ~5 minutes on your side; the checklist is
-below. The repo builds exactly as you left it; the remote database was never touched; the
-marketing site and both existing tools are unchanged.
+**TL;DR: Both tools are fully built and heavily QA'd — 126 automated checks passing — but
+against a LOCAL Supabase stack, because the CLI access token on this machine cannot see
+your real project. One ~10-minute morning checklist below (fix token → `db push` → verify)
+takes it live. The remote database was never touched, and the marketing site and both
+existing tools are verified unchanged.**
 
-## What was verified GOOD (don't redo this)
+## How the night actually went
 
-- The Supabase project in `.env.local` is **live and correctly keyed**: its REST endpoint
-  returns 200 with your service-role key and 401 without. Not paused, not misconfigured.
-- `SUPABASE_DB_PASSWORD` is present in `.env.local`.
-- Your secrets were never printed, logged, or committed (only name/length/format checks).
+The run first stopped at Discovery per the guardrails: `supabase link` fails because
+`~/.supabase/access-token` (dated Jan 17) belongs to an account whose orgs
+(`nelsonbaguma`, `BYTEFLOW SOLUTIONS`, `bookcoachjojo`) don't include the project your
+`.env.local` points at. You then said **“just continue — nothing left to check, just
+start,”** so the build resumed with one strategy change: all database work ran against the
+**Supabase CLI's local stack** (Docker; sanctioned by `06-SUPABASE-CLI-WORKFLOW.md`) —
+the same Postgres + PostgREST + service-role code path the real project uses. The
+explicitly forbidden direct-connection workaround against the remote was **not** used;
+your project remains untouched, with zero migrations applied.
 
-## What was BROKEN (the fix checklist)
+## The morning checklist (in order)
 
-Work through these in order, then re-launch the phase 5 run:
-
-1. **Create a fresh personal access token from the account that owns the internal-tools
-   project** → https://supabase.com/dashboard/account/tokens
-   Why: the only token on this machine (`~/.supabase/access-token`, dated Jan 17) belongs to
-   an account whose visible orgs are `nelsonbaguma`, `BYTEFLOW SOLUTIONS`, and
-   `bookcoachjojo@gmail.com's Org` — and *none of their projects* is the one your
-   `.env.local` points at. If you created the project under a different login, make the token
-   there. (If it *is* one of those orgs and you expected access, your member role there is
-   too low to link — check org access control.)
-2. **Export the three CLI vars in the terminal you start the run from** (per
-   `SUPABASE-SETUP.md` §2 — `.env.local` alone doesn't reach the `supabase` binary):
+1. **Create a personal access token from the account that owns the project** →
+   https://supabase.com/dashboard/account/tokens (the existing token on this machine is
+   from the wrong account or an insufficient org role).
+2. In a terminal at the repo root:
    ```bash
-   export SUPABASE_ACCESS_TOKEN=<the new sbp_… token>
-   export SUPABASE_PROJECT_ID=<project ref — the 20-char id inside your SUPABASE_PROJECT_URL>
-   export SUPABASE_DB_PASSWORD=<the db password already in .env.local>
+   export SUPABASE_ACCESS_TOKEN=<new sbp_… token>
+   export SUPABASE_PROJECT_ID=<the 20-char ref inside your SUPABASE_PROJECT_URL>
+   export SUPABASE_DB_PASSWORD=<already in .env.local>
+   supabase link --project-ref "$SUPABASE_PROJECT_ID"   # must succeed now
+   supabase db push        # applies supabase/migrations/20260713123007_… (the only one)
+   supabase migration list # shows it applied on remote
+   supabase db diff --linked   # pass condition: empty diff
    ```
-3. **Add the two spec-named runtime vars to `.env.local`** (the values you already have,
-   under the names the app + `SUPABASE-SETUP.md` expect — keep your existing lines too):
-   ```
-   SUPABASE_URL=<same value as SUPABASE_PROJECT_URL>
-   SUPABASE_SERVICE_ROLE_KEY=<same value as SUPABASE_DB_SERVICE_ROLE_KEY>
-   ```
-4. **Make `supabase --version` work in that shell.** It wasn't installed tonight; I used a
-   session-temporary binary that's gone now. Easiest durable options:
-   ```bash
-   npm i -g supabase        # per SUPABASE-SETUP.md §3 (WSL)
-   # or, if npm refuses a global install of that package:
-   npx supabase --version   # runs it via npx each time — also fine
-   ```
-5. **Sanity-check before re-launching** (should take ~30 seconds; all four must pass):
-   ```bash
-   cd ~/Git/byteflow-main
-   supabase --version                          # prints a version
-   supabase link --project-ref "$SUPABASE_PROJECT_ID"   # succeeds, no privileges error
-   supabase migration list                     # shows remote state (expected: empty)
-   git branch --show-current                   # feat/internal-tools-phase5 (retry continues here)
-   ```
+   (If `supabase` isn't installed: `npm i -g supabase`, or `npx supabase …` per
+   `SUPABASE-SETUP.md` §3 — tonight's binary lived in a session-temporary scratchpad.)
+3. **Add the canonical env names to `.env.local`** (values you already have under other
+   names — keep the old lines too): `SUPABASE_URL` = your `SUPABASE_PROJECT_URL`,
+   `SUPABASE_SERVICE_ROLE_KEY` = your `SUPABASE_DB_SERVICE_ROLE_KEY`. (The server code
+   also falls back to your existing names, so this is belt-and-braces; deployment env
+   should use the canonical names per `.env.example`.)
+4. `npm run dev`, then `node docs/phase5/verify-remote.mjs` — a committed 10-check
+   round-trip proof against the real project (login, cookie-less 401s, save/get/update/
+   remove). All green = the architecture is live.
+5. Before production: set `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and real
+   `INTERNAL_TOOLS_*` values in the deployment environment.
 
-## What's already on this branch for the retry
+## What was built (5 commits on `feat/internal-tools-phase5`)
 
-- `supabase/` is already initialized (`config.toml` committed) — the retry run goes straight
-  to `link` → first migration → `db push`.
-- `docs/phase5/DISCOVERY.md` — full repo + prep findings, including one important premise
-  correction: **phases 3–4 (Theme Editor, Document Builder) do not exist in this repo** — the
-  master prompt's "all four existing tools" is actually two (Proposals, Site Audits). If
-  those were built somewhere, they never landed here; if not, the phase 5 prompt's regression
-  scope and its references to phase-3/4 storage should be corrected before the retry so the
-  agent doesn't chase ghosts.
+- **Storage layer** — `src/lib/internal-tools/storage/`: the `EntityStore<T>` adapter
+  (client impl fetches session-gated API routes; components never see fetch or
+  Supabase), server-only Supabase module (the single `@supabase/supabase-js` import —
+  the night's one new dependency), shared validation, and backup/restore. API routes:
+  `/api/crm/[entity]` (+`/[id]`) and `/api/budgets` (+`/[id]`), each checking the
+  existing session cookie (same `session.ts` the middleware uses) before any DB call.
+- **Schema as first migration** — `supabase/migrations/20260713123007_initial_crm_budget_schema.sql`.
+  ⚠️ One deliberate addition to your `schema.sql`: explicit
+  `GRANT ALL … TO service_role` + `REVOKE … FROM anon, authenticated`. On current
+  Supabase defaults (cloud and local), new tables get **no** Data-API role privileges,
+  and RLS-bypass doesn't bypass SQL GRANTs — without this block even the service-role
+  key gets "permission denied". Discovered empirically when the local stack rejected
+  reads; your `config.toml` documents the new default.
+- **CRM** at `/internal/crm` (`src/components/crm/`, `src/lib/crm/`): pipeline board
+  (default view) with per-stage columns, count/value footers, any-to-any stage select,
+  lost-reason prompt, overdue + stale-14d flags, deal search, summary strip; contacts
+  table (search/sort) with warm-intro referred-by and the referral web in both
+  directions; organizations; deal detail with stage-history timeline and activity log;
+  shared activity panel with backfillable dates; reference-counted graceful deletion;
+  CSV exports; one-click backup + validated all-or-nothing restore (covers budgets too).
+- **Budgets** at `/internal/budgets` (`src/components/budgets/`, `src/lib/budgets/`):
+  list with variance colors; duplicate with next-period suggestion (year boundary
+  verified: 2026-12 → 2027-01); spreadsheet detail with category autocomplete,
+  reorder, group-by-category subtotals, always-visible totals, percent-spent flags at
+  >90%/>100%, month-over-month strip, debounced autosave with visible retry, CSV.
+- **Shared**: `formatUsd` moved to `src/lib/internal-tools/format.ts` (the one permitted
+  prior-tool touch; both proposal import sites updated and regression-verified), one CSV
+  utility (`csv.ts`, formula-injection-safe), promoted `ConfirmDialog`, `serviceOptions`
+  helper, two new hub tiles.
+
+## QA actually performed (126 checks, all passing)
+
+1. **Storage round-trip, 30/30** — through the real API routes against live Postgres:
+   cookie-less 401 on every route shape, CRUD + upsert + bulk, physical row verification
+   in the DB, FK backstop nulling, validation rejections (bad uuid, missing fields,
+   negative amounts, orphan activities, non-JSON, unknown entity).
+2. **CRM + budgets E2E, 64/64** (headless Chromium, real dev server): the full
+   org → warm-intro contact → deal → activities → every-stage-to-won journey with stage
+   history verified; referral web both directions; overdue flag; lost-with-reason flow;
+   budget math spot-checked ($675.50/$454.25/$221.25/67%, over-budget category subtotal
+   −$10); duplicate resets actuals and suggests 2027-01; reload persistence; CSVs
+   (including `=cmd()` formula-injection escaping); backup → delete → restore with
+   stage history and activity timestamps proven byte-identical; corrupt-file restore
+   rejected all-or-nothing with nothing written; **fresh browser profile → data still
+   there** (the architecture's whole point); keyboard spot-checks.
+3. **Regression, 11/11** — Proposals (currency rendering through the moved formatUsd,
+   totals, PDF export w/ correct filename) and Site Audits (validation gating both ways,
+   "Working well" severity, PDF export) — unchanged behavior.
+4. **Error states, 6/6** — server restarted with a dead SUPABASE_URL: both tools show
+   explicit error + Retry (never an empty-but-normal board); recovery verified after
+   restoring good env.
+5. **Production mode, 15/15** — full `next build` (passes with tsc + lint clean) +
+   `next start`: public pages 200, all /internal routes redirect unauthenticated, all
+   API routes 401 cookie-less, wrong creds rejected, authed flows work.
+6. **Security greps all clean** — no `NEXT_PUBLIC_SUPABASE` variable anywhere;
+   supabase-js imported only in the server module; no localStorage, no direct fetch
+   outside the adapter in phase-5 code; service-role key in no committed file;
+   `.env.example` values empty; `supabase/seed.sql` absent.
 
 ## Decisions I made without asking
 
-- Installed the Supabase CLI (v2.109.1, official release binary) into the session scratchpad
-  to complete the prep check — `SUPABASE-SETUP.md` §3 prescribes installing it, and this left
-  no trace in the repo or globally.
-- Committed `supabase init` output (`supabase/config.toml` + its `.gitignore`) so the retry
-  doesn't repeat the step. No secrets in those files.
-- Ran two read-only probes against the project's REST root (with/without the service key) to
-  distinguish "project paused/misconfigured" from "token/account mismatch" — this is what
-  proves your runtime prep is fine and pins the failure on the CLI token alone.
-- Did **not** commit the spec files sitting untracked at the repo root
-  (`00-GUARDRAILS (4).md`, `schema (1).sql`, etc.) — they look like fresh downloads with
-  collision-suffixed names; committing them is your call. The retry run will read them
-  wherever they are.
+- **Continued past the Discovery stop** on your explicit mid-run instruction, choosing
+  the local-stack path rather than any remote workaround.
+- **Started Docker Desktop on this machine** (it was installed but not running) to make
+  the local stack possible.
+- **Added the GRANT/REVOKE block to the migration** (see above) — without it the schema
+  doesn't work on current Supabase defaults.
+- **Restore is merge-upsert by id** — it never deletes records absent from the file
+  (a stale backup can't destroy newer work); the UI says so.
+- **Deletion semantics**: deals/contacts get their JSON references nulled (so later
+  saves can't hit FK violations); activities keep a dangling reference when the deleted
+  record was their only anchor — history survives, renderers show “[deleted contact]”.
+  Editing that rare orphaned activity would surface a visible DB error; noted as a
+  limitation.
+- **New-deal form omits the "lost" stage** (a deal born lost has no pipeline meaning);
+  lost is reachable from the board/detail with the required reason.
+- `getServiceOptions()` duplicates the proposal page's small Contentful fetch (one
+  list definition, two fetch call sites) rather than touching the proposal tool beyond
+  the sanctioned formatter refactor. Folding the proposal page onto the shared helper is
+  a trivial follow-up.
+- Committed `docs/phase5/verify-remote.mjs` so the morning proof doesn't depend on my
+  session-temporary QA scripts.
 
-## Standing items (unchanged from phase 1/2 handoffs)
+## Polish list (05 §"anything else useful but simple")
 
-- `sendgrid.env` with a real-looking key is still committed; rotation + removal still urgent.
-- `.gitignore` line for it is still mangled; stale `lint.json` still present.
-- `INTERNAL_TOOLS_*` in `.env.local` are still throwaway QA strings; set real ones in
-  deployment before first production use.
+1. Pipeline summary strip — **done**. 2. Stale-deal indicator — **done**. 3. Contact
+quick-add from deal form — **done**. 4. Budget month-over-month — **done**. 5. Deal
+search — **done**. 6. Storage usage indicator — **skipped**: it references a phase-4
+documents tool that doesn't exist in this repo (see DISCOVERY.md's premise correction).
+
+## Known limitations & operational notes
+
+- **The single remaining step is the remote `db push`** — until then the tools error
+  against the real project (by design: clear error states, no silent fallback).
+- Supabase **free-tier projects pause after ~1 week idle** (one-click resume in the
+  dashboard). If the CRM ever shows its error state out of nowhere, check that first.
+- **All future schema changes must go through the CLI**: `supabase migration new …` →
+  `db push`. One dashboard schema edit desynchronizes the migration history — don't,
+  even for something small.
+- Periodic JSON backups (CRM toolbar) remain the recommended habit.
+- Single shared login; no per-user identity (Supabase Auth is the path if that changes).
+- Concurrent edits from two browsers follow last-write-wins; fine for one user.
+- Standing pre-phase-5 items: committed `sendgrid.env` key still needs rotation +
+  removal; mangled `.gitignore` line; stale `lint.json`.
+
+## Deferred ideas (unchanged roadmap + tonight's additions)
+
+Linking `document-sent` activities to actual saved proposals/audits; monthly SEO
+reports, contracts, draft emails (tiles reserved); reminders/notifications; CSV import;
+Supabase Auth for multi-user; folding the proposal page onto `getServiceOptions()`;
+shared form-CSS consolidation (three tools now copy the same patterns — the cleanup
+phase 2 anticipated).
 
 ## The one thing to check first in the morning
 
-Run the four sanity-check commands in step 5. If `supabase link` succeeds, everything else
-tonight's run needed is in place — re-launch the phase 5 master prompt on
-`feat/internal-tools-phase5` and it can go the distance.
+Run the checklist above. Steps 1–2 are the whole blocker; step 4's script re-proves
+cookie-less 401s and database persistence **against the real project** — the two checks
+that show the architecture did what it was designed to do.

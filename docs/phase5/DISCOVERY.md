@@ -3,10 +3,15 @@
 Run date: 2026-07-13 (overnight, unattended). Branch: `feat/internal-tools-phase5`, off
 `feat/internal-tools-phase2` @ `f776dc1`.
 
-**Outcome: the run stopped at this gate.** The Supabase CLI prep check failed in a way the
+**Outcome: the run stopped at this gate** — the Supabase CLI prep check failed in a way the
 guardrails explicitly designate as a stop condition (details in "Supabase prep verification"
-below and the fix checklist in `HANDOFF.md`). Nothing was built; the remote database was not
-touched; no existing code was modified.
+below). **Addendum: Tyrone then instructed mid-run to continue ("just continue … just
+start"), and the build resumed** with one strategy change: all database work ran against the
+Supabase CLI's **local stack** (Docker), which `06-SUPABASE-CLI-WORKFLOW.md` sanctions and
+which exercises the identical Postgres/PostgREST/service-role code path. The forbidden
+direct-connection workaround was not used; the remote project was never touched and still
+has no migrations applied. Everything below this paragraph records the original discovery
+findings; `HANDOFF.md` records what was subsequently built and the one remaining step.
 
 ## Repo reality vs. the master prompt
 
