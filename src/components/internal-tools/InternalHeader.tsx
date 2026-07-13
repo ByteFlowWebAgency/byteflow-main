@@ -12,6 +12,7 @@ const TOOLS = [
   { href: '/internal/audits', label: 'Site Audits' },
   { href: '/internal/crm', label: 'CRM' },
   { href: '/internal/budgets', label: 'Budgets' },
+  { href: '/internal/theme-editor', label: 'Themes' },
 ];
 
 export default function InternalHeader() {

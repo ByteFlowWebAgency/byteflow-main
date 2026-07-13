@@ -55,6 +55,13 @@ export default function InternalHubPage() {
             status="live"
           />
           <HubTile
+            title="Document Themes"
+            description="Create and manage the color and font themes proposals and audits render with — including dark covers for pitch decks."
+            monogram="Th"
+            href="/internal/theme-editor"
+            status="live"
+          />
+          <HubTile
             title="Monthly Reports"
             description="Recurring SEO and retainer reporting for active clients."
             monogram="Re"
