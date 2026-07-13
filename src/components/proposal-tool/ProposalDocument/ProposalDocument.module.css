@@ -1,0 +1,324 @@
+/*
+ * The proposal document — a light "paper" artifact per the repo's own light-mode pairing
+ * (docs/proposal-tool/DESIGN-TOKENS.md). 816px = 8.5in at 96dpi (US Letter width).
+ * Signature element: the gradient keyline (masthead bar + section kicks).
+ */
+
+.document {
+  width: 816px;
+  min-height: 1056px;
+  margin: 0 auto;
+  padding: 64px 64px 48px;
+  background: var(--bf-paper-bg);
+  color: var(--bf-paper-fg);
+  font-family: var(--bf-font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  border-radius: 4px;
+  box-shadow: 0 24px 80px -24px rgba(0, 0, 0, 0.8);
+}
+
+/* ---------- Masthead ---------- */
+
+.masthead {
+  margin-bottom: 36px;
+}
+
+.mastheadTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+.logo {
+  width: 96px;
+  height: auto;
+}
+
+.mastheadMeta {
+  text-align: right;
+}
+
+.docLabel {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--bf-color-accent);
+}
+
+.docDate {
+  font-size: 13px;
+  color: var(--bf-paper-fg-soft);
+  margin-top: 4px;
+}
+
+.docTitle {
+  font-family: var(--bf-font-display);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.8px;
+  max-width: 560px;
+  margin-bottom: 28px;
+}
+
+.byline {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.bylineLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-paper-fg-soft);
+  margin-bottom: 4px;
+}
+
+.bylineValue {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.bylineSub {
+  font-size: 13px;
+  color: var(--bf-paper-fg-muted);
+  margin-top: 2px;
+}
+
+/* Signature element — full-width gradient keyline under the masthead */
+.keyline {
+  height: 3px;
+  background: var(--bf-grad-primary);
+  border-radius: 999px;
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  margin-bottom: 34px;
+}
+
+.sectionHeading {
+  font-family: var(--bf-font-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 12px;
+  padding-top: 10px;
+  position: relative;
+}
+
+/* Signature element — the short gradient kick above each section heading */
+.sectionHeading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--bf-grad-primary);
+}
+
+.body {
+  color: var(--bf-paper-fg-muted);
+}
+
+.placeholder {
+  color: var(--bf-paper-fg-soft);
+  font-style: italic;
+}
+
+/* ---------- Phases ---------- */
+
+.phaseList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.phaseCard {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--bf-paper-glass);
+  border: 1px solid var(--bf-paper-line);
+  border-radius: 10px;
+}
+
+.phaseIndex {
+  font-family: var(--bf-font-mono);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--bf-color-accent);
+  line-height: 1.2;
+}
+
+.phaseName {
+  font-family: var(--bf-font-display);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.phaseDuration {
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--bf-paper-fg-soft);
+}
+
+/* ---------- Scope ---------- */
+
+.deliverables {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deliverable {
+  position: relative;
+  padding-left: 22px;
+  color: var(--bf-paper-fg-muted);
+}
+
+.deliverable::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 10px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--bf-color-accent);
+}
+
+/* ---------- Investment ---------- */
+
+.investment {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.investment td {
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--bf-paper-line);
+  color: var(--bf-paper-fg-muted);
+  vertical-align: top;
+}
+
+.amount {
+  text-align: right;
+  font-family: var(--bf-font-mono);
+  white-space: nowrap;
+}
+
+.perMonth {
+  color: var(--bf-paper-fg-soft);
+  font-size: 12px;
+}
+
+.groupRow td {
+  padding-top: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-paper-fg-soft);
+  border-bottom: 1px solid var(--bf-paper-line-strong);
+}
+
+.subtotalRow td {
+  font-weight: 600;
+  color: var(--bf-paper-fg);
+}
+
+.totalRow td {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--bf-paper-fg);
+  border-bottom: none;
+  border-top: 2px solid var(--bf-paper-fg);
+  padding-top: 12px;
+}
+
+.tableNote {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--bf-paper-fg-muted);
+}
+
+/* ---------- Terms ---------- */
+
+.terms {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.termRow {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 16px;
+}
+
+.termRow dt {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bf-paper-fg-soft);
+}
+
+.termRow dd {
+  font-size: 14px;
+  color: var(--bf-paper-fg-muted);
+}
+
+/* ---------- Footer ---------- */
+
+.docFooter {
+  margin-top: 44px;
+  padding-top: 16px;
+  border-top: 1px solid var(--bf-paper-line-strong);
+}
+
+.footerBrand {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.footerLine {
+  font-size: 12px;
+  color: var(--bf-paper-fg-soft);
+  margin-top: 3px;
+}
+
+/* ---------- Print (browser print of the preview; PDF export paginates itself) ---------- */
+
+@media print {
+  .document {
+    box-shadow: none;
+    border-radius: 0;
+    width: auto;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .phaseCard,
+  .investment,
+  .masthead,
+  .docFooter {
+    break-inside: avoid;
+  }
+
+  .sectionHeading {
+    break-after: avoid;
+  }
+}

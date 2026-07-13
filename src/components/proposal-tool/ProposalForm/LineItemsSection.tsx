@@ -92,6 +92,14 @@ export default function LineItemsSection({
         </p>
       )}
 
+      {proposal.pricing.model === 'retainer' &&
+        proposal.lineItems.some((i) => !i.recurring) && (
+          <p className={styles.hint}>
+            One-time items are ignored under retainer pricing — switch to hybrid to include
+            a setup component.
+          </p>
+        )}
+
       <div className={styles.runningTotal}>
         <span>
           {totals.model === 'flat' && 'Total investment'}

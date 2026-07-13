@@ -4,6 +4,7 @@ import { useEffect, useMemo, useReducer } from 'react';
 import './tokens.css';
 import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
+import ProposalDocument from './ProposalDocument/ProposalDocument';
 import { createDefaultProposal } from '@/lib/proposal-tool/defaults';
 import { calculateTotals } from '@/lib/proposal-tool/pricingMath';
 import { validateProposal } from '@/lib/proposal-tool/validate';
@@ -213,9 +214,7 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           />
         </section>
         <section className={styles.documentPane} aria-label="Proposal preview">
-          <div className={styles.documentPlaceholder}>
-            Live document preview arrives in the next build phase.
-          </div>
+          <ProposalDocument proposal={proposal} totals={totals} />
         </section>
       </div>
     </div>
