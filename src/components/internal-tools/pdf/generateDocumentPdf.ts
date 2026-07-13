@@ -18,6 +18,10 @@ const MIN_PAGE_FILL = 0.25;
 // A heading this close above a cut would be orphaned at the page bottom — move the cut
 // above the heading instead (data-pdf-keep-next elements).
 const KEEP_NEXT_GAP_PX = 56;
+// DOM offsets and canvas pixels can drift a px or two (rounding, capture scale). Cuts
+// placed at a block's top edge back off by this much so the drift lands in inter-block
+// whitespace instead of leaving a sliver of the next block on the previous page.
+const CUT_SAFETY_PX = 6;
 // Breathing room at the top of continuation pages, when the slice leaves space for it.
 const CONTINUATION_TOP_PAD_PT = 20;
 const PAPER_BG = '#f7f7fa';
@@ -77,6 +81,9 @@ export function computeCutPositions(
     const orphan = keepNext.find((k) => cut > k.top && cut < k.bottom + KEEP_NEXT_GAP_PX);
     if (orphan && orphan.top > minCut) {
       cut = orphan.top;
+    }
+    if (cut !== idealCut) {
+      cut = Math.max(minCut, cut - CUT_SAFETY_PX);
     }
     cuts.push(cut);
     pageTop = cut;

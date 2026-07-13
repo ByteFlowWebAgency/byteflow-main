@@ -60,13 +60,13 @@ function FindingCard({
           type="text"
           value={finding.title}
           placeholder="Finding title — short and specific"
-          aria-label={`Finding ${index + 1} title`}
+          aria-label={`${CATEGORY_LABELS[finding.category]} finding ${index + 1} title`}
           onChange={(e) => update({ title: e.target.value })}
         />
         <select
           className={`${styles.select} ${styles.severitySelect}`}
           value={finding.severity}
-          aria-label={`Finding ${index + 1} severity`}
+          aria-label={`${CATEGORY_LABELS[finding.category]} finding ${index + 1} severity`}
           onChange={(e) => update({ severity: e.target.value as AuditFinding['severity'] })}
         >
           {SEVERITY_ORDER.map((severity) => (
@@ -78,7 +78,7 @@ function FindingCard({
         <button
           type="button"
           className={styles.removeButton}
-          aria-label={`Remove finding ${index + 1}`}
+          aria-label={`Remove ${CATEGORY_LABELS[finding.category]} finding ${index + 1}`}
           onClick={() => dispatch({ type: 'removeFinding', id: finding.id })}
         >
           ×
@@ -124,7 +124,7 @@ function FindingCard({
           type="file"
           accept="image/*"
           className={styles.fileInput}
-          aria-label={`Finding ${index + 1} screenshot`}
+          aria-label={`${CATEGORY_LABELS[finding.category]} finding ${index + 1} screenshot`}
           onChange={async (e) => {
             const file = e.target.files?.[0];
             if (!file) return;
