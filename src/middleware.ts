@@ -10,9 +10,9 @@ export async function middleware(request: NextRequest) {
   );
 
   if (pathname.startsWith('/internal/login')) {
-    // Already signed in — skip the form and go straight to the tool.
+    // Already signed in — skip the form and go to the internal tools hub.
     if (authenticated) {
-      return NextResponse.redirect(new URL('/internal/proposal-tool', request.url));
+      return NextResponse.redirect(new URL('/internal', request.url));
     }
     return NextResponse.next();
   }

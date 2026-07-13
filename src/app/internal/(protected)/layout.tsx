@@ -2,10 +2,11 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { SESSION_COOKIE, verifySessionToken } from '@/lib/proposal-tool/session';
 
-// Defense-in-depth: the /internal middleware already gates this route, but the session
-// is re-verified here so the tool never renders without one even if the middleware
-// matcher ever drifts (07-INTEGRATION-AND-QA.md).
-export default async function ProposalToolLayout({
+// THE shared gate for everything under /internal except the login page: the (protected)
+// route group wraps the hub and every tool without touching their URLs. Defense-in-depth
+// with src/middleware.ts, which gates the same paths before rendering — this layout is
+// the backstop if the middleware matcher ever drifts.
+export default async function InternalToolsLayout({
   children,
 }: {
   children: React.ReactNode;

@@ -53,10 +53,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.redirect(loginUrl, 303);
   }
 
-  const response = NextResponse.redirect(
-    new URL('/internal/proposal-tool', request.url),
-    303,
-  );
+  // Land on the internal-tools hub — the shared entry point to the gated area.
+  const response = NextResponse.redirect(new URL('/internal', request.url), 303);
   response.cookies.set(SESSION_COOKIE, token, {
     httpOnly: true,
     secure: true,
