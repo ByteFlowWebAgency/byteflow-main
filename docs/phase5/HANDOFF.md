@@ -38,6 +38,25 @@ the same Postgres + PostgREST + service-role code path the real project uses. Th
 explicitly forbidden direct-connection workaround against the remote was **not** used;
 your project remains untouched, with zero migrations applied.
 
+## Post-handoff polish (same day, on your requests)
+
+- **Dark calendars**: native date/datetime/month pickers inside the tools now render in
+  dark mode (`color-scheme: dark` in the shared tokens.css) — the calendar icon was
+  near-invisible on the ink background and the popup opened in light mode.
+- **Branded scrollbars** on internal pages only (gradient thumb, ink track), page-level
+  scoped with `html:has(.bfScope)` so the marketing site keeps browser defaults
+  (verified: its `scrollbar-color` stays `auto`).
+- **← Home link** (to the /internal hub) in every tool toolbar — CRM, Budgets (list and
+  detail), Proposals, Audits — via a shared `HomeLink` component.
+- **/robots.txt now exists** (`src/app/robots.ts`): disallows `/internal` and `/api`.
+  A 23-point protection sweep re-verified: every internal route redirects
+  unauthenticated to login, every API route 401s cookie-less, every internal page
+  (including login) carries noindex metadata, homepage unaffected. Prior-tools
+  regression re-run after their toolbar change: 11/11.
+- Note: these landed after the last full `npm run build`; tsc + lint are clean and
+  everything is dev-verified — the next production build/deploy picks them up (stop any
+  running dev server before `npm run build`, per the known .next interference gotcha).
+
 ## The morning checklist (steps 1–2 remain useful; 3–4 are DONE, kept for reference)
 
 1. **Create a personal access token from the account that owns the project** →
