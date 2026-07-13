@@ -1,0 +1,569 @@
+/* Document Builder editor chrome. Uses the internal-tools chrome tokens (--bf-color-*),
+   NOT the paper theme tokens — those belong to the document sheets rendered inside the
+   canvas via ThemedDocument. */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 220px);
+}
+
+/* ---- top bar ---- */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+}
+.topLeft,
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.backLink {
+  color: var(--bf-color-fg-muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+.backLink:hover {
+  color: var(--bf-color-fg);
+}
+.docName {
+  background: var(--bf-color-bg);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-display);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 12px;
+  min-width: 240px;
+}
+.coverToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--bf-color-fg-muted);
+}
+.saveStatus {
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--bf-color-line);
+}
+.status_saved {
+  color: var(--bf-color-fg-soft);
+}
+.status_saving {
+  color: var(--bf-color-accent);
+}
+.status_error {
+  color: var(--bf-color-error);
+  border-color: var(--bf-color-error);
+}
+
+.primaryBtn,
+.secondaryBtn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: var(--bf-radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.primaryBtn {
+  background: var(--bf-color-accent);
+  color: #fff;
+}
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.secondaryBtn {
+  background: var(--bf-color-glass);
+  border-color: var(--bf-color-line);
+  color: var(--bf-color-fg);
+}
+
+/* ---- work area ---- */
+.workarea {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+  flex: 1;
+  min-height: 0;
+  align-items: flex-start;
+}
+
+/* ---- page rail ---- */
+.rail {
+  flex: 0 0 232px;
+  position: sticky;
+  top: 84px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  padding: 12px;
+}
+.railList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+.railItem {
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  overflow: hidden;
+  background: var(--bf-color-bg);
+}
+.railItemActive {
+  border-color: var(--bf-color-accent);
+  box-shadow: 0 0 0 1px var(--bf-color-accent);
+}
+.railItemMain {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 'num kind' 'num name';
+  gap: 0 8px;
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: var(--bf-color-fg);
+}
+.railNum {
+  grid-area: num;
+  align-self: center;
+  font-family: var(--bf-font-mono);
+  font-size: 12px;
+  color: var(--bf-color-fg-soft);
+}
+.railKind {
+  grid-area: kind;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--bf-color-accent);
+}
+.railName {
+  grid-area: name;
+  font-size: 13px;
+  color: var(--bf-color-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* Cover / section pages look distinct from content/closing at a glance. */
+.kind_cover {
+  border-left: 3px solid var(--bf-color-violet);
+}
+.kind_sectionTitle {
+  border-left: 3px solid var(--bf-color-cyan);
+}
+.kind_content {
+  border-left: 3px solid var(--bf-color-line-strong);
+}
+.kind_closing {
+  border-left: 3px solid var(--bf-color-accent-soft);
+}
+.railItemControls {
+  display: flex;
+  gap: 2px;
+  padding: 0 6px 6px;
+}
+.railItemControls button,
+.railAddButton,
+.railAddMenu button {
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  color: var(--bf-color-fg-muted);
+  border-radius: var(--bf-radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 7px;
+}
+.railItemControls button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.railDelete:not(:disabled):hover {
+  color: var(--bf-color-error);
+  border-color: var(--bf-color-error);
+}
+.railAdd {
+  position: relative;
+}
+.railAddButton {
+  width: 100%;
+  padding: 8px;
+  font-weight: 600;
+}
+.railAddMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+.railAddMenu button {
+  text-align: left;
+  padding: 8px 10px;
+}
+
+/* ---- canvas ---- */
+.canvas {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  padding: 20px;
+  background: var(--bf-color-bg);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+}
+.canvasInner {
+  display: flex;
+  justify-content: center;
+  min-width: 816px;
+}
+
+.coverDateInput {
+  background: transparent;
+  border: 1px dashed var(--bf-paper-line-strong);
+  border-radius: 4px;
+  color: var(--bf-paper-fg);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 2px 6px;
+}
+
+/* ---- block chrome ---- */
+.blockWrap {
+  position: relative;
+  border: 1px dashed transparent;
+  border-radius: 6px;
+  padding: 6px;
+  margin: -6px -6px;
+}
+.blockWrap:hover,
+.blockWrap:focus-within {
+  border-color: var(--bf-paper-line-strong);
+  background: var(--bf-paper-glass);
+}
+.blockToolbar {
+  position: absolute;
+  top: -14px;
+  right: 6px;
+  display: none;
+  gap: 2px;
+  align-items: center;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  padding: 3px;
+  z-index: 5;
+}
+.blockWrap:hover .blockToolbar,
+.blockWrap:focus-within .blockToolbar {
+  display: flex;
+}
+.blockToolbar button {
+  background: transparent;
+  border: 0;
+  color: var(--bf-color-fg-muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+.blockToolbar button:hover:not(:disabled) {
+  background: var(--bf-color-glass);
+  color: var(--bf-color-fg);
+}
+.blockToolbar button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.blockDelete:hover:not(:disabled) {
+  color: var(--bf-color-error) !important;
+}
+.settingsGroup {
+  display: inline-flex;
+  gap: 2px;
+  padding: 0 4px;
+  border-left: 1px solid var(--bf-color-line);
+  border-right: 1px solid var(--bf-color-line);
+  margin: 0 2px;
+}
+.settingOn {
+  background: var(--bf-color-accent) !important;
+  color: #fff !important;
+}
+.blockBody {
+  min-width: 0;
+}
+.spacerHint,
+.pageBreakHint {
+  text-align: center;
+  font-size: 12px;
+  color: var(--bf-paper-fg-soft);
+  border: 1px dashed var(--bf-paper-line-strong);
+  border-radius: 6px;
+  padding: 8px;
+}
+
+/* ---- plain editable ---- */
+.plainEditable {
+  outline: none;
+  cursor: text;
+  min-width: 8px;
+}
+.plainEditable:focus {
+  box-shadow: inset 0 -2px 0 var(--bf-color-accent);
+}
+.plainEditable:empty::before {
+  content: attr(data-placeholder);
+  color: var(--bf-paper-fg-soft);
+  opacity: 0.7;
+}
+
+/* ---- rich text editor ---- */
+.rte {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rteToolbar {
+  display: flex;
+  gap: 4px;
+}
+.rteToolbar button {
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  color: var(--bf-color-fg);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 8px;
+}
+.rteArea {
+  outline: none;
+  min-height: 40px;
+}
+.rteArea:focus {
+  box-shadow: 0 0 0 2px var(--bf-color-accent-soft);
+  border-radius: 4px;
+}
+
+/* ---- form-ish block editors ---- */
+.textInput,
+.numInput {
+  background: var(--bf-color-bg);
+  border: 1px solid var(--bf-color-line);
+  border-radius: 4px;
+  color: var(--bf-color-fg);
+  font-size: 13px;
+  padding: 6px 8px;
+}
+.numInput {
+  width: 110px;
+}
+.imageEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.imageControls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.miniControls,
+.miniAdd {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.miniControls button,
+.miniAdd {
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  color: var(--bf-color-fg-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 4px 10px;
+}
+.miniControls button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.kvEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.kvEditorRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 6px;
+}
+.kvEditorRow button {
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  color: var(--bf-color-fg-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0 8px;
+}
+.pricingEditor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pricingModels {
+  display: flex;
+  gap: 12px;
+}
+.pricingModel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--bf-paper-fg-muted);
+  text-transform: capitalize;
+}
+.pricingFields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  color: var(--bf-paper-fg-soft);
+}
+.pricingItems {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pricingItemsHead {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bf-paper-fg-soft);
+  margin: 4px 0 0;
+}
+.pricingItemRow {
+  display: grid;
+  grid-template-columns: 1fr 120px auto auto;
+  gap: 6px;
+  align-items: center;
+}
+.recurringLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--bf-paper-fg-muted);
+}
+.pricingItemRow button {
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  color: var(--bf-color-fg-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.pricingPreviewNote {
+  font-size: 12px;
+  color: var(--bf-paper-fg-soft);
+}
+
+/* ---- insert control ---- */
+.insert {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 2px 0;
+}
+.insertButton {
+  background: transparent;
+  border: 1px dashed var(--bf-paper-line-strong);
+  color: var(--bf-paper-fg-soft);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 12px;
+  opacity: 0.5;
+}
+.insertButton:hover {
+  opacity: 1;
+  border-color: var(--bf-color-accent);
+  color: var(--bf-color-accent);
+}
+.insertMenu {
+  position: absolute;
+  top: 100%;
+  z-index: 15;
+  margin-top: 4px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  padding: 6px;
+  min-width: 260px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+.insertMenuItem {
+  background: transparent;
+  border: 0;
+  color: var(--bf-color-fg);
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.insertMenuItem:hover {
+  background: var(--bf-color-glass);
+}
+
+/* ---- export host + not found ---- */
+.exportHost {
+  position: fixed;
+  left: -10000px;
+  top: 0;
+  width: 816px;
+  pointer-events: none;
+}
+.notFound {
+  padding: 48px 20px;
+  text-align: center;
+  color: var(--bf-color-fg-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
