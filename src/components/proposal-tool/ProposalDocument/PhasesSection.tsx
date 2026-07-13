@@ -6,7 +6,7 @@ import type { EngagementPhase } from '@/lib/proposal-tool/types';
 export default function PhasesSection({ phases }: { phases: EngagementPhase[] }) {
   return (
     <section className={styles.section}>
-      <div data-pdf-block>
+      <div data-pdf-block data-pdf-keep-next>
         <h2 className={styles.sectionHeading}>How we&rsquo;ll work together</h2>
       </div>
       <div className={styles.phaseList}>

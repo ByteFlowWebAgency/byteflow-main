@@ -8,7 +8,7 @@ function ItemRows({ items, perMonth }: { items: LineItem[]; perMonth: boolean })
   return (
     <>
       {items.map((item) => (
-        <tr key={item.id}>
+        <tr key={item.id} data-pdf-block>
           <td>{item.description.trim() || '[Line item]'}</td>
           <td className={styles.amount}>
             {formatUsd(item.amount)}
@@ -32,19 +32,21 @@ export default function InvestmentTable({
   const recurringItems = proposal.lineItems.filter((i) => i.recurring);
 
   return (
-    <section className={styles.section} data-pdf-block>
-      <h2 className={styles.sectionHeading}>Investment</h2>
+    <section className={styles.section}>
+      <h2 className={styles.sectionHeading} data-pdf-keep-next>
+        Investment
+      </h2>
 
       <table className={styles.investment}>
         <tbody>
           {pricing.model === 'flat' && (
             <>
-              <tr>
+              <tr data-pdf-block>
                 <td>Project fee</td>
                 <td className={styles.amount}>{formatUsd(pricing.totalAmount)}</td>
               </tr>
               <ItemRows items={oneTimeItems} perMonth={false} />
-              <tr className={styles.totalRow}>
+              <tr className={styles.totalRow} data-pdf-block>
                 <td>Total investment</td>
                 <td className={styles.amount}>{formatUsd(totals.contractTotal)}</td>
               </tr>
@@ -53,7 +55,7 @@ export default function InvestmentTable({
 
           {pricing.model === 'retainer' && (
             <>
-              <tr>
+              <tr data-pdf-block>
                 <td>Monthly retainer</td>
                 <td className={styles.amount}>
                   {formatUsd(pricing.monthlyAmount)}
@@ -61,20 +63,20 @@ export default function InvestmentTable({
                 </td>
               </tr>
               <ItemRows items={recurringItems} perMonth />
-              <tr className={styles.subtotalRow}>
+              <tr className={styles.subtotalRow} data-pdf-block>
                 <td>Monthly investment</td>
                 <td className={styles.amount}>
                   {formatUsd(totals.monthlyTotal ?? 0)}
                   <span className={styles.perMonth}>/mo</span>
                 </td>
               </tr>
-              <tr>
+              <tr data-pdf-block>
                 <td>Term</td>
                 <td className={styles.amount}>
                   {pricing.termMonths} {pricing.termMonths === 1 ? 'month' : 'months'}
                 </td>
               </tr>
-              <tr className={styles.totalRow}>
+              <tr className={styles.totalRow} data-pdf-block>
                 <td>Total contract value</td>
                 <td className={styles.amount}>{formatUsd(totals.contractTotal)}</td>
               </tr>
@@ -83,23 +85,23 @@ export default function InvestmentTable({
 
           {pricing.model === 'hybrid' && (
             <>
-              <tr className={styles.groupRow}>
+              <tr className={styles.groupRow} data-pdf-block data-pdf-keep-next>
                 <td colSpan={2}>One-time</td>
               </tr>
-              <tr>
+              <tr data-pdf-block>
                 <td>Setup &amp; build</td>
                 <td className={styles.amount}>{formatUsd(pricing.setupAmount)}</td>
               </tr>
               <ItemRows items={oneTimeItems} perMonth={false} />
-              <tr className={styles.subtotalRow}>
+              <tr className={styles.subtotalRow} data-pdf-block>
                 <td>One-time subtotal</td>
                 <td className={styles.amount}>{formatUsd(totals.oneTimeTotal ?? 0)}</td>
               </tr>
 
-              <tr className={styles.groupRow}>
+              <tr className={styles.groupRow} data-pdf-block data-pdf-keep-next>
                 <td colSpan={2}>Ongoing</td>
               </tr>
-              <tr>
+              <tr data-pdf-block>
                 <td>Monthly retainer</td>
                 <td className={styles.amount}>
                   {formatUsd(pricing.monthlyAmount)}
@@ -107,7 +109,7 @@ export default function InvestmentTable({
                 </td>
               </tr>
               <ItemRows items={recurringItems} perMonth />
-              <tr className={styles.subtotalRow}>
+              <tr className={styles.subtotalRow} data-pdf-block>
                 <td>
                   Monthly investment × {pricing.termMonths}{' '}
                   {pricing.termMonths === 1 ? 'month' : 'months'}
@@ -118,7 +120,7 @@ export default function InvestmentTable({
                 </td>
               </tr>
 
-              <tr className={styles.totalRow}>
+              <tr className={styles.totalRow} data-pdf-block>
                 <td>Total contract value</td>
                 <td className={styles.amount}>{formatUsd(totals.contractTotal)}</td>
               </tr>

@@ -231,6 +231,11 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           >
             {exporting ? 'Preparing PDF…' : 'Download PDF'}
           </button>
+          <form method="post" action="/api/internal-logout">
+            <button type="submit" className={styles.logoutButton}>
+              Log out
+            </button>
+          </form>
         </div>
       </header>
 

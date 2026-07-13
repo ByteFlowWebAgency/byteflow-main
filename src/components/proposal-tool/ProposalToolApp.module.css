@@ -83,6 +83,29 @@
   cursor: not-allowed;
 }
 
+.logoutButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 9px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.logoutButton:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.logoutButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
 .panes {
   display: grid;
   grid-template-columns: minmax(380px, 480px) minmax(0, 1fr);

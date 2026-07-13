@@ -57,7 +57,7 @@ const ProposalDocument = forwardRef<HTMLDivElement, ProposalDocumentProps>(
         {proposal.phases.length > 0 && <PhasesSection phases={proposal.phases} />}
 
         <section className={styles.section}>
-          <div data-pdf-block>
+          <div data-pdf-block data-pdf-keep-next>
             <h2 className={styles.sectionHeading}>Scope of work</h2>
             {deliverables.length === 0 && (
               <p className={styles.placeholder}>[Add deliverables to define the scope]</p>
