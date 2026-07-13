@@ -22,6 +22,10 @@ export default function AuditForm({ audit, dispatch }: AuditSectionProps) {
         idPrefix="au"
         themeId={audit.themeId}
         onThemeChange={(themeId) => dispatch({ type: 'setTheme', themeId })}
+        includeCoverPage={audit.includeCoverPage}
+        onIncludeCoverPageChange={(include) =>
+          dispatch({ type: 'setIncludeCoverPage', include })
+        }
       />
       <SiteClientSection audit={audit} dispatch={dispatch} />
       <SummarySection audit={audit} dispatch={dispatch} />

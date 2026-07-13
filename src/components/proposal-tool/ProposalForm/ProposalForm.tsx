@@ -46,6 +46,10 @@ export default function ProposalForm({
         idPrefix="pt"
         themeId={proposal.themeId}
         onThemeChange={(themeId) => dispatch({ type: 'setTheme', themeId })}
+        includeCoverPage={proposal.includeCoverPage}
+        onIncludeCoverPageChange={(include) =>
+          dispatch({ type: 'setIncludeCoverPage', include })
+        }
       />
       <ClientInfoSection proposal={proposal} dispatch={dispatch} />
       <ServicesSection

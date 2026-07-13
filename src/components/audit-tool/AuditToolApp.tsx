@@ -6,6 +6,7 @@ import styles from './AuditToolApp.module.css';
 import AuditForm from './AuditForm/AuditForm';
 import AuditDocument from './AuditDocument/AuditDocument';
 import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
+import CoverPage from '@/components/internal-tools/themes/CoverPage';
 import { CLASSIC_THEME, getBuiltInTheme } from '@/components/internal-tools/themes/builtInThemes';
 import { useCustomThemes } from '@/components/internal-tools/themes/themeStorage';
 import {
@@ -188,6 +189,15 @@ export default function AuditToolApp() {
         </section>
         <section className={styles.documentPane} aria-label="Audit report preview">
           <ThemedDocument ref={documentRef} theme={theme}>
+            {audit.includeCoverPage && (
+              <CoverPage
+                label="Site Audit Report"
+                title={audit.siteUrl.trim() || '[site-url.com]'}
+                clientName={audit.client.clientName.trim() || '[Client name]'}
+                date={audit.auditDate || audit.createdAt}
+                theme={theme}
+              />
+            )}
             <AuditDocument audit={audit} />
           </ThemedDocument>
         </section>

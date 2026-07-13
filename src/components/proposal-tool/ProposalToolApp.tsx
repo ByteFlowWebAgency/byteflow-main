@@ -6,6 +6,7 @@ import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
 import ProposalDocument from './ProposalDocument/ProposalDocument';
 import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
+import CoverPage from '@/components/internal-tools/themes/CoverPage';
 import { CLASSIC_THEME, getBuiltInTheme } from '@/components/internal-tools/themes/builtInThemes';
 import { useCustomThemes } from '@/components/internal-tools/themes/themeStorage';
 import {
@@ -274,6 +275,15 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
         </section>
         <section className={styles.documentPane} aria-label="Proposal preview">
           <ThemedDocument ref={documentRef} theme={theme}>
+            {proposal.includeCoverPage && (
+              <CoverPage
+                label="Proposal"
+                title={proposal.projectTitle.trim() || '[Project title]'}
+                clientName={proposal.client.clientName.trim() || '[Client name]'}
+                date={proposal.createdAt}
+                theme={theme}
+              />
+            )}
             <ProposalDocument proposal={proposal} totals={totals} />
           </ThemedDocument>
         </section>
