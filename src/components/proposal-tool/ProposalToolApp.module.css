@@ -1,0 +1,93 @@
+.app {
+  min-height: 100vh;
+  /* Clear the site's fixed pill Nav (top: 20px + ~80px tall). */
+  padding: 128px 24px 48px;
+  background: var(--bf-color-bg);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-body);
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto 20px;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-violet-soft);
+  margin-bottom: 6px;
+}
+
+.title {
+  font-family: var(--bf-font-display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  line-height: 1.05;
+}
+
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.validationHint {
+  font-size: 13px;
+  color: var(--bf-color-fg-soft);
+  max-width: 360px;
+  text-align: right;
+}
+
+.panes {
+  display: grid;
+  grid-template-columns: minmax(380px, 480px) minmax(0, 1fr);
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.formPane {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding-right: 4px;
+  /* Keep focus rings from being clipped by the scroll container. */
+  padding-left: 4px;
+  margin-left: -4px;
+}
+
+.documentPane {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  border-radius: var(--bf-radius-lg);
+}
+
+.documentPlaceholder {
+  display: grid;
+  place-items: center;
+  min-height: 400px;
+  border: 1px dashed var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-lg);
+  color: var(--bf-color-fg-dim);
+  font-size: 14px;
+}
+
+@media (max-width: 980px) {
+  .panes {
+    grid-template-columns: 1fr;
+  }
+
+  .formPane,
+  .documentPane {
+    max-height: none;
+    overflow: visible;
+  }
+}

@@ -25,11 +25,15 @@ export const DEFAULT_VALID_DAYS = 30;
  * A fresh, empty-but-valid proposal: blank client, the three standard phases with
  * example-marked placeholder descriptions, flat pricing at $0, no line items or
  * deliverables yet.
+ *
+ * id/createdAt start empty and are assigned by ProposalToolApp on mount — this function
+ * runs during SSR and again at hydration, so it must be deterministic (a randomUUID or
+ * new Date() here would produce a server/client hydration mismatch).
  */
 export function createDefaultProposal(): ProposalData {
   return {
-    id: crypto.randomUUID(),
-    createdAt: new Date().toISOString(),
+    id: '',
+    createdAt: '',
     projectTitle: '',
     client: {
       clientName: '',
