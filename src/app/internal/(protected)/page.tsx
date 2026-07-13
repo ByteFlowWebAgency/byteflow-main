@@ -44,6 +44,20 @@ export default function InternalHubPage() {
             status="live"
           />
           <HubTile
+            title="CRM"
+            description="Contacts, organizations, and the deal pipeline — who was referred by whom, and what to do today."
+            monogram="Cr"
+            href="/internal/crm"
+            status="live"
+          />
+          <HubTile
+            title="Budgets"
+            description="Planned vs. actual by category for project and recurring budgets. Planning only — books stay in QuickBooks."
+            monogram="Bu"
+            href="/internal/budgets"
+            status="live"
+          />
+          <HubTile
             title="Monthly Reports"
             description="Recurring SEO and retainer reporting for active clients."
             monogram="Re"
