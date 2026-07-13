@@ -2,18 +2,11 @@
 
 import Image from 'next/image';
 import styles from './ProposalDocument.module.css';
+import { formatDisplayDate as formatDate } from '@/lib/internal-tools/format';
 import type { ProposalData } from '@/lib/proposal-tool/types';
 
-export function formatDate(iso: string): string {
-  if (!iso) return '—';
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '—';
-  return date.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  });
-}
+// Re-exported for TermsFooter, which shares this formatter.
+export { formatDate };
 
 export default function DocumentHeader({ proposal }: { proposal: ProposalData }) {
   const clientName = proposal.client.clientName.trim() || '[Client name]';

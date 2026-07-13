@@ -1,0 +1,144 @@
+.app {
+  min-height: 100vh;
+  /* Clear the site's fixed pill Nav (top: 20px + ~80px tall). */
+  padding: 128px 24px 48px;
+  background: var(--bf-color-bg);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-body);
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto 20px;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-violet-soft);
+  margin-bottom: 6px;
+}
+
+.title {
+  font-family: var(--bf-font-display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  line-height: 1.05;
+}
+
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.validationHint {
+  font-size: 13px;
+  color: var(--bf-color-fg-soft);
+  max-width: 360px;
+  text-align: right;
+}
+
+.exportError {
+  font-size: 13px;
+  color: var(--bf-color-error);
+  max-width: 320px;
+  text-align: right;
+}
+
+.downloadButton {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  background: var(--bf-grad-primary);
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 22px;
+  cursor: pointer;
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.6);
+  white-space: nowrap;
+}
+
+.downloadButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.downloadButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.downloadButton:disabled {
+  background: var(--bf-color-glass-solid);
+  color: rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.logoutButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 9px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.logoutButton:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.logoutButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.panes {
+  display: grid;
+  grid-template-columns: minmax(380px, 480px) minmax(0, 1fr);
+  gap: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.formPane {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding-right: 4px;
+  /* Keep focus rings from being clipped by the scroll container. */
+  padding-left: 4px;
+  margin-left: -4px;
+}
+
+.documentPane {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  border-radius: var(--bf-radius-lg);
+}
+
+
+@media (max-width: 980px) {
+  .panes {
+    grid-template-columns: 1fr;
+  }
+
+  .formPane,
+  .documentPane {
+    max-height: none;
+    overflow: visible;
+  }
+}
