@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useMemo, useReducer } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import './tokens.css';
 import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
 import ProposalDocument from './ProposalDocument/ProposalDocument';
+import { generateProposalPdf } from './pdf/generatePdf';
 import { createDefaultProposal } from '@/lib/proposal-tool/defaults';
 import { calculateTotals } from '@/lib/proposal-tool/pricingMath';
 import { validateProposal } from '@/lib/proposal-tool/validate';
@@ -172,6 +173,9 @@ interface ProposalToolAppProps {
 
 export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps) {
   const [proposal, dispatch] = useReducer(reducer, undefined, createDefaultProposal);
+  const documentRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   // id/createdAt are assigned post-mount; createDefaultProposal must stay deterministic
   // for SSR/hydration.
@@ -188,6 +192,19 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
   const totals = useMemo(() => calculateTotals(proposal), [proposal]);
   const validation = useMemo(() => validateProposal(proposal), [proposal]);
 
+  const downloadPdf = async () => {
+    if (!documentRef.current || !validation.valid || exporting) return;
+    setExporting(true);
+    setExportError(null);
+    try {
+      await generateProposalPdf(documentRef.current, proposal.client.clientName);
+    } catch {
+      setExportError('PDF export failed — try again, and check the console if it persists.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className={`bfScope ${styles.app}`}>
       <header className={styles.toolbar}>
@@ -201,6 +218,19 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
               To export: add {validation.missing.join(', ')}.
             </p>
           )}
+          {exportError && (
+            <p className={styles.exportError} role="alert">
+              {exportError}
+            </p>
+          )}
+          <button
+            type="button"
+            className={styles.downloadButton}
+            disabled={!validation.valid || exporting}
+            onClick={downloadPdf}
+          >
+            {exporting ? 'Preparing PDF…' : 'Download PDF'}
+          </button>
         </div>
       </header>
 
@@ -214,7 +244,7 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           />
         </section>
         <section className={styles.documentPane} aria-label="Proposal preview">
-          <ProposalDocument proposal={proposal} totals={totals} />
+          <ProposalDocument ref={documentRef} proposal={proposal} totals={totals} />
         </section>
       </div>
     </div>

@@ -46,6 +46,43 @@
   text-align: right;
 }
 
+.exportError {
+  font-size: 13px;
+  color: var(--bf-color-error);
+  max-width: 320px;
+  text-align: right;
+}
+
+.downloadButton {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  background: var(--bf-grad-primary);
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 22px;
+  cursor: pointer;
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.6);
+  white-space: nowrap;
+}
+
+.downloadButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.downloadButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.downloadButton:disabled {
+  background: var(--bf-color-glass-solid);
+  color: rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
 .panes {
   display: grid;
   grid-template-columns: minmax(380px, 480px) minmax(0, 1fr);
