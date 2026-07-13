@@ -1,11 +1,14 @@
 'use client';
 
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
-import './tokens.css';
+import '@/components/internal-tools/tokens.css';
 import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
 import ProposalDocument from './ProposalDocument/ProposalDocument';
-import { generateProposalPdf } from './pdf/generatePdf';
+import {
+  generateDocumentPdf,
+  sanitizeFilePart,
+} from '@/components/internal-tools/pdf/generateDocumentPdf';
 import { createDefaultProposal } from '@/lib/proposal-tool/defaults';
 import { calculateTotals } from '@/lib/proposal-tool/pricingMath';
 import { validateProposal } from '@/lib/proposal-tool/validate';
@@ -197,7 +200,11 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
     setExporting(true);
     setExportError(null);
     try {
-      await generateProposalPdf(documentRef.current, proposal.client.clientName);
+      const datePart = new Date().toISOString().slice(0, 10);
+      await generateDocumentPdf(
+        documentRef.current,
+        `ByteFlow-Proposal-${sanitizeFilePart(proposal.client.clientName)}-${datePart}.pdf`,
+      );
     } catch {
       setExportError('PDF export failed — try again, and check the console if it persists.');
     } finally {

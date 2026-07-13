@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { SESSION_COOKIE } from '@/lib/proposal-tool/session';
+import { SESSION_COOKIE } from '@/lib/internal-tools/session';
 
 export const runtime = 'nodejs';
 

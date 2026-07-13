@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { SESSION_COOKIE, verifySessionToken } from '@/lib/proposal-tool/session';
+import { SESSION_COOKIE, verifySessionToken } from '@/lib/internal-tools/session';
 
 // Access gate for the internal tools namespace (07-INTEGRATION-AND-QA.md). Scoped
 // strictly to /internal/* — public marketing routes never enter this middleware.

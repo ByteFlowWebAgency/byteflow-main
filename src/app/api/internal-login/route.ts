@@ -4,7 +4,7 @@ import {
   createSessionToken,
   SESSION_COOKIE,
   SESSION_TTL_MS,
-} from '@/lib/proposal-tool/session';
+} from '@/lib/internal-tools/session';
 
 export const runtime = 'nodejs';
 

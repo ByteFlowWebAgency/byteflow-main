@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { SESSION_COOKIE, verifySessionToken } from '@/lib/proposal-tool/session';
+import { SESSION_COOKIE, verifySessionToken } from '@/lib/internal-tools/session';
 
 // THE shared gate for everything under /internal except the login page: the (protected)
 // route group wraps the hub and every tool without touching their URLs. Defense-in-depth

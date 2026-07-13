@@ -85,14 +85,17 @@ export function computeCutPositions(
 }
 
 /**
- * Capture the rendered proposal document DOM and download it as a paginated US Letter
- * PDF. The on-screen document is the single source of truth — the PDF is an exact
- * rasterized copy of it (text is not selectable; documented tradeoff per
- * 03-ARCHITECTURE.md / 06-PDF-EXPORT.md).
+ * Capture a rendered document DOM node and download it as a paginated US Letter PDF.
+ * Shared by every internal tool (proposals, audits, …): the on-screen document is the
+ * single source of truth and the PDF is an exact rasterized copy of it (text is not
+ * selectable — documented tradeoff). Callers build their own `filename` (use
+ * sanitizeFilePart for user-derived fragments); this function knows nothing about any
+ * specific document type. Layout contract: elements marked data-pdf-block are never cut
+ * across pages, and data-pdf-keep-next headings are never orphaned at a page bottom.
  */
-export async function generateProposalPdf(
+export async function generateDocumentPdf(
   documentNode: HTMLElement,
-  clientName: string,
+  filename: string,
 ): Promise<void> {
   // Capture a detached clone at natural size inside an off-screen .bfScope wrapper so
   // the CSS custom properties still resolve and preview scrolling/shadows don't affect
@@ -182,8 +185,7 @@ export async function generateProposalPdf(
       );
     });
 
-    const datePart = new Date().toISOString().slice(0, 10);
-    pdf.save(`ByteFlow-Proposal-${sanitizeFilePart(clientName)}-${datePart}.pdf`);
+    pdf.save(filename);
   } finally {
     wrapper.remove();
   }

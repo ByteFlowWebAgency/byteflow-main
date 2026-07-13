@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import '@/components/proposal-tool/tokens.css';
+import '@/components/internal-tools/tokens.css';
 import styles from './login.module.css';
 
 export const metadata: Metadata = {

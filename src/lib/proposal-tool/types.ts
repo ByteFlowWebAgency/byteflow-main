@@ -2,12 +2,11 @@
 // input form (screen 1) and the rendered proposal document (screen 2) — both operate on a
 // single ProposalData value held in React state.
 
+import type { ClientContact } from '@/lib/internal-tools/clientInfo';
+
 export type PricingModel = 'flat' | 'retainer' | 'hybrid';
 
-export interface ClientInfo {
-  clientName: string;
-  contactName: string;
-  contactEmail: string;
+export interface ClientInfo extends ClientContact {
   /** Optional context, e.g. "nonprofit", "small business". */
   organizationType?: string;
 }
