@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@/components/internal-tools/tokens.css';
 import HubTile from '@/components/internal-tools/HubTile';
+import ChromeModeToggle from '@/components/internal-tools/ChromeModeToggle';
 import styles from './hub.module.css';
 
 export const metadata: Metadata = {
@@ -18,7 +19,10 @@ export default function InternalHubPage() {
     <main className={styles.page}>
       <div className={styles.inner}>
         <header className={styles.header}>
-          <h1 className={styles.heading}>Internal Tools</h1>
+          <div className={styles.headerRow}>
+            <h1 className={styles.heading}>Internal Tools</h1>
+            <ChromeModeToggle />
+          </div>
           <p className={styles.subhead}>
             Everything the ByteFlow team uses to run the pipeline and produce client
             documents — in one place.

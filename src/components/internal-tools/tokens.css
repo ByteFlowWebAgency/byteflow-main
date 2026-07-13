@@ -127,3 +127,74 @@ html:has(.bfScope)::-webkit-scrollbar-corner,
   --bf-radius-md: 12px;
   --bf-radius-lg: 16px;
 }
+
+/*
+ * App-chrome light mode (hub/forms chrome ONLY — never documents). The default chrome
+ * is the dark ink above; html[data-bf-chrome='light'] flips the *chrome* variables to
+ * a light equivalent. Documents are unaffected by construction: ThemedDocument pins
+ * every document-consumed custom property inline, which always wins over these
+ * cascaded values. Toggled from the hub; persisted as localStorage 'bf-app-dark-mode'.
+ * The selector repeats on inner .bfScope roots (tools re-declare the vars), so the
+ * attribute lives once on <html>, set pre-paint by the (protected) layout script.
+ */
+html[data-bf-chrome='light'] .bfScope,
+html[data-bf-chrome='light'] .bfScope .bfScope {
+  --bf-color-bg: #eef0f7;
+  --bf-color-bg-2: #ffffff;
+  --bf-color-fg: #0b0f1f;
+  --bf-color-fg-muted: rgba(11, 15, 31, 0.75);
+  --bf-color-fg-soft: rgba(11, 15, 31, 0.62);
+  --bf-color-fg-dim: rgba(11, 15, 31, 0.5);
+  --bf-color-line: rgba(11, 15, 31, 0.1);
+  --bf-color-line-strong: rgba(11, 15, 31, 0.2);
+  --bf-color-glass: rgba(11, 15, 31, 0.04);
+  --bf-color-glass-solid: rgba(11, 15, 31, 0.07);
+
+  /* Soft accent tints don't read as text on light ground — step down to the darker
+     brand tones (accent tokens stay untouched for the documents' sake; those are
+     pinned inline anyway). */
+  --bf-color-accent-soft: #4f46e5;
+  --bf-color-violet-soft: #7c3aed;
+  --bf-color-cyan-soft: #0e7490;
+  --bf-color-error: #b91c1c;
+  --bf-grad-text: linear-gradient(105deg, #6366f1 0%, #8b5cf6 40%, #06b6d4 100%);
+
+  /* Shell surfaces whose dark values are literals (translucent ink + blur). */
+  --bf-chrome-header-bg: rgba(244, 245, 250, 0.85);
+  --bf-chrome-footer-bg: rgba(244, 245, 250, 0.7);
+}
+
+html[data-bf-chrome='light']:has(.bfScope) {
+  scrollbar-color: rgba(99, 102, 241, 0.65) #e6e8f2;
+}
+
+html[data-bf-chrome='light'] .bfScope,
+html[data-bf-chrome='light'] .bfScope * {
+  scrollbar-color: rgba(99, 102, 241, 0.65) rgba(230, 232, 242, 0.8);
+}
+
+html[data-bf-chrome='light']:has(.bfScope)::-webkit-scrollbar-track,
+html[data-bf-chrome='light'] .bfScope ::-webkit-scrollbar-track,
+html[data-bf-chrome='light'] .bfScope::-webkit-scrollbar-track {
+  background: #e6e8f2;
+}
+
+html[data-bf-chrome='light']:has(.bfScope)::-webkit-scrollbar-thumb,
+html[data-bf-chrome='light'] .bfScope ::-webkit-scrollbar-thumb,
+html[data-bf-chrome='light'] .bfScope::-webkit-scrollbar-thumb {
+  border-color: #e6e8f2;
+}
+
+html[data-bf-chrome='light']:has(.bfScope)::-webkit-scrollbar-corner,
+html[data-bf-chrome='light'] .bfScope ::-webkit-scrollbar-corner {
+  background: #e6e8f2;
+}
+
+html[data-bf-chrome='light'] .bfScope input[type='date'],
+html[data-bf-chrome='light'] .bfScope input[type='datetime-local'],
+html[data-bf-chrome='light'] .bfScope input[type='month'],
+html[data-bf-chrome='light'] .bfScope input[type='time'],
+html[data-bf-chrome='light'] .bfScope input[type='search'],
+html[data-bf-chrome='light'] .bfScope select {
+  color-scheme: light;
+}

@@ -25,6 +25,14 @@ export default async function InternalToolsLayout({
 
   return (
     <div className={`bfScope ${shell.shell}`}>
+      {/* Pre-paint chrome-mode restore: light chrome (bf-app-dark-mode=false) must not
+          flash dark on load. Chrome only — documents pin their own variables inline. */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html:
+            "try{if(localStorage.getItem('bf-app-dark-mode')==='false')document.documentElement.setAttribute('data-bf-chrome','light')}catch(e){}",
+        }}
+      />
       <InternalHeader />
       <div className={shell.main}>{children}</div>
       <InternalFooter year={new Date().getFullYear()} />

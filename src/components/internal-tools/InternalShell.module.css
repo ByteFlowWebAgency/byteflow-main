@@ -17,7 +17,7 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(11, 15, 31, 0.82);
+  background: var(--bf-chrome-header-bg, rgba(11, 15, 31, 0.82));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--bf-color-line);
@@ -138,7 +138,7 @@
 
 .footer {
   border-top: 1px solid var(--bf-color-line);
-  background: rgba(11, 15, 31, 0.55);
+  background: var(--bf-chrome-footer-bg, rgba(11, 15, 31, 0.55));
 }
 
 .footerInner {

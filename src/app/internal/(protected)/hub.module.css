@@ -13,6 +13,14 @@
   margin-bottom: 28px;
 }
 
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
 .heading {
   font-family: var(--bf-font-display);
   font-size: 38px;
