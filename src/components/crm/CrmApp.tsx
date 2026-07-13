@@ -1,0 +1,200 @@
+'use client';
+
+// The CRM shell: tabs (Pipeline is the default view), pipeline summary strip, CSV
+// exports, backup/restore, and the list↔detail navigation. All data flows through
+// CrmProvider → the storage adapter; nothing here touches fetch or Supabase.
+
+import { useState } from 'react';
+import '@/components/internal-tools/tokens.css';
+import styles from './CrmApp.module.css';
+import { CrmProvider, useCrm } from './CrmContext';
+import PipelineBoard from './PipelineBoard';
+import ContactsView from './ContactsView';
+import OrganizationsView, { OrganizationDetail } from './OrganizationsView';
+import ContactDetail from './ContactDetail';
+import DealDetail from './DealDetail';
+import DealForm from './DealForm';
+import BackupControls from './BackupControls';
+import { summarizePipeline } from '@/lib/crm/dealMeta';
+import { contactsCsv, dealsCsv } from '@/lib/crm/csv';
+import { downloadCsv } from '@/lib/internal-tools/csv';
+import { formatUsd } from '@/lib/internal-tools/format';
+
+type View = 'pipeline' | 'contacts' | 'organizations';
+type Detail =
+  | { kind: 'deal'; id: string }
+  | { kind: 'contact'; id: string }
+  | { kind: 'organization'; id: string }
+  | null;
+
+export default function CrmApp({ serviceOptions }: { serviceOptions: string[] }) {
+  return (
+    <CrmProvider serviceOptions={serviceOptions}>
+      <CrmShell />
+    </CrmProvider>
+  );
+}
+
+function CrmShell() {
+  const { data, loading, loadError, reload } = useCrm();
+  const [view, setView] = useState<View>('pipeline');
+  const [detail, setDetail] = useState<Detail>(null);
+  const [showNewDeal, setShowNewDeal] = useState(false);
+
+  const openDeal = (id: string) => setDetail({ kind: 'deal', id });
+  const openContact = (id: string) => setDetail({ kind: 'contact', id });
+  const openOrganization = (id: string) => setDetail({ kind: 'organization', id });
+  const summary = summarizePipeline(data.deals, new Date());
+
+  const stamp = new Date().toISOString().slice(0, 10);
+
+  return (
+    <main className={`bfScope ${styles.app}`}>
+      <div className={styles.inner}>
+        <header className={styles.toolbar}>
+          <div>
+            <p className={styles.eyebrow}>ByteFlow Internal</p>
+            <h1 className={styles.title}>CRM</h1>
+          </div>
+          <div className={styles.toolbarActions}>
+            <button
+              type="button"
+              className={styles.ghostButton}
+              onClick={() => downloadCsv(`ByteFlow-contacts-${stamp}.csv`, contactsCsv(data))}
+              disabled={loading || Boolean(loadError)}
+            >
+              Contacts CSV
+            </button>
+            <button
+              type="button"
+              className={styles.ghostButton}
+              onClick={() => downloadCsv(`ByteFlow-deals-${stamp}.csv`, dealsCsv(data))}
+              disabled={loading || Boolean(loadError)}
+            >
+              Deals CSV
+            </button>
+            <BackupControls onRestored={reload} />
+            <form method="post" action="/api/internal-logout">
+              <button type="submit" className={styles.ghostButton}>
+                Log out
+              </button>
+            </form>
+          </div>
+        </header>
+
+        <p className={styles.hint} style={{ marginBottom: 14 }}>
+          Data lives in ByteFlow&apos;s Supabase project — an occasional JSON backup is
+          still a good habit.
+        </p>
+
+        {loading ? (
+          <div className={styles.stateBox} role="status">
+            <p className={styles.stateTitle}>Loading CRM…</p>
+            <p>Talking to the database.</p>
+          </div>
+        ) : loadError ? (
+          <div className={`${styles.stateBox} ${styles.stateBoxError}`} role="alert">
+            <p className={styles.stateTitle}>Couldn&apos;t load CRM data</p>
+            <p>{loadError}</p>
+            <button type="button" className={styles.ghostButton} onClick={reload}>
+              Retry
+            </button>
+          </div>
+        ) : detail?.kind === 'deal' ? (
+          <DealDetail
+            key={detail.id}
+            dealId={detail.id}
+            onBack={() => setDetail(null)}
+            onOpenContact={openContact}
+            onOpenOrganization={openOrganization}
+          />
+        ) : detail?.kind === 'contact' ? (
+          <ContactDetail
+            key={detail.id}
+            contactId={detail.id}
+            onBack={() => setDetail(null)}
+            onOpenContact={openContact}
+            onOpenDeal={openDeal}
+            onOpenOrganization={openOrganization}
+          />
+        ) : detail?.kind === 'organization' ? (
+          <OrganizationDetail
+            key={detail.id}
+            organizationId={detail.id}
+            onBack={() => setDetail(null)}
+            onOpenContact={openContact}
+            onOpenDeal={openDeal}
+          />
+        ) : (
+          <>
+            <div className={styles.tabs} role="tablist" aria-label="CRM views">
+              {(
+                [
+                  ['pipeline', 'Pipeline'],
+                  ['contacts', 'Contacts'],
+                  ['organizations', 'Organizations'],
+                ] as const
+              ).map(([key, label]) => (
+                <button
+                  key={key}
+                  type="button"
+                  role="tab"
+                  aria-selected={view === key}
+                  className={`${styles.tab} ${view === key ? styles.tabActive : ''}`}
+                  onClick={() => setView(key)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {view === 'pipeline' && (
+              <>
+                <div className={styles.summaryStrip} aria-label="Pipeline summary">
+                  <div className={styles.summaryItem}>
+                    <span className={styles.summaryValue}>{summary.openCount}</span>
+                    <span className={styles.summaryLabel}>open deals</span>
+                  </div>
+                  <div className={styles.summaryItem}>
+                    <span className={styles.summaryValue}>
+                      {formatUsd(summary.openValue)}
+                    </span>
+                    <span className={styles.summaryLabel}>pipeline value</span>
+                  </div>
+                  <div className={styles.summaryItem}>
+                    <span
+                      className={`${styles.summaryValue} ${
+                        summary.overdueCount > 0 ? styles.summaryValueWarn : ''
+                      }`}
+                    >
+                      {summary.overdueCount}
+                    </span>
+                    <span className={styles.summaryLabel}>overdue next steps</span>
+                  </div>
+                </div>
+                <PipelineBoard
+                  onOpenDeal={openDeal}
+                  onNewDeal={() => setShowNewDeal(true)}
+                />
+              </>
+            )}
+            {view === 'contacts' && <ContactsView onOpenContact={openContact} />}
+            {view === 'organizations' && (
+              <OrganizationsView onOpenOrganization={openOrganization} />
+            )}
+          </>
+        )}
+      </div>
+
+      {showNewDeal && (
+        <DealForm
+          onClose={() => setShowNewDeal(false)}
+          onCreated={(dealId) => {
+            setShowNewDeal(false);
+            openDeal(dealId);
+          }}
+        />
+      )}
+    </main>
+  );
+}
