@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import '@/components/internal-tools/tokens.css';
+import HomeLink from '@/components/internal-tools/HomeLink';
 import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
 import ProposalDocument from './ProposalDocument/ProposalDocument';
@@ -238,6 +239,7 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           >
             {exporting ? 'Preparing PDF…' : 'Download PDF'}
           </button>
+          <HomeLink />
           <form method="post" action="/api/internal-logout">
             <button type="submit" className={styles.logoutButton}>
               Log out

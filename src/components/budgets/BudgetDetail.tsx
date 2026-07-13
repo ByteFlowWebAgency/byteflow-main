@@ -7,6 +7,7 @@
 // edit on screen with a visible retry — never a silent drop.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import HomeLink from '@/components/internal-tools/HomeLink';
 import styles from './BudgetsApp.module.css';
 import {
   budgetCsv,
@@ -245,6 +246,7 @@ export default function BudgetDetail({
           <h1 className={styles.title}>{draft.name}</h1>
         </div>
         <div className={styles.toolbarActions}>
+          <HomeLink />
           <button
             type="button"
             className={styles.ghostButton}

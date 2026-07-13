@@ -5,6 +5,79 @@
  * *.module.css references these via var(--bf-*) instead of restating raw values.
  */
 
+/* Branded scrollbars — internal pages only. The page-level scrollbar is scoped with
+   :has(.bfScope) so marketing routes keep the browser default; inner scrollables
+   (panes, boards, tables, dialogs) are covered by the .bfScope descendant rules.
+   Literal brand values here because the --bf-* vars live on .bfScope, not html. */
+html:has(.bfScope) {
+  scrollbar-color: rgba(129, 140, 248, 0.6) #0b0f1f; /* Firefox */
+}
+
+.bfScope,
+.bfScope * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(129, 140, 248, 0.6) rgba(11, 15, 31, 0.6);
+}
+
+html:has(.bfScope)::-webkit-scrollbar,
+.bfScope ::-webkit-scrollbar,
+.bfScope::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html:has(.bfScope)::-webkit-scrollbar-track,
+.bfScope ::-webkit-scrollbar-track,
+.bfScope::-webkit-scrollbar-track {
+  background: #0b0f1f;
+  border-radius: 999px;
+}
+
+html:has(.bfScope)::-webkit-scrollbar-thumb,
+.bfScope ::-webkit-scrollbar-thumb,
+.bfScope::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 60%, #06b6d4 100%);
+  border-radius: 999px;
+  border: 2px solid #0b0f1f;
+}
+
+html:has(.bfScope)::-webkit-scrollbar-thumb:hover,
+.bfScope ::-webkit-scrollbar-thumb:hover,
+.bfScope::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #818cf8 0%, #a78bfa 60%, #22d3ee 100%);
+}
+
+html:has(.bfScope)::-webkit-scrollbar-corner,
+.bfScope ::-webkit-scrollbar-corner {
+  background: #0b0f1f;
+}
+
+/* Native date/time/month pickers inside the dark tool chrome: without an explicit
+   dark color-scheme the calendar icon renders near-black on the ink background and the
+   popup calendar opens in light mode. Scoped to the input types, so the light paper
+   documents (which contain no inputs) are untouched. */
+.bfScope input[type='date'],
+.bfScope input[type='datetime-local'],
+.bfScope input[type='month'],
+.bfScope input[type='time'],
+.bfScope input[type='search'],
+.bfScope select {
+  color-scheme: dark;
+}
+
+.bfScope input[type='date']::-webkit-calendar-picker-indicator,
+.bfScope input[type='datetime-local']::-webkit-calendar-picker-indicator,
+.bfScope input[type='month']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.bfScope input[type='date']::-webkit-calendar-picker-indicator:hover,
+.bfScope input[type='datetime-local']::-webkit-calendar-picker-indicator:hover,
+.bfScope input[type='month']::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
 .bfScope {
   /* Ink canvas (site dark theme — tool chrome) */
   --bf-color-bg: #0b0f1f;

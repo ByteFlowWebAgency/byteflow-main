@@ -7,6 +7,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import '@/components/internal-tools/tokens.css';
+import HomeLink from '@/components/internal-tools/HomeLink';
 import styles from './BudgetsApp.module.css';
 import BudgetDetail from './BudgetDetail';
 import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
@@ -93,6 +94,7 @@ export default function BudgetsApp() {
                 <h1 className={styles.title}>Budgets</h1>
               </div>
               <div className={styles.toolbarActions}>
+                <HomeLink />
                 <button
                   type="button"
                   className={styles.primaryButton}

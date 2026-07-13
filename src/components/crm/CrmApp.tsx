@@ -6,6 +6,7 @@
 
 import { useState } from 'react';
 import '@/components/internal-tools/tokens.css';
+import HomeLink from '@/components/internal-tools/HomeLink';
 import styles from './CrmApp.module.css';
 import { CrmProvider, useCrm } from './CrmContext';
 import PipelineBoard from './PipelineBoard';
@@ -57,6 +58,7 @@ function CrmShell() {
             <h1 className={styles.title}>CRM</h1>
           </div>
           <div className={styles.toolbarActions}>
+            <HomeLink />
             <button
               type="button"
               className={styles.ghostButton}

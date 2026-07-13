@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import '@/components/internal-tools/tokens.css';
+import HomeLink from '@/components/internal-tools/HomeLink';
 import styles from './AuditToolApp.module.css';
 import AuditForm from './AuditForm/AuditForm';
 import AuditDocument from './AuditDocument/AuditDocument';
@@ -157,6 +158,7 @@ export default function AuditToolApp() {
           >
             {exporting ? 'Preparing PDF…' : 'Download PDF'}
           </button>
+          <HomeLink />
           <form method="post" action="/api/internal-logout">
             <button type="submit" className={styles.logoutButton}>
               Log out
