@@ -61,30 +61,55 @@ export interface BlockRange {
  * Headings marked data-pdf-keep-next are never left orphaned at a page bottom: a cut
  * landing just under one moves above it. Pages then render start-to-cut, so a page that
  * breaks early is simply a little short at the bottom.
+ *
+ * `forcedBreaks` (offsets of data-pdf-break-before elements) FORCE an exact cut at that
+ * position regardless of page fill — the mechanism behind the Document Builder's
+ * sectionTitle pages and explicit pageBreak blocks. It is additive: with no forced breaks
+ * (every existing tool) the result is byte-identical to the original algorithm.
  */
 export function computeCutPositions(
   totalHeight: number,
   pageHeight: number,
   blocks: BlockRange[],
   keepNext: BlockRange[] = [],
+  forcedBreaks: number[] = [],
 ): number[] {
   const cuts: number[] = [];
+  const forced = [...forcedBreaks]
+    .filter((f) => f > 0 && f < totalHeight)
+    .sort((a, b) => a - b);
   let pageTop = 0;
-  while (pageTop + pageHeight < totalHeight) {
+  let forcedIdx = 0;
+  // Cap iterations well above any real page count as a runaway guard.
+  const maxPages = Math.ceil(totalHeight / (pageHeight * MIN_PAGE_FILL)) + forced.length + 2;
+  for (let guard = 0; guard <= maxPages; guard++) {
+    while (forcedIdx < forced.length && forced[forcedIdx] <= pageTop + 1) forcedIdx++;
+    const nextForced = forcedIdx < forced.length ? forced[forcedIdx] : Infinity;
+    const moreContent = pageTop + pageHeight < totalHeight;
+    if (!moreContent && nextForced === Infinity) break;
+
     const idealCut = pageTop + pageHeight;
-    const minCut = pageTop + pageHeight * MIN_PAGE_FILL;
-    let cut = idealCut;
-    const straddler = blocks.find((b) => b.top < cut && b.bottom > cut);
-    if (straddler && straddler.top > minCut) {
-      cut = straddler.top;
+    let cut: number;
+    if (nextForced <= idealCut) {
+      // A forced break falls within this page — cut exactly there (element top = a real
+      // page boundary; no min-fill, no safety backoff).
+      cut = nextForced;
+    } else {
+      const minCut = pageTop + pageHeight * MIN_PAGE_FILL;
+      cut = idealCut;
+      const straddler = blocks.find((b) => b.top < cut && b.bottom > cut);
+      if (straddler && straddler.top > minCut) {
+        cut = straddler.top;
+      }
+      const orphan = keepNext.find((k) => cut > k.top && cut < k.bottom + KEEP_NEXT_GAP_PX);
+      if (orphan && orphan.top > minCut) {
+        cut = orphan.top;
+      }
+      if (cut !== idealCut) {
+        cut = Math.max(minCut, cut - CUT_SAFETY_PX);
+      }
     }
-    const orphan = keepNext.find((k) => cut > k.top && cut < k.bottom + KEEP_NEXT_GAP_PX);
-    if (orphan && orphan.top > minCut) {
-      cut = orphan.top;
-    }
-    if (cut !== idealCut) {
-      cut = Math.max(minCut, cut - CUT_SAFETY_PX);
-    }
+    if (cut <= pageTop || cut >= totalHeight) break; // no progress / past the end
     cuts.push(cut);
     pageTop = cut;
   }
@@ -186,8 +211,17 @@ export async function generateDocumentPdf(
       });
     const blocks = rangesOf('[data-pdf-block]');
     const keepNext = rangesOf('[data-pdf-keep-next]');
+    // Document Builder marks the top of each page-after-the-first and each pageBreak block
+    // with data-pdf-break-before; those become forced page cuts. Empty for every other tool.
+    const forcedBreaks = rangesOf('[data-pdf-break-before]').map((r) => r.top);
 
-    const cuts = computeCutPositions(totalHeightPx, PAGE_HEIGHT_PX, blocks, keepNext);
+    const cuts = computeCutPositions(
+      totalHeightPx,
+      PAGE_HEIGHT_PX,
+      blocks,
+      keepNext,
+      forcedBreaks,
+    );
     const pageStarts = [0, ...cuts];
     const pageEnds = [...cuts, totalHeightPx];
 
