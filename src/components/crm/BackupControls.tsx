@@ -6,7 +6,7 @@
 
 import { useRef, useState } from 'react';
 import styles from './CrmApp.module.css';
-import ConfirmDialog from './ConfirmDialog';
+import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
 import { backupAll, restoreAll, validateBackup, type BackupFile } from '@/lib/internal-tools/storage/backup';
 import { downloadJson } from '@/lib/internal-tools/csv';
 import { describeCounts } from '@/lib/crm/references';

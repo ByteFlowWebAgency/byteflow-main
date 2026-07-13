@@ -9,7 +9,7 @@ import { useState } from 'react';
 import styles from './CrmApp.module.css';
 import { useCrm } from './CrmContext';
 import ActivityPanel from './ActivityPanel';
-import ConfirmDialog from './ConfirmDialog';
+import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
 import { ALL_STAGES, STAGE_LABELS } from '@/lib/crm/labels';
 import { dealReferences, describeCounts } from '@/lib/crm/references';
 import { formatDisplayDate } from '@/lib/internal-tools/format';

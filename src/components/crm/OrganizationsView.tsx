@@ -7,7 +7,7 @@
 import { useMemo, useState } from 'react';
 import styles from './CrmApp.module.css';
 import { useCrm } from './CrmContext';
-import ConfirmDialog from './ConfirmDialog';
+import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
 import { STAGE_LABELS } from '@/lib/crm/labels';
 import { describeCounts, organizationReferences } from '@/lib/crm/references';
 import type { Organization } from '@/lib/crm/types';

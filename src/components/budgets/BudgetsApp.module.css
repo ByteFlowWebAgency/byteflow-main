@@ -1,0 +1,622 @@
+/* Budget tracker styles. Field/control patterns match the other internal tools
+   (deliberately copied per-tool — see docs/phase2/DISCOVERY.md). */
+
+.app {
+  min-height: 100vh;
+  /* Clear the site's fixed pill Nav (top: 20px + ~80px tall). */
+  padding: 128px 24px 48px;
+  background: var(--bf-color-bg);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-body);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px 24px;
+  margin-bottom: 18px;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-violet-soft);
+  margin-bottom: 6px;
+}
+
+.title {
+  font-family: var(--bf-font-display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  line-height: 1.05;
+}
+
+.toolbarActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ghostButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 9px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ghostButton:hover:not(:disabled) {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.ghostButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ghostButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.primaryButton {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  background: var(--bf-grad-primary);
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 22px;
+  cursor: pointer;
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.6);
+  white-space: nowrap;
+}
+
+.primaryButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.primaryButton:disabled {
+  background: var(--bf-color-glass-solid);
+  color: rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.primaryButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.backButton {
+  font: inherit;
+  font-size: 13px;
+  color: var(--bf-color-fg-soft);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+
+.backButton:hover {
+  color: var(--bf-color-fg);
+}
+
+.backButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 2px;
+}
+
+.stateBox {
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  background: var(--bf-color-glass);
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--bf-color-fg-soft);
+  font-size: 14px;
+}
+
+.stateBoxError {
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+.stateTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  margin-bottom: 8px;
+}
+
+.stateBox .ghostButton {
+  margin-top: 16px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--bf-color-fg-dim);
+}
+
+.formError {
+  font-size: 13px;
+  color: var(--bf-color-error);
+}
+
+/* Budgets list table */
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  background: var(--bf-color-glass);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--bf-color-line-strong);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-muted);
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--bf-color-line);
+  vertical-align: middle;
+}
+
+.table tr:last-child td {
+  border-bottom: 0;
+}
+
+.numCell {
+  font-family: var(--bf-font-mono);
+  font-size: 13px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cellMuted {
+  color: var(--bf-color-fg-soft);
+  font-size: 13px;
+}
+
+.linkButton {
+  font: inherit;
+  font-size: inherit;
+  color: var(--bf-color-cyan-soft);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: rgba(34, 211, 238, 0.35);
+  text-underline-offset: 3px;
+}
+
+.linkButton:hover {
+  text-decoration-color: currentColor;
+}
+
+.linkButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 2px;
+}
+
+.rowActions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.smallButton {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 5px 11px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.smallButton:hover:not(:disabled) {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.smallButton:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.smallButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.smallDanger {
+  color: var(--bf-color-error);
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.smallDanger:hover:not(:disabled) {
+  color: var(--bf-color-error);
+  background: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.6);
+}
+
+/* Variance colors: under budget = calm cyan, over = error red */
+
+.varUnder {
+  color: var(--bf-color-cyan-soft);
+}
+
+.varOver {
+  color: var(--bf-color-error);
+}
+
+/* Summary strip on a budget detail */
+
+.summaryStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  padding: 10px 16px;
+}
+
+.summaryValue {
+  font-family: var(--bf-font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--bf-color-cyan-soft);
+}
+
+.summaryLabel {
+  font-size: 12px;
+  color: var(--bf-color-fg-soft);
+}
+
+.pctOk {
+  color: var(--bf-color-cyan-soft);
+}
+
+.pctWarn {
+  color: #fbbf24;
+}
+
+.pctOver {
+  color: var(--bf-color-error);
+}
+
+/* The spreadsheet-like items table */
+
+.sheetControls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.saveStatus {
+  font-size: 12px;
+  color: var(--bf-color-fg-dim);
+}
+
+.sheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.sheet th {
+  text-align: left;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--bf-color-line-strong);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-muted);
+  white-space: nowrap;
+}
+
+.sheet td {
+  padding: 4px;
+  border-bottom: 1px solid var(--bf-color-line);
+  vertical-align: middle;
+}
+
+.sheetInput {
+  font: inherit;
+  font-size: 13px;
+  color: var(--bf-color-fg);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--bf-radius-sm);
+  padding: 7px 8px;
+  width: 100%;
+  min-width: 90px;
+}
+
+.sheetInput:hover {
+  border-color: var(--bf-color-line);
+}
+
+.sheetInput:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 0;
+  background: var(--bf-color-glass-solid);
+}
+
+.sheetNumber {
+  font-family: var(--bf-font-mono);
+  text-align: right;
+  min-width: 100px;
+}
+
+.sheetVariance {
+  font-family: var(--bf-font-mono);
+  font-size: 13px;
+  text-align: right;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+.categoryHeaderRow td {
+  background: var(--bf-color-glass);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--bf-color-violet-soft);
+  padding: 8px 10px;
+}
+
+.subtotalRow td {
+  font-family: var(--bf-font-mono);
+  font-size: 12px;
+  color: var(--bf-color-fg-soft);
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--bf-color-line-strong);
+}
+
+.totalsRow td {
+  font-family: var(--bf-font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  border-top: 2px solid var(--bf-color-line-strong);
+  border-bottom: 0;
+  padding: 10px 10px;
+}
+
+.sheetWrap {
+  overflow-x: auto;
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  background: var(--bf-color-glass);
+  padding: 4px 10px 10px;
+}
+
+.addRowBar {
+  padding: 10px 6px 4px;
+}
+
+.addButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.addButton:hover {
+  border-color: var(--bf-color-accent-soft);
+}
+
+.addButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.moveButton {
+  font: inherit;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--bf-color-fg-dim);
+  background: transparent;
+  border: 1px solid var(--bf-color-line);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.moveButton:hover:not(:disabled) {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.moveButton:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.moveButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.removeButton {
+  font: inherit;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--bf-color-fg-dim);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.removeButton:hover {
+  color: var(--bf-color-error);
+  border-color: var(--bf-color-error);
+}
+
+.removeButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+/* Dialog form bits (new budget / duplicate) */
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-muted);
+}
+
+.required::after {
+  content: ' *';
+  color: var(--bf-color-accent-soft);
+}
+
+.input,
+.select {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 9px 12px;
+  width: 100%;
+}
+
+.input:focus-visible,
+.select:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.select {
+  appearance: none;
+  cursor: pointer;
+}
+
+.select option {
+  background: var(--bf-color-bg-2);
+  color: var(--bf-color-fg);
+}
+
+.formActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 16, 0.72);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 60;
+}
+
+.dialog {
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-lg);
+  padding: 24px;
+  width: min(520px, 100%);
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
+}
+
+.dialogTitle {
+  font-family: var(--bf-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 560px) {
+  .fieldGrid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -9,7 +9,7 @@ import { useState } from 'react';
 import styles from './CrmApp.module.css';
 import { useCrm } from './CrmContext';
 import ActivityPanel from './ActivityPanel';
-import ConfirmDialog from './ConfirmDialog';
+import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
 import { CONNECTION_SOURCES, SOURCE_LABELS, STAGE_LABELS } from '@/lib/crm/labels';
 import { contactReferences, describeCounts } from '@/lib/crm/references';
 import type { Contact, ConnectionSource } from '@/lib/crm/types';

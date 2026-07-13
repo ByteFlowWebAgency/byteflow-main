@@ -8,7 +8,7 @@
 import { useMemo, useState } from 'react';
 import styles from './CrmApp.module.css';
 import { useCrm } from './CrmContext';
-import ConfirmDialog from './ConfirmDialog';
+import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
 import { ALL_STAGES, PIPELINE_STAGES, STAGE_LABELS } from '@/lib/crm/labels';
 import { isOverdue, isStale } from '@/lib/crm/dealMeta';
 import { lookupName } from '@/lib/crm/references';

@@ -1,12 +1,13 @@
 'use client';
 
-// Confirmation dialog used for destructive CRM actions and the lost-reason prompt.
-// Optional required text input (promptLabel) covers "why was this lost?". The confirm
-// action may be async — failures render inline and keep the dialog open, so a failed
-// delete/restore is never mistaken for a completed one.
+// Shared confirmation dialog for destructive/consequential internal-tool actions
+// (CRM deletions, lost-reason prompt, budget deletion, restore-from-backup). Optional
+// required text input via promptLabel. The confirm action may be async — failures
+// render inline and keep the dialog open, so a failed action is never mistaken for a
+// completed one. Escape cancels.
 
 import { useEffect, useState } from 'react';
-import styles from './CrmApp.module.css';
+import styles from './ConfirmDialog.module.css';
 
 export interface ConfirmDialogProps {
   title: string;
@@ -16,6 +17,7 @@ export interface ConfirmDialogProps {
   /** When set, a required text field is shown and its value passed to onConfirm. */
   promptLabel?: string;
   promptPlaceholder?: string;
+  promptDefault?: string;
   onConfirm: (promptValue: string) => void | Promise<void>;
   onCancel: () => void;
 }
@@ -27,10 +29,11 @@ export default function ConfirmDialog({
   danger,
   promptLabel,
   promptPlaceholder,
+  promptDefault,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  const [promptValue, setPromptValue] = useState('');
+  const [promptValue, setPromptValue] = useState(promptDefault ?? '');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,15 +65,18 @@ export default function ConfirmDialog({
         aria-modal="true"
         aria-label={title}
       >
-        <h2 className={styles.dialogTitle}>{title}</h2>
-        <p className={styles.dialogBody}>{body}</p>
+        <h2 className={styles.title}>{title}</h2>
+        <p className={styles.body}>{body}</p>
         {promptLabel && (
           <div className={styles.field}>
-            <label htmlFor="crm-confirm-prompt" className={`${styles.label} ${styles.required}`}>
+            <label
+              htmlFor="it-confirm-prompt"
+              className={`${styles.label} ${styles.required}`}
+            >
               {promptLabel}
             </label>
             <input
-              id="crm-confirm-prompt"
+              id="it-confirm-prompt"
               className={styles.input}
               type="text"
               value={promptValue}
@@ -81,17 +87,22 @@ export default function ConfirmDialog({
           </div>
         )}
         {error && (
-          <p className={styles.formError} role="alert">
+          <p className={styles.error} role="alert">
             {error}
           </p>
         )}
-        <div className={styles.formActions}>
-          <button type="button" className={styles.ghostButton} onClick={onCancel} autoFocus={!promptLabel}>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.cancelButton}
+            onClick={onCancel}
+            autoFocus={!promptLabel}
+          >
             Cancel
           </button>
           <button
             type="button"
-            className={danger ? styles.dangerButton : styles.primaryButton}
+            className={danger ? styles.dangerButton : styles.confirmButton}
             disabled={busy || Boolean(promptLabel && !promptValue.trim())}
             onClick={confirm}
           >
