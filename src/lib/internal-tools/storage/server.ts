@@ -1,6 +1,8 @@
 // Server-only Supabase access for the internal tools. This is the ONLY module in the
-// codebase allowed to import @supabase/supabase-js or read the service-role key; it is
-// imported exclusively from API route handlers (which check the session cookie first).
+// codebase allowed to import @supabase/supabase-js or read the service-role key. It is
+// imported from API route handlers: the CRM/budget routes check the session cookie first;
+// the /api/internal-login route calls verifyInternalCredentials() pre-auth (that IS the
+// auth check) and never returns anything beyond a pass/fail.
 // RLS is enabled with zero policies on every table — the service-role key is the only
 // key that can touch them, and it must never reach a client bundle. The hard throw
 // below makes any accidental client import fail loudly at load time.
@@ -148,4 +150,24 @@ export async function saveEntities(
 export async function removeEntity(entity: EntityName, id: string): Promise<void> {
   const { error } = await getClient().from(entity).delete().eq('id', id);
   if (error) throw new UpstreamError(error.message);
+}
+
+/**
+ * Verify a /internal sign-in against the internal_users table. The bcrypt comparison
+ * happens inside the database (verify_internal_login RPC, see the internal_auth
+ * migration) so the password hash never leaves Postgres. Returns true only for a
+ * matching username+password; throws UpstreamError on a database failure so the login
+ * route can fail safe (deny) without leaking the reason.
+ */
+export async function verifyInternalCredentials(
+  username: string,
+  password: string,
+): Promise<boolean> {
+  const { data, error } = await getClient().rpc('verify_internal_login', {
+    p_username: username,
+    p_password: password,
+  });
+  if (error) throw new UpstreamError(error.message);
+  // The function returns the user's uuid on success, null otherwise.
+  return typeof data === 'string' && data.length > 0;
 }

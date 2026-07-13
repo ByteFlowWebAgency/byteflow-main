@@ -2,10 +2,12 @@
 // (globalThis.crypto.subtle) so the same code runs in the Edge middleware, route
 // handlers, and server components.
 //
-// Design (per 07-INTEGRATION-AND-QA.md): no database, so the token is stateless —
-// `${expiresMs}.${base64url(HMAC(secret, expiresMs))}`. The HMAC key is derived from the
-// credential env vars themselves: no extra secret to manage, and rotating the password
-// invalidates all sessions. If the env vars are unset, no token can validate — the gate
+// Design (per 07-INTEGRATION-AND-QA.md): the token is stateless —
+// `${expiresMs}.${base64url(HMAC(secret, expiresMs))}` — so the Edge middleware can verify
+// it without a database round-trip. Login credentials themselves now live in Supabase
+// (internal_users), so the HMAC signing key comes from INTERNAL_TOOLS_SESSION_SECRET.
+// For backward compatibility it falls back to deriving from the legacy credential env
+// vars when that secret is unset. If neither is present, no token can validate — the gate
 // fails safe (denies) rather than crashing or falling open.
 
 export const SESSION_COOKIE = 'bf_internal_session';
@@ -17,14 +19,27 @@ function base64url(bytes: Uint8Array): string {
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-async function signingKey(): Promise<CryptoKey | null> {
+/**
+ * The material the HMAC signing key is derived from. Prefers a dedicated session secret;
+ * falls back to the legacy credential env vars so existing deployments and cookies keep
+ * working after credentials moved to Supabase. Rotating either invalidates all sessions.
+ */
+function secretMaterial(): string | null {
+  const explicit = process.env.INTERNAL_TOOLS_SESSION_SECRET;
+  if (explicit) return `bf-internal-session-v2|${explicit}`;
   const username = process.env.INTERNAL_TOOLS_USERNAME;
   const password = process.env.INTERNAL_TOOLS_PASSWORD;
-  if (!username || !password) return null;
-  const material = new TextEncoder().encode(
-    `bf-proposal-tool-v1|${username}|${password}`,
+  if (username && password) return `bf-proposal-tool-v1|${username}|${password}`;
+  return null;
+}
+
+async function signingKey(): Promise<CryptoKey | null> {
+  const material = secretMaterial();
+  if (!material) return null;
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(material),
   );
-  const digest = await crypto.subtle.digest('SHA-256', material);
   return crypto.subtle.importKey(
     'raw',
     digest,
