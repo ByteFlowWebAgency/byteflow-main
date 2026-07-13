@@ -9,6 +9,15 @@ import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
 import CoverPage from '@/components/internal-tools/themes/CoverPage';
 import { CLASSIC_THEME, getBuiltInTheme } from '@/components/internal-tools/themes/builtInThemes';
 import { useCustomThemes } from '@/components/internal-tools/themes/themeStorage';
+import TemplateChooser from '@/components/internal-tools/templates/TemplateChooser';
+import SaveTemplateDialog from '@/components/internal-tools/templates/SaveTemplateDialog';
+import {
+  applyProposalTemplate,
+  captureProposalContent,
+  saveCustomTemplate,
+  useCustomTemplates,
+} from '@/components/internal-tools/templates/templateStorage';
+import type { DocumentTemplate } from '@/components/internal-tools/templates/templateTypes';
 import {
   generateDocumentPdf,
   sanitizeFilePart,
@@ -50,7 +59,8 @@ export type ProposalAction =
   | { type: 'updateDeliverable'; index: number; value: string }
   | { type: 'removeDeliverable'; index: number }
   | { type: 'setTheme'; themeId: string }
-  | { type: 'setIncludeCoverPage'; include: boolean };
+  | { type: 'setIncludeCoverPage'; include: boolean }
+  | { type: 'applyTemplate'; data: ProposalData };
 
 const PHASE_ORDER: PhaseName[] = ['Discover', 'Build', 'Scale'];
 
@@ -177,6 +187,9 @@ function reducer(proposal: ProposalData, action: ProposalAction): ProposalData {
       return { ...proposal, themeId: action.themeId };
     case 'setIncludeCoverPage':
       return { ...proposal, includeCoverPage: action.include };
+    case 'applyTemplate':
+      // Already a fresh deep copy with regenerated ids (templateStorage).
+      return action.data;
   }
 }
 
@@ -189,6 +202,10 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
   const documentRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [showChooser, setShowChooser] = useState(true);
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [templateStatus, setTemplateStatus] = useState<string | null>(null);
+  const customTemplates = useCustomTemplates('proposal');
 
   // id/createdAt are assigned post-mount; createDefaultProposal must stay deterministic
   // for SSR/hydration.
@@ -214,6 +231,33 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
       CLASSIC_THEME,
     [proposal.themeId, customThemes],
   );
+
+  const pickTemplate = (template: DocumentTemplate | null) => {
+    if (template) {
+      dispatch({ type: 'applyTemplate', data: applyProposalTemplate(template, proposal) });
+    }
+    setShowChooser(false);
+  };
+
+  const saveAsTemplate = (name: string, description: string): string | null => {
+    const existing = customTemplates.find(
+      (t) => t.name.toLowerCase() === name.toLowerCase(),
+    );
+    const result = saveCustomTemplate({
+      id: existing ? existing.id : crypto.randomUUID(),
+      name,
+      description,
+      isBuiltIn: false,
+      documentType: 'proposal',
+      themeId: proposal.themeId,
+      includeCoverPage: proposal.includeCoverPage,
+      defaultContent: captureProposalContent(proposal),
+    });
+    if (!result.ok) return result.error;
+    setSavingTemplate(false);
+    setTemplateStatus(`Template "${name}" saved.`);
+    return null;
+  };
 
   const downloadPdf = async () => {
     if (!documentRef.current || !validation.valid || exporting) return;
@@ -253,6 +297,18 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
               {exportError}
             </p>
           )}
+          {templateStatus && (
+            <p className={styles.validationHint} role="status">
+              {templateStatus}
+            </p>
+          )}
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={() => setSavingTemplate(true)}
+          >
+            Save as template
+          </button>
           <button
             type="button"
             className={styles.downloadButton}
@@ -288,6 +344,22 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           </ThemedDocument>
         </section>
       </div>
+
+      {showChooser && (
+        <TemplateChooser
+          documentType="proposal"
+          documentLabel="proposal"
+          onPick={pickTemplate}
+        />
+      )}
+      {savingTemplate && (
+        <SaveTemplateDialog
+          documentLabel="proposal"
+          existingNames={customTemplates.map((t) => t.name)}
+          onSave={saveAsTemplate}
+          onCancel={() => setSavingTemplate(false)}
+        />
+      )}
     </div>
   );
 }

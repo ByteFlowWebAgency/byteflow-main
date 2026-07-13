@@ -9,6 +9,15 @@ import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
 import CoverPage from '@/components/internal-tools/themes/CoverPage';
 import { CLASSIC_THEME, getBuiltInTheme } from '@/components/internal-tools/themes/builtInThemes';
 import { useCustomThemes } from '@/components/internal-tools/themes/themeStorage';
+import TemplateChooser from '@/components/internal-tools/templates/TemplateChooser';
+import SaveTemplateDialog from '@/components/internal-tools/templates/SaveTemplateDialog';
+import {
+  applyAuditTemplate,
+  captureAuditContent,
+  saveCustomTemplate,
+  useCustomTemplates,
+} from '@/components/internal-tools/templates/templateStorage';
+import type { DocumentTemplate } from '@/components/internal-tools/templates/templateTypes';
 import {
   generateDocumentPdf,
   sanitizeFilePart,
@@ -36,7 +45,8 @@ export type AuditAction =
   | { type: 'updateRecommendation'; index: number; value: string }
   | { type: 'removeRecommendation'; index: number }
   | { type: 'setTheme'; themeId: string }
-  | { type: 'setIncludeCoverPage'; include: boolean };
+  | { type: 'setIncludeCoverPage'; include: boolean }
+  | { type: 'applyTemplate'; data: AuditData };
 
 function reducer(audit: AuditData, action: AuditAction): AuditData {
   switch (action.type) {
@@ -96,6 +106,9 @@ function reducer(audit: AuditData, action: AuditAction): AuditData {
       return { ...audit, themeId: action.themeId };
     case 'setIncludeCoverPage':
       return { ...audit, includeCoverPage: action.include };
+    case 'applyTemplate':
+      // Already a fresh deep copy with regenerated ids (templateStorage).
+      return action.data;
   }
 }
 
@@ -104,6 +117,10 @@ export default function AuditToolApp() {
   const documentRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+  const [showChooser, setShowChooser] = useState(true);
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [templateStatus, setTemplateStatus] = useState<string | null>(null);
+  const customTemplates = useCustomTemplates('audit');
 
   // id/createdAt/auditDate are assigned post-mount; createDefaultAudit must stay
   // deterministic for SSR/hydration. Audit date defaults to today, editable.
@@ -130,6 +147,33 @@ export default function AuditToolApp() {
       CLASSIC_THEME,
     [audit.themeId, customThemes],
   );
+
+  const pickTemplate = (template: DocumentTemplate | null) => {
+    if (template) {
+      dispatch({ type: 'applyTemplate', data: applyAuditTemplate(template, audit) });
+    }
+    setShowChooser(false);
+  };
+
+  const saveAsTemplate = (name: string, description: string): string | null => {
+    const existing = customTemplates.find(
+      (t) => t.name.toLowerCase() === name.toLowerCase(),
+    );
+    const result = saveCustomTemplate({
+      id: existing ? existing.id : crypto.randomUUID(),
+      name,
+      description,
+      isBuiltIn: false,
+      documentType: 'audit',
+      themeId: audit.themeId,
+      includeCoverPage: audit.includeCoverPage,
+      defaultContent: captureAuditContent(audit),
+    });
+    if (!result.ok) return result.error;
+    setSavingTemplate(false);
+    setTemplateStatus(`Template "${name}" saved.`);
+    return null;
+  };
 
   const downloadPdf = async () => {
     if (!documentRef.current || !validation.valid || exporting) return;
@@ -172,6 +216,18 @@ export default function AuditToolApp() {
               {exportError}
             </p>
           )}
+          {templateStatus && (
+            <p className={styles.validationHint} role="status">
+              {templateStatus}
+            </p>
+          )}
+          <button
+            type="button"
+            className={styles.secondaryButton}
+            onClick={() => setSavingTemplate(true)}
+          >
+            Save as template
+          </button>
           <button
             type="button"
             className={styles.downloadButton}
@@ -202,6 +258,18 @@ export default function AuditToolApp() {
           </ThemedDocument>
         </section>
       </div>
+
+      {showChooser && (
+        <TemplateChooser documentType="audit" documentLabel="audit" onPick={pickTemplate} />
+      )}
+      {savingTemplate && (
+        <SaveTemplateDialog
+          documentLabel="audit"
+          existingNames={customTemplates.map((t) => t.name)}
+          onSave={saveAsTemplate}
+          onCancel={() => setSavingTemplate(false)}
+        />
+      )}
     </div>
   );
 }

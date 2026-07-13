@@ -1,0 +1,126 @@
+/* Mirrors ConfirmDialog's overlay/dialog conventions. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 16, 0.72);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  z-index: 70;
+  padding: 24px;
+}
+
+.dialog {
+  width: min(440px, 100%);
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-lg);
+  padding: 24px;
+}
+
+.title {
+  font-family: var(--bf-font-display);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--bf-color-fg);
+  margin-bottom: 8px;
+}
+
+.body {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--bf-color-fg-muted);
+  margin-bottom: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-muted);
+}
+
+.required::after {
+  content: ' *';
+  color: var(--bf-color-accent-soft);
+}
+
+.input {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 9px 10px;
+}
+
+.input:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.warning {
+  font-size: 13px;
+  color: #fbbf24;
+  margin-bottom: 10px;
+}
+
+.error {
+  font-size: 13px;
+  color: var(--bf-color-error);
+  margin-bottom: 10px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.cancelButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 9px 16px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  color: var(--bf-color-fg);
+}
+
+.confirmButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  background: var(--bf-grad-primary);
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 18px;
+  cursor: pointer;
+}
+
+.confirmButton:hover {
+  filter: brightness(1.08);
+}
+
+.cancelButton:focus-visible,
+.confirmButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
