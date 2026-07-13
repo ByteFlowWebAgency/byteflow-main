@@ -1,7 +1,8 @@
 'use client';
 
 import styles from './ProposalDocument.module.css';
-import { formatUsd, type ProposalTotals } from '@/lib/proposal-tool/pricingMath';
+import { formatUsd } from '@/lib/internal-tools/format';
+import type { ProposalTotals } from '@/lib/proposal-tool/pricingMath';
 import type { LineItem, ProposalData } from '@/lib/proposal-tool/types';
 
 function ItemRows({ items, perMonth }: { items: LineItem[]; perMonth: boolean }) {

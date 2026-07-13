@@ -2,7 +2,8 @@
 
 import styles from './ProposalForm.module.css';
 import { parseAmount, type SectionProps } from './ProposalForm';
-import { formatUsd, type ProposalTotals } from '@/lib/proposal-tool/pricingMath';
+import { formatUsd } from '@/lib/internal-tools/format';
+import type { ProposalTotals } from '@/lib/proposal-tool/pricingMath';
 
 interface LineItemsSectionProps extends SectionProps {
   totals: ProposalTotals;
