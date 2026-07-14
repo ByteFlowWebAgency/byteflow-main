@@ -100,6 +100,30 @@
   color: var(--bf-color-fg);
 }
 
+.panelToggle {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  padding: 8px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.panelToggle:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.panelToggleActive {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+  background: var(--bf-color-glass-solid);
+}
+
 .workarea {
   display: flex;
   gap: 20px;
@@ -107,26 +131,34 @@
   flex: 1;
   min-height: 0;
   align-items: flex-start;
+  /* So the rail/field-panel's `position: sticky; max-height: calc(100vh - Npx)` has a
+     real viewport-relative anchor to measure from regardless of page scroll position. */
+  height: calc(100vh - 132px);
 }
 
 .railSticky {
   position: sticky;
   top: 84px;
-  max-height: calc(100vh - 120px);
+  height: calc(100vh - 120px);
+  flex-shrink: 0;
 }
 
 .canvasArea {
   flex: 1;
   min-width: 0;
+  height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  padding: 4px;
 }
 
 .canvasWrap {
   width: 100%;
-  max-width: 780px;
+  display: flex;
+  justify-content: center;
 }
 
 .fieldPanel {
@@ -137,7 +169,7 @@
   padding: 16px;
   position: sticky;
   top: 84px;
-  max-height: calc(100vh - 120px);
+  height: calc(100vh - 120px);
   overflow-y: auto;
 }
 

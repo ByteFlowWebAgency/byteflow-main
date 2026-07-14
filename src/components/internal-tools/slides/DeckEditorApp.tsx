@@ -22,6 +22,12 @@ import type { Deck, Slide, SlideTemplateId } from '@/lib/slides/types';
 
 type SaveStatus = 'saved' | 'saving' | 'error';
 
+// Comfortable canvas size range — the width var lib/slides/pptxGenerators.ts's proportions
+// were designed around (960px), down to a minimum that keeps text legible when both side
+// panels are open on a narrower window.
+const MAX_CANVAS_W = 960;
+const MIN_CANVAS_W = 420;
+
 export default function DeckEditorApp({ id }: { id: string }) {
   const [deck, setDeck] = useState<Deck | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -30,12 +36,33 @@ export default function DeckEditorApp({ id }: { id: string }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const [deleting, setDeleting] = useState<number | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [railOpen, setRailOpen] = useState(true);
+  const [fieldPanelOpen, setFieldPanelOpen] = useState(true);
+  const [canvasW, setCanvasW] = useState(MAX_CANVAS_W);
   const firstRun = useRef(true);
+  const canvasAreaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setDeck(getDeck(id) ?? null);
     setLoaded(true);
   }, [id]);
+
+  // The canvas has a fixed intrinsic width (see slideCanvas.module.css — ThemedDocument's
+  // `width: fit-content` wrapper gives a plain `width: 100%` nothing to resolve against),
+  // so it doesn't shrink with its flex container on its own. Measure the actual available
+  // space whenever it changes — window resize, or either side panel opening/closing — and
+  // clamp the canvas to fit it, instead of letting it overflow underneath the field panel.
+  useEffect(() => {
+    const el = canvasAreaRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width ?? el.clientWidth;
+      const next = Math.round(Math.min(MAX_CANVAS_W, Math.max(MIN_CANVAS_W, width - 8)));
+      setCanvasW(next);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [railOpen, fieldPanelOpen]);
 
   // Debounced autosave on every change — never on the initial load.
   useEffect(() => {
@@ -141,6 +168,16 @@ export default function DeckEditorApp({ id }: { id: string }) {
           <Link href="/internal/slides" className={styles.backLink}>
             ← Decks
           </Link>
+          <button
+            type="button"
+            className={`${styles.panelToggle} ${railOpen ? styles.panelToggleActive : ''}`}
+            onClick={() => setRailOpen((v) => !v)}
+            aria-pressed={railOpen}
+            aria-label={railOpen ? 'Hide slide list' : 'Show slide list'}
+            title={railOpen ? 'Hide slide list' : 'Show slide list'}
+          >
+            ☰ Slides
+          </button>
           <input
             className={styles.deckName}
             value={deck.name}
@@ -158,6 +195,16 @@ export default function DeckEditorApp({ id }: { id: string }) {
           <span className={`${styles.saveStatus} ${styles[`status_${status}`]}`} role="status">
             {status === 'saved' ? 'Saved' : status === 'saving' ? 'Saving…' : 'Save failed'}
           </span>
+          <button
+            type="button"
+            className={`${styles.panelToggle} ${fieldPanelOpen ? styles.panelToggleActive : ''}`}
+            onClick={() => setFieldPanelOpen((v) => !v)}
+            aria-pressed={fieldPanelOpen}
+            aria-label={fieldPanelOpen ? 'Hide content panel' : 'Show content panel'}
+            title={fieldPanelOpen ? 'Hide content panel' : 'Show content panel'}
+          >
+            Content ☰
+          </button>
           <button type="button" className={styles.primaryBtn} onClick={onDownload} disabled={downloading}>
             {downloading ? 'Preparing…' : 'Download .pptx'}
           </button>
@@ -165,28 +212,32 @@ export default function DeckEditorApp({ id }: { id: string }) {
       </header>
 
       <div className={styles.workarea}>
-        <div className={styles.railSticky}>
-          <SlideRail
-            slides={deck.slides}
-            selectedIndex={safeIndex}
-            onSelect={setSelectedIndex}
-            onReorder={reorderSlide}
-            onDuplicate={duplicateSlide}
-            onRequestDelete={setDeleting}
-            onAddClick={() => setPickerOpen(true)}
-          />
-        </div>
+        {railOpen && (
+          <div className={styles.railSticky}>
+            <SlideRail
+              slides={deck.slides}
+              selectedIndex={safeIndex}
+              onSelect={setSelectedIndex}
+              onReorder={reorderSlide}
+              onDuplicate={duplicateSlide}
+              onRequestDelete={setDeleting}
+              onAddClick={() => setPickerOpen(true)}
+            />
+          </div>
+        )}
 
-        <div className={styles.canvasArea}>
-          <div className={styles.canvasWrap}>
+        <div className={styles.canvasArea} ref={canvasAreaRef}>
+          <div className={styles.canvasWrap} style={{ ['--bf-slide-w' as string]: `${canvasW}px` }}>
             <SlideRenderer slide={slide} theme={theme} />
           </div>
         </div>
 
-        <div className={styles.fieldPanel}>
-          <p className={styles.fieldPanelHeading}>{TEMPLATE_LABELS[slide.templateId].name} — content</p>
-          <SlideFieldEditor slide={slide} onChange={(next) => updateSlide(safeIndex, next)} />
-        </div>
+        {fieldPanelOpen && (
+          <div className={styles.fieldPanel}>
+            <p className={styles.fieldPanelHeading}>{TEMPLATE_LABELS[slide.templateId].name} — content</p>
+            <SlideFieldEditor slide={slide} onChange={(next) => updateSlide(safeIndex, next)} />
+          </div>
+        )}
       </div>
 
       {pickerOpen && <SlideTemplatePicker onPick={addSlide} onClose={() => setPickerOpen(false)} />}
