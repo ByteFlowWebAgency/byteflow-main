@@ -1,17 +1,20 @@
-// The thirteen built-in Document Builder templates. "Blank" (#1) is handled specially by
-// the chooser (createBlankDocument); the twelve below are DocTemplate objects. Every one is
-// built from the fixed page/block vocabulary in 02-BLOCKS-AND-PAGES.md — distinctiveness
-// comes from which blocks are chosen and the theme, never new primitives. Placeholder copy
-// is bracketed and obviously fake (no real client data).
+// The built-in Document Builder templates — the only template system in the app (the
+// former standalone Proposal and Audit tools, and their own separate template system,
+// were removed once every template they offered had a Document Builder equivalent here).
+// "Blank" is handled specially by the chooser (createBlankDocument); everything else is a
+// DocTemplate object built from the fixed page/block vocabulary in
+// 02-BLOCKS-AND-PAGES.md — distinctiveness comes from which blocks are chosen and the
+// theme, never new primitives. Placeholder copy is bracketed and obviously fake (no real
+// client data).
 //
-// The two "Full Design" templates deliberately import shared logic rather than duplicate
-// it: the pricingTable block renders through the proposal tool's calculateTotals, and the
-// Site Audit template's section pages come from the audit tool's CATEGORY_ORDER/LABELS.
+// Pricing and audit-category vocabulary are shared, not duplicated: the pricingTable
+// block renders through @/lib/internal-tools/pricing's calculateTotals, and the Site
+// Audit templates' section pages come from @/lib/internal-tools/findingCategories.
 
 import { newId } from '@/lib/document-builder/defaults';
-import { CATEGORY_ORDER, CATEGORY_LABELS } from '@/lib/audit-tool/labels';
+import { CATEGORY_ORDER, CATEGORY_LABELS } from '@/lib/internal-tools/findingCategories';
 import type { Block, BuiltDocument, DocumentPage } from '@/lib/document-builder/types';
-import type { Pricing } from '@/lib/proposal-tool/types';
+import type { Pricing } from '@/lib/internal-tools/pricing';
 import type { DocTemplate } from './templateTypes';
 
 const id = () => newId();
@@ -81,6 +84,40 @@ const DIAG = 'Diagnostic & Reporting';
 const EXTRAS = 'Client-Facing Extras';
 
 const CONTACT = '<p>[Your name] · [email] · [phone] — <strong>ByteFlow Solutions</strong>, Akron, Ohio.</p>';
+
+// ---- Proposal — Standard/Dark Pitch: shared page set, theme is the only difference ------
+function standardProposalPages(): DocumentPage[] {
+  return [
+    cover('[Project title]', 'PROJECT PROPOSAL', '[Client name]'),
+    section('01', 'Overview'),
+    content(
+      rich('<p>[Frame the engagement: the client’s goal, the outcome, and how you will get there.]</p>'),
+      banner('PHASE 1', 'Discover'),
+      rich('<p>[Describe the Discover phase for this engagement.]</p>'),
+      banner('PHASE 2', 'Build'),
+      rich('<p>[Describe the Build phase for this engagement.]</p>'),
+      banner('PHASE 3', 'Scale'),
+      rich('<p>[Describe the Scale phase for this engagement.]</p>'),
+    ),
+    section('02', 'Deliverables'),
+    content(rich('<ul><li>[Deliverable one]</li><li>[Deliverable two]</li></ul>')),
+    section('03', 'Investment'),
+    content(
+      pricing({ model: 'flat', totalAmount: 0, paymentSchedule: '[e.g. 50% upfront, 50% on completion]' }),
+      kv([
+        ['Payment terms', '[e.g. Net 15, due upon invoice]'],
+        ['Proposal valid for', '30 days'],
+      ]),
+    ),
+    section('04', 'Terms'),
+    closing(
+      rich(
+        '<p><strong>What’s included:</strong> [scope summary]. <strong>Revisions:</strong> [revision-round policy]. <strong>Ownership:</strong> [IP/ownership terms]. <strong>Timeline assumptions:</strong> [dependencies/assumptions].</p>',
+      ),
+      rich(CONTACT),
+    ),
+  ];
+}
 
 // ---- #10 Site Audit — Full Design: section page per audit category (imported labels) -----
 function siteAuditPages(): DocumentPage[] {
@@ -212,6 +249,61 @@ export const BUILT_IN_TEMPLATES: readonly DocTemplate[] = [
       closing(rich('<p>Want results like this? [Next step].</p>'), rich(CONTACT)),
     ]),
   ),
+  tpl(
+    'tpl-proposal-standard',
+    'Proposal — Standard',
+    'The default project proposal: phases, deliverables, flat-fee investment, terms.',
+    SALES,
+    buildDoc('Proposal — Standard', 'classic', standardProposalPages()),
+  ),
+  tpl(
+    'tpl-proposal-retainer',
+    'Proposal — Retainer',
+    'For ongoing work: recurring deliverables, monthly investment, renewal terms.',
+    SALES,
+    buildDoc('Proposal — Retainer', 'classic', [
+      cover('[Project title]', 'RETAINER PROPOSAL', '[Client name]'),
+      section('01', 'Overview'),
+      content(
+        rich('<p>[Frame the ongoing engagement: the client’s goal and how the retainer supports it.]</p>'),
+        banner('PHASE 1', 'Discover'),
+        rich('<p>[Describe the Discover phase for this engagement.]</p>'),
+        banner('PHASE 2', 'Build'),
+        rich('<p>[Describe the Build phase for this engagement.]</p>'),
+        banner('PHASE 3', 'Scale'),
+        rich('<p>[Describe the Scale phase for this engagement.]</p>'),
+      ),
+      section('02', 'Recurring Deliverables'),
+      content(rich('<ul><li>[Recurring deliverable one]</li><li>[Recurring deliverable two]</li></ul>')),
+      section('03', 'Investment'),
+      content(
+        pricing({
+          model: 'retainer',
+          monthlyAmount: 0,
+          termMonths: 6,
+          includedScope: '[Support hours, maintenance, reporting cadence, response times]',
+        }),
+        kv([
+          ['Payment terms', '[e.g. Invoiced monthly in advance, Net 15]'],
+          ['Proposal valid for', '30 days'],
+        ]),
+      ),
+      section('04', 'Terms'),
+      closing(
+        rich(
+          '<p><strong>Unused hours:</strong> [rollover / use-it-or-lose-it policy]. <strong>Scope changes:</strong> [how mid-term scope changes are handled]. <strong>Renewal &amp; exit:</strong> [notice period, renewal terms].</p>',
+        ),
+        rich(CONTACT),
+      ),
+    ]),
+  ),
+  tpl(
+    'tpl-proposal-dark-pitch',
+    'Proposal — Dark Pitch',
+    'Same structure as Standard, in the dark full-bleed cover theme.',
+    SALES,
+    buildDoc('Proposal — Dark Pitch', 'dark', standardProposalPages()),
+  ),
 
   // ---- Scoping & Delivery ----
   tpl(
@@ -312,9 +404,35 @@ export const BUILT_IN_TEMPLATES: readonly DocTemplate[] = [
   tpl(
     'tpl-site-audit-full',
     'Site Audit — Full Design',
-    'The block-based sibling to the fixed Audit tool — a section page per category.',
+    'The full audit report — a findings section page per category, plus top recommendations.',
     DIAG,
     buildDoc('Site Audit — Full Design', 'classic', siteAuditPages()),
+  ),
+  tpl(
+    'tpl-audit-local-seo',
+    'Local SEO Snapshot',
+    'A short, single-page snapshot for cold outreach — GBP and on-page signals, one fastest win.',
+    DIAG,
+    buildDoc('Local SEO Snapshot', 'classic', [
+      cover('[site.com] — Local SEO Snapshot', 'QUICK SNAPSHOT', '[Client name]'),
+      content(
+        rich(
+          '<p>[One paragraph: Google Business Profile status, on-page signals, and the fastest wins available.]</p>',
+        ),
+        table(
+          ['Area', 'Issue', 'Severity', 'Recommendation'],
+          [
+            [CATEGORY_LABELS['local-seo-gbp'], '[Issue observed]', '[Critical / High / Medium / Low]', '[What to change]'],
+            [CATEGORY_LABELS['local-seo-gbp'], '[Issue observed]', '[Severity]', '[What to change]'],
+            [CATEGORY_LABELS['on-page-seo'], '[Issue observed]', '[Severity]', '[What to change]'],
+          ],
+        ),
+      ),
+      closing(
+        callout('<p><strong>Fastest win:</strong> [the single highest-impact, lowest-effort recommendation].</p>'),
+        rich(CONTACT),
+      ),
+    ]),
   ),
   tpl(
     'tpl-monthly-report',

@@ -8,7 +8,7 @@ import PlainTextEditable from './PlainTextEditable';
 import { newId } from '@/lib/document-builder/defaults';
 import { formatUsd } from '@/lib/internal-tools/format';
 import type { Block, PricingTableBlock } from '@/lib/document-builder/types';
-import type { Pricing } from '@/lib/proposal-tool/types';
+import type { Pricing } from '@/lib/internal-tools/pricing';
 
 interface BlockEditorProps {
   block: Block;
@@ -227,6 +227,7 @@ function ImageEditor({
           ref={fileRef}
           type="file"
           accept="image/*"
+          className={styles.fileInput}
           onChange={(e) => pick(e.target.files?.[0])}
           aria-label="Choose image file"
         />

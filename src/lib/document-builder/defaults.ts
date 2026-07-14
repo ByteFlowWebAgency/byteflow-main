@@ -2,7 +2,7 @@
 // consistent with earlier phases. Freshly-inserted blocks get minimal, editable defaults;
 // bracketed placeholder copy belongs to TEMPLATES (templates.ts), not to these primitives.
 
-import type { Pricing } from '@/lib/proposal-tool/types';
+import type { Pricing } from '@/lib/internal-tools/pricing';
 import type {
   Block,
   BlockType,

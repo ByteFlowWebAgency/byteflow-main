@@ -1,9 +1,48 @@
-import type { LineItem, ProposalData } from './types';
+// Shared pricing model for the internal tools — three billing shapes (flat/retainer/
+// hybrid) plus flat line items, and the totals math a pricing table renders from them.
+// Originally lived under the (now-removed) proposal tool; Document Builder's
+// pricingTable block is the sole consumer today.
+
+export type PricingModel = 'flat' | 'retainer' | 'hybrid';
+
+export interface LineItem {
+  id: string;
+  description: string;
+  /** USD, whole dollars. */
+  amount: number;
+  /** True if this item repeats each billing cycle (retainer/hybrid models). */
+  recurring: boolean;
+}
+
+export interface FlatPricing {
+  model: 'flat';
+  totalAmount: number;
+  /** Free text, e.g. "50% upfront, 50% on completion". */
+  paymentSchedule: string;
+}
+
+export interface RetainerPricing {
+  model: 'retainer';
+  monthlyAmount: number;
+  termMonths: number;
+  /** Free text — what's included per month. */
+  includedScope: string;
+}
+
+export interface HybridPricing {
+  model: 'hybrid';
+  setupAmount: number;
+  monthlyAmount: number;
+  termMonths: number;
+  includedScope: string;
+}
+
+export type Pricing = FlatPricing | RetainerPricing | HybridPricing;
 
 // Display-ready totals for the current pricing model. Only the fields relevant to the
-// model in use are set — the document's investment table renders what's present.
-export interface ProposalTotals {
-  model: ProposalData['pricing']['model'];
+// model in use are set — the pricing table renders what's present.
+export interface PricingTotals {
+  model: Pricing['model'];
   /** Flat + hybrid: the one-time portion (base + non-recurring line items). */
   oneTimeTotal?: number;
   /** Retainer + hybrid: per-month investment (base monthly + recurring line items). */
@@ -25,14 +64,14 @@ function sumLineItems(items: LineItem[], recurring: boolean): number {
 }
 
 /**
- * Compute the totals the document displays, per the pricing model in use:
+ * Compute the totals a pricing table displays, per the pricing model in use:
  * - flat: total investment = totalAmount + non-recurring line items
  * - retainer: monthly = monthlyAmount + recurring line items; contract = monthly × term
  * - hybrid: one-time = setupAmount + non-recurring items; monthly as retainer;
  *   contract = one-time + monthly × term
  */
-export function calculateTotals(proposal: ProposalData): ProposalTotals {
-  const { pricing, lineItems } = proposal;
+export function calculateTotals(input: { pricing: Pricing; lineItems: LineItem[] }): PricingTotals {
+  const { pricing, lineItems } = input;
   const nonRecurring = sumLineItems(lineItems, false);
   const recurring = sumLineItems(lineItems, true);
 

@@ -9,7 +9,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import type { Pricing, LineItem } from '@/lib/proposal-tool/types';
+import type { Pricing, LineItem } from '@/lib/internal-tools/pricing';
 import { sanitizeRichHtml } from './sanitize';
 import type {
   Block,

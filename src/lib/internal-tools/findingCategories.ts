@@ -1,7 +1,16 @@
-import type { AuditCategory, AuditSeverity } from './types';
+// Shared site-audit finding categories, used by Document Builder's Site Audit template.
+// Originally lived under the (now-removed) audit tool. CATEGORY_ORDER is the canonical
+// display order.
 
-// Reader-facing labels for the code-friendly type keys, per 03-DATA-MODEL-AUDIT.md.
-// CATEGORY_ORDER is the display order in both the form and the document.
+export type AuditSeverity = 'critical' | 'high' | 'medium' | 'low' | 'good';
+
+export type AuditCategory =
+  | 'technical-seo'
+  | 'on-page-seo'
+  | 'local-seo-gbp'
+  | 'accessibility'
+  | 'design-ux'
+  | 'performance-security';
 
 export const CATEGORY_ORDER: AuditCategory[] = [
   'technical-seo',

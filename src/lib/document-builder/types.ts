@@ -5,7 +5,7 @@
 // The theme owns all color and type — blocks never carry color/font overrides. That
 // separation is what keeps every built document on-brand (see 00-GUARDRAILS.md).
 
-import type { Pricing, LineItem } from '@/lib/proposal-tool/types';
+import type { Pricing, LineItem } from '@/lib/internal-tools/pricing';
 
 export type BlockType =
   | 'heading'

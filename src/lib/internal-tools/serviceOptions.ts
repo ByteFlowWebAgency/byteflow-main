@@ -1,15 +1,25 @@
 import { getPage } from '@/lib/contentful/queries';
 import { cardsOf, sectionsOf } from '@/lib/contentful/extract';
-import { STANDARD_SERVICES } from '@/lib/proposal-tool/defaults';
 
 /**
- * The ByteFlow services list, shared across internal tools (proposal service lines, CRM
- * deal services). Same source of truth as the marketing site's services page — its
- * second section's featureCards — with the static six-practice fallback when Contentful
- * is unreachable or unconfigured; never throws. Server-side only (Contentful fetch).
- *
- * The proposal tool page predates this helper and keeps its own identical copy to stay
- * untouched per phase-5 guardrails; folding it onto this one is a safe future cleanup.
+ * Fallback service labels — the six practices as titled on the marketing site's services
+ * page. Used only when the live Contentful fetch below is unavailable (local dev without
+ * credentials, Contentful outage).
+ */
+const STANDARD_SERVICES: string[] = [
+  'Enterprise Software Solutions',
+  'Custom Development',
+  'AI Integration',
+  'Cloud Solutions',
+  'SEO & Digital Growth',
+  'Consulting & Host Management',
+];
+
+/**
+ * The ByteFlow services list, shared across internal tools (CRM deal services). Same
+ * source of truth as the marketing site's services page — its second section's
+ * featureCards — with the static six-practice fallback when Contentful is unreachable or
+ * unconfigured; never throws. Server-side only (Contentful fetch).
  */
 export async function getServiceOptions(): Promise<string[]> {
   try {

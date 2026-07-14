@@ -31,20 +31,6 @@ export default function InternalHubPage() {
 
         <div className={styles.grid}>
           <HubTile
-            title="Proposals"
-            description="Contract proposals — flat, retainer, or hybrid pricing — with a live branded preview and PDF export."
-            monogram="Pr"
-            href="/internal/proposal-tool"
-            status="live"
-          />
-          <HubTile
-            title="Site Audits"
-            description="Prospect site audit reports: findings by category and severity, screenshots, and top recommendations."
-            monogram="Au"
-            href="/internal/audits"
-            status="live"
-          />
-          <HubTile
             title="CRM"
             description="Contacts, organizations, and the deal pipeline — who was referred by whom, and what to do today."
             monogram="Cr"
@@ -59,17 +45,17 @@ export default function InternalHubPage() {
             status="live"
           />
           <HubTile
-            title="Document Themes"
-            description="Create and manage the color and font themes proposals and audits render with — including dark covers for pitch decks."
-            monogram="Th"
-            href="/internal/theme-editor"
+            title="Documents"
+            description="Compose free-form, on-brand documents from typed blocks — proposals, one-pagers, audits, briefs, reports — with templates, themes, and PDF export."
+            monogram="Dc"
+            href="/internal/documents"
             status="live"
           />
           <HubTile
-            title="Documents"
-            description="Compose free-form, on-brand documents from typed blocks — one-pagers, briefs, pitches, reports — with templates, themes, and PDF export."
-            monogram="Dc"
-            href="/internal/documents"
+            title="Document Themes"
+            description="Create and manage the color and font themes documents render with — including dark covers for pitch decks."
+            monogram="Th"
+            href="/internal/theme-editor"
             status="live"
           />
           <HubTile

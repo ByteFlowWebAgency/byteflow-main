@@ -8,8 +8,6 @@ import styles from './InternalShell.module.css';
 // and log out. This is the "one way back to home from anywhere" the marketing Nav used
 // to (accidentally) provide — now purpose-built for the internal area.
 const TOOLS = [
-  { href: '/internal/proposal-tool', label: 'Proposals' },
-  { href: '/internal/audits', label: 'Site Audits' },
   { href: '/internal/documents', label: 'Documents' },
   { href: '/internal/crm', label: 'CRM' },
   { href: '/internal/budgets', label: 'Budgets' },

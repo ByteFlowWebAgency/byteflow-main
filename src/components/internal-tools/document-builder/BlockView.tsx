@@ -1,11 +1,10 @@
 'use client';
 
 import styles from './builder.module.css';
-import { calculateTotals } from '@/lib/proposal-tool/pricingMath';
-import { createDefaultProposal } from '@/lib/proposal-tool/defaults';
+import { calculateTotals } from '@/lib/internal-tools/pricing';
 import { formatUsd } from '@/lib/internal-tools/format';
 import type { Block, PricingTableBlock } from '@/lib/document-builder/types';
-import type { LineItem } from '@/lib/proposal-tool/types';
+import type { LineItem } from '@/lib/internal-tools/pricing';
 
 // richText/callout HTML is sanitized to the whitelist at every input boundary — on write,
 // on paste, on import, and on storage load (see sanitize.ts / storage.validateDocument) —
@@ -134,17 +133,12 @@ function Amount({ value, perMonth }: { value: number; perMonth?: boolean }) {
 }
 
 /**
- * Block-based pricing table. Computes every figure through the proposal tool's single
- * calculateTotals implementation (no duplicated math) by feeding it a throwaway
- * default proposal with this block's pricing + line items.
+ * Block-based pricing table. Computes every figure through the shared calculateTotals
+ * implementation (no duplicated math).
  */
 function PricingTable({ block }: { block: PricingTableBlock }) {
   const { pricing, lineItems } = block;
-  const totals = calculateTotals({
-    ...createDefaultProposal(),
-    pricing,
-    lineItems,
-  });
+  const totals = calculateTotals({ pricing, lineItems });
   const oneTime = lineItems.filter((i: LineItem) => !i.recurring);
   const recurring = lineItems.filter((i: LineItem) => i.recurring);
 
