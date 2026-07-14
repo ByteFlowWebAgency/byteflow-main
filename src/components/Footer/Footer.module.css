@@ -88,6 +88,13 @@
 
 .copyRight { font-weight: 500; }
 
+.loginLink {
+  color: rgba(255, 255, 255, 0.50);
+  transition: color 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.loginLink:hover { color: var(--fg); }
+
 @media (max-width: 1024px) {
   .footer { padding: 56px 32px 32px; }
   .grid {

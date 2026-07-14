@@ -1,0 +1,30 @@
+.toggle {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--bf-color-fg-soft);
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.toggle:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.toggle:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.icon {
+  font-size: 14px;
+  line-height: 1;
+}

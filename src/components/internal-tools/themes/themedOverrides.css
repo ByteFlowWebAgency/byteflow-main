@@ -1,0 +1,11 @@
+/* Document-theme override rules that can't be expressed as custom-property values.
+   Scoped to ThemedDocument's wrapper attributes — nothing here can leak outside a
+   themed document. */
+
+/* The brand logo asset is dark-indigo-on-transparent and disappears on dark paper.
+   On dark theme backgrounds (set from the background's computed luminance, see
+   ThemedDocument) it renders as a white knockout — the standard logo-on-dark
+   treatment. Verified to survive html2canvas PDF capture. */
+[data-bf-on-dark='true'] img[alt='ByteFlow Solutions'] {
+  filter: brightness(0) invert(1);
+}

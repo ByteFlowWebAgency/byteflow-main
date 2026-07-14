@@ -1,0 +1,273 @@
+/* Branded date/month/datetime pickers for the internal tools. The trigger matches the
+   tools' text-input chrome; the popover is portaled to <body> (wrapped in .bfScope so the
+   brand tokens resolve) and positioned by JS so it never clips inside scrollable panes or
+   dialogs. */
+
+.trigger {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 9px 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.trigger:hover:not(:disabled) {
+  border-color: var(--bf-color-accent-soft);
+}
+
+.trigger:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.triggerText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.triggerEmpty .triggerText {
+  color: var(--bf-color-fg-dim);
+}
+
+.icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  color: var(--bf-color-fg-soft);
+}
+
+.trigger:hover:not(:disabled) .icon {
+  color: var(--bf-color-accent-soft);
+}
+
+/* Popover */
+
+.popover {
+  position: fixed;
+  z-index: 80;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-md);
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.75);
+  padding: 12px;
+  width: 300px;
+  max-width: calc(100vw - 16px);
+  font-family: var(--bf-font-body);
+  color: var(--bf-color-fg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.headerLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+}
+
+.navButton {
+  font: inherit;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.navButton:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.navButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+/* Day grid */
+
+.weekRow {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  color: var(--bf-color-fg-dim);
+  padding: 4px 0;
+}
+
+.dayGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.day {
+  font: inherit;
+  font-size: 13px;
+  color: var(--bf-color-fg);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--bf-radius-sm);
+  aspect-ratio: 1 / 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.day:hover {
+  background: var(--bf-color-glass-solid);
+}
+
+.day:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: -1px;
+}
+
+.dayOutside {
+  color: var(--bf-color-fg-dim);
+  opacity: 0.55;
+}
+
+.dayToday {
+  border-color: var(--bf-color-accent-soft);
+}
+
+.daySelected,
+.daySelected:hover {
+  background: var(--bf-grad-primary);
+  color: #fff;
+  font-weight: 600;
+  border-color: transparent;
+}
+
+/* Month grid (month picker) */
+
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.month {
+  font: inherit;
+  font-size: 13px;
+  color: var(--bf-color-fg);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--bf-radius-sm);
+  padding: 10px 0;
+  cursor: pointer;
+}
+
+.month:hover {
+  background: var(--bf-color-glass-solid);
+}
+
+.month:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: -1px;
+}
+
+.monthSelected,
+.monthSelected:hover {
+  background: var(--bf-grad-primary);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Footer */
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--bf-color-line);
+}
+
+.footerButton {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 0;
+  border-radius: var(--bf-radius-sm);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.footerButton:hover {
+  color: var(--bf-color-fg);
+}
+
+.footerButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+/* Datetime composition */
+
+.dateTimeRow {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.dateTimeDate {
+  flex: 1;
+  min-width: 0;
+}
+
+.timeInput {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 9px 10px;
+  width: 116px;
+  flex-shrink: 0;
+  color-scheme: dark;
+}
+
+.timeInput:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
