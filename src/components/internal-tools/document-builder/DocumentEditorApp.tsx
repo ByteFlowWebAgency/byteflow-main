@@ -7,11 +7,17 @@ import styles from './editor.module.css';
 import PageRail from './PageRail';
 import EditorCanvas from './EditorCanvas';
 import BuiltDocumentView from './BuiltDocumentView';
+import SaveTemplateDialog from './SaveTemplateDialog';
 import ThemePicker from '../themes/ThemePicker';
 import { resolveTheme } from '../themes/themeStorage';
 import { generateDocumentPdf, sanitizeFilePart } from '../pdf/generateDocumentPdf';
 import { editorReducer, type EditorAction } from './editorState';
 import { getDoc, saveDoc } from '@/lib/document-builder/storage';
+import {
+  captureTemplateFromDoc,
+  saveCustomTemplate,
+  listCustomTemplateNames,
+} from './templateStorage';
 import type { BuiltDocument } from '@/lib/document-builder/types';
 
 type SaveStatus = 'saved' | 'saving' | 'error';
@@ -22,6 +28,7 @@ export default function DocumentEditorApp({ id }: { id: string }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [status, setStatus] = useState<SaveStatus>('saved');
   const [exporting, setExporting] = useState(false);
+  const [saveTplOpen, setSaveTplOpen] = useState(false);
   const firstRun = useRef(true);
   const exportRef = useRef<HTMLDivElement>(null);
 
@@ -107,6 +114,9 @@ export default function DocumentEditorApp({ id }: { id: string }) {
           <span className={`${styles.saveStatus} ${styles[`status_${status}`]}`} role="status">
             {status === 'saving' ? 'Saving…' : status === 'error' ? 'Storage full' : 'Saved'}
           </span>
+          <button type="button" onClick={() => setSaveTplOpen(true)} className={styles.secondaryBtn}>
+            Save as template
+          </button>
           <button type="button" onClick={onExport} disabled={exporting} className={styles.primaryBtn}>
             {exporting ? 'Exporting…' : 'Export PDF'}
           </button>
@@ -137,6 +147,20 @@ export default function DocumentEditorApp({ id }: { id: string }) {
       <div aria-hidden className={styles.exportHost}>
         <BuiltDocumentView ref={exportRef} document={doc} theme={theme} />
       </div>
+
+      {saveTplOpen && (
+        <SaveTemplateDialog
+          existingNames={listCustomTemplateNames()}
+          onCancel={() => setSaveTplOpen(false)}
+          onSave={(name, description, category, overwrite) => {
+            const tpl = captureTemplateFromDoc(doc, { name, description, category });
+            const result = saveCustomTemplate(tpl, overwrite);
+            if (!result.ok) return result.error;
+            setSaveTplOpen(false);
+            return null;
+          }}
+        />
+      )}
     </div>
   );
 }
