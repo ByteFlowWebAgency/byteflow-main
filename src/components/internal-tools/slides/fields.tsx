@@ -7,6 +7,7 @@
 
 import { useRef } from 'react';
 import styles from './fields.module.css';
+import BackgroundDesignPicker from '@/components/background-designs/BackgroundDesignPicker';
 
 let idCounter = 0;
 function useStableId(prefix: string): string {
@@ -40,6 +41,26 @@ export function TextField({
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
       />
+    </div>
+  );
+}
+
+/** Only used by the three full-bleed-eligible templates (titleCover/sectionDivider/
+ * thankYouClosing) — every other template's form has no equivalent field. */
+export function BackgroundDesignField({
+  value,
+  onChange,
+}: {
+  value: string | undefined;
+  onChange: (designId: string | undefined) => void;
+}) {
+  const id = useStableId('field');
+  return (
+    <div className={styles.field}>
+      <label htmlFor={id} className={styles.label}>
+        Background design
+      </label>
+      <BackgroundDesignPicker id={id} value={value} onChange={onChange} className={styles.input} />
     </div>
   );
 }

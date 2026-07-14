@@ -8,6 +8,7 @@
 
 import Image from 'next/image';
 import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
+import BackgroundLayer from '@/components/background-designs/BackgroundLayer';
 import type { Theme } from '@/components/internal-tools/themes/themeTypes';
 import { computePricingTotal } from '@/lib/slides/pricing';
 import type {
@@ -58,9 +59,21 @@ const LOGO = (
  * therefore applies to every exported slide the same way. Keeping the preview's logo
  * policy identical avoids a preview/export mismatch (docs/slides/03-EDITOR-SCREEN.md).
  */
-function Canvas({ children }: { children: React.ReactNode }) {
+/** backgroundDesignId/theme are only ever passed by the three full-bleed-eligible
+ * templates (titleCover, sectionDivider, thankYouClosing) — every other template calls
+ * Canvas without them and gets today's plain paper background, unchanged. */
+function Canvas({
+  children,
+  backgroundDesignId,
+  theme,
+}: {
+  children: React.ReactNode;
+  backgroundDesignId?: string;
+  theme?: Theme;
+}) {
   return (
     <div className={styles.canvas}>
+      {theme && <BackgroundLayer designId={backgroundDesignId} theme={theme} width={960} height={540} />}
       <div className={styles.pad}>{children}</div>
       {LOGO}
     </div>
@@ -83,9 +96,9 @@ function Bullets({ items }: { items: string[] }) {
 
 // ---- 1. titleCover ---------------------------------------------------------------------------
 
-function TitleCoverSlide({ content }: { content: TitleCoverContent }) {
+function TitleCoverSlide({ content, theme }: { content: TitleCoverContent; theme: Theme }) {
   return (
-    <Canvas>
+    <Canvas backgroundDesignId={content.backgroundDesignId} theme={theme}>
       <div className={styles.centered} style={{ alignItems: 'flex-start', textAlign: 'left' }}>
         {content.eyebrow && (
           <p className={styles.muted} style={{ fontSize: '0.75em', fontWeight: 700, letterSpacing: '0.08em' }}>
@@ -125,9 +138,9 @@ function AgendaSlide({ content }: { content: AgendaContent }) {
 
 // ---- 3. sectionDivider ------------------------------------------------------------------------
 
-function SectionDividerSlide({ content }: { content: SectionDividerContent }) {
+function SectionDividerSlide({ content, theme }: { content: SectionDividerContent; theme: Theme }) {
   return (
-    <Canvas>
+    <Canvas backgroundDesignId={content.backgroundDesignId} theme={theme}>
       <div className={styles.centered}>
         <p className={styles.dividerTitle}>{content.title}</p>
         {content.subtitle && <p className={styles.dividerSubtitle}>{content.subtitle}</p>}
@@ -498,9 +511,9 @@ function ContactNextStepsSlide({ content }: { content: ContactNextStepsContent }
 
 // ---- 24. thankYouClosing ------------------------------------------------------------------------
 
-function ThankYouClosingSlide({ content }: { content: ThankYouClosingContent }) {
+function ThankYouClosingSlide({ content, theme }: { content: ThankYouClosingContent; theme: Theme }) {
   return (
-    <Canvas>
+    <Canvas backgroundDesignId={content.backgroundDesignId} theme={theme}>
       <div className={styles.centered}>
         <p className={styles.dividerTitle}>{content.title}</p>
         {content.subtitle && <p className={styles.dividerSubtitle}>{content.subtitle}</p>}
@@ -525,17 +538,17 @@ function BlankCustomSlide({ content }: { content: BlankCustomContent }) {
 /** Themed, read-only, 16:9 preview of one slide — used by the editor canvas and the
  * slide-rail thumbnails alike. */
 export default function SlideRenderer({ slide, theme }: { slide: Slide; theme: Theme }) {
-  return <ThemedDocument theme={theme}>{renderSlideBody(slide)}</ThemedDocument>;
+  return <ThemedDocument theme={theme}>{renderSlideBody(slide, theme)}</ThemedDocument>;
 }
 
-function renderSlideBody(slide: Slide): React.ReactNode {
+function renderSlideBody(slide: Slide, theme: Theme): React.ReactNode {
   switch (slide.templateId) {
     case 'titleCover':
-      return <TitleCoverSlide content={slide.content} />;
+      return <TitleCoverSlide content={slide.content} theme={theme} />;
     case 'agenda':
       return <AgendaSlide content={slide.content} />;
     case 'sectionDivider':
-      return <SectionDividerSlide content={slide.content} />;
+      return <SectionDividerSlide content={slide.content} theme={theme} />;
     case 'problemStatement':
       return <BodyPointsSlide content={slide.content} />;
     case 'solutionOverview':
@@ -577,7 +590,7 @@ function renderSlideBody(slide: Slide): React.ReactNode {
     case 'contactNextSteps':
       return <ContactNextStepsSlide content={slide.content} />;
     case 'thankYouClosing':
-      return <ThankYouClosingSlide content={slide.content} />;
+      return <ThankYouClosingSlide content={slide.content} theme={theme} />;
     case 'blankCustom':
       return <BlankCustomSlide content={slide.content} />;
   }

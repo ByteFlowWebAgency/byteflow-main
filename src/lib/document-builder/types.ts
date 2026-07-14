@@ -137,11 +137,16 @@ export interface CoverFields {
   subtitle?: string;
   clientName?: string;
   date?: string;
+  /** A background-designs registry id, or undefined for today's plain background —
+   * independent of the document's themeId, see lib/background-designs/. */
+  backgroundDesignId?: string;
 }
 export interface SectionTitleFields {
   title: string;
   subtitle?: string;
   eyebrow?: string;
+  /** See CoverFields.backgroundDesignId. */
+  backgroundDesignId?: string;
 }
 
 export interface DocumentPage {

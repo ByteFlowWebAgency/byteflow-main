@@ -42,6 +42,9 @@ export interface TitleCoverContent {
   subtitle?: string;
   presentedTo?: string;
   date?: string;
+  /** A background-designs registry id, or undefined for today's plain background —
+   * independent of themeId, see lib/background-designs/. */
+  backgroundDesignId?: string;
 }
 
 export interface AgendaContent {
@@ -52,6 +55,8 @@ export interface AgendaContent {
 export interface SectionDividerContent {
   title: string;
   subtitle?: string;
+  /** See TitleCoverContent.backgroundDesignId. */
+  backgroundDesignId?: string;
 }
 
 export interface ProblemStatementContent {
@@ -235,6 +240,8 @@ export interface ContactNextStepsContent {
 export interface ThankYouClosingContent {
   title: string;
   subtitle?: string;
+  /** See TitleCoverContent.backgroundDesignId. */
+  backgroundDesignId?: string;
 }
 
 export interface BlankCustomContent {

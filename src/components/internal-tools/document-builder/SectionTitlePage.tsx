@@ -3,6 +3,7 @@
 import styles from './SectionTitlePage.module.css';
 import type { Theme } from '../themes/themeTypes';
 import type { SectionTitleFields } from '@/lib/document-builder/types';
+import BackgroundLayer from '@/components/background-designs/BackgroundLayer';
 
 interface SectionTitlePageProps {
   fields: SectionTitleFields;
@@ -27,6 +28,7 @@ export default function SectionTitlePage({ fields, theme, breakBefore }: Section
       data-pdf-break-before={breakBefore ? '' : undefined}
       aria-label="Section title page"
     >
+      <BackgroundLayer designId={fields.backgroundDesignId} theme={theme} width={816} height={1056} />
       <div className={styles.main}>
         {fields.eyebrow ? <p className={styles.eyebrow}>{fields.eyebrow}</p> : null}
         <h2 className={styles.title}>{fields.title}</h2>

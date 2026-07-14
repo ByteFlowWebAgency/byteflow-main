@@ -219,6 +219,7 @@ function validatePage(input: unknown): DocumentPage | string {
       subtitle: str(input.coverFields.subtitle, 2000),
       clientName: str(input.coverFields.clientName, 500),
       date: str(input.coverFields.date, 40),
+      backgroundDesignId: str(input.coverFields.backgroundDesignId, 80),
     };
   }
   if (isObj(input.sectionTitleFields)) {
@@ -226,6 +227,7 @@ function validatePage(input: unknown): DocumentPage | string {
       title: str(input.sectionTitleFields.title, 2000),
       subtitle: str(input.sectionTitleFields.subtitle, 2000),
       eyebrow: str(input.sectionTitleFields.eyebrow, 200),
+      backgroundDesignId: str(input.sectionTitleFields.backgroundDesignId, 80),
     };
   }
   return page;

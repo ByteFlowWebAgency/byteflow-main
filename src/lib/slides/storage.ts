@@ -198,6 +198,7 @@ function validateSlideContent(templateId: SlideTemplateId, raw: unknown): SlideC
           subtitle: optStr(c.subtitle, 400),
           presentedTo: optStr(c.presentedTo, 200),
           date: optStr(c.date, 60),
+          backgroundDesignId: optStr(c.backgroundDesignId, 80),
         },
       };
     case 'agenda':
@@ -208,7 +209,11 @@ function validateSlideContent(templateId: SlideTemplateId, raw: unknown): SlideC
     case 'sectionDivider':
       return {
         templateId,
-        content: { title: reqStr(c.title, 'title', 300), subtitle: optStr(c.subtitle, 400) },
+        content: {
+          title: reqStr(c.title, 'title', 300),
+          subtitle: optStr(c.subtitle, 400),
+          backgroundDesignId: optStr(c.backgroundDesignId, 80),
+        },
       };
     case 'problemStatement':
       return {
@@ -405,7 +410,11 @@ function validateSlideContent(templateId: SlideTemplateId, raw: unknown): SlideC
     case 'thankYouClosing':
       return {
         templateId,
-        content: { title: reqStr(c.title, 'title', 300), subtitle: optStr(c.subtitle, 400) },
+        content: {
+          title: reqStr(c.title, 'title', 300),
+          subtitle: optStr(c.subtitle, 400),
+          backgroundDesignId: optStr(c.backgroundDesignId, 80),
+        },
       };
     case 'blankCustom':
       return {

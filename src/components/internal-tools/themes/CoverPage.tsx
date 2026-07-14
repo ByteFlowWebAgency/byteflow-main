@@ -4,6 +4,7 @@ import Image from 'next/image';
 import styles from './CoverPage.module.css';
 import type { Theme } from './themeTypes';
 import { formatDisplayDate } from '@/lib/internal-tools/format';
+import BackgroundLayer from '@/components/background-designs/BackgroundLayer';
 
 interface CoverPageProps {
   /** Document-type eyebrow, e.g. "Proposal" or "Site Audit Report". */
@@ -13,6 +14,9 @@ interface CoverPageProps {
   /** ISO date string (full timestamp or YYYY-MM-DD). */
   date: string;
   theme: Theme;
+  /** A background-designs registry id, or undefined for today's plain treatment —
+   * independent of theme. */
+  backgroundDesignId?: string;
 }
 
 /**
@@ -29,7 +33,7 @@ interface CoverPageProps {
  * the real asset either way — on dark backgrounds the themedOverrides white-knockout
  * rule keeps it legible (baked into PDF pixels by the export engine).
  */
-export default function CoverPage({ label, title, clientName, date, theme }: CoverPageProps) {
+export default function CoverPage({ label, title, clientName, date, theme, backgroundDesignId }: CoverPageProps) {
   const fullBleed = theme.coverPage.fullBleedBackground;
   return (
     <section
@@ -37,6 +41,7 @@ export default function CoverPage({ label, title, clientName, date, theme }: Cov
       data-pdf-document
       aria-label="Cover page"
     >
+      <BackgroundLayer designId={backgroundDesignId} theme={theme} width={816} height={1056} />
       <header className={styles.top}>
         {/* unoptimized: the PDF capture needs the raw same-origin asset URL */}
         <Image

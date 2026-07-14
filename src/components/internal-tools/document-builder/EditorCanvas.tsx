@@ -10,6 +10,8 @@ import ThemedDocument from '../themes/ThemedDocument';
 import BlockEditor from './BlockEditor';
 import PlainTextEditable from './PlainTextEditable';
 import InsertBlockControl from './InsertBlockControl';
+import BackgroundLayer from '@/components/background-designs/BackgroundLayer';
+import BackgroundDesignPicker from '@/components/background-designs/BackgroundDesignPicker';
 import { formatDisplayDate } from '@/lib/internal-tools/format';
 import type { EditorAction } from './editorState';
 import type { Theme } from '../themes/themeTypes';
@@ -23,9 +25,20 @@ interface EditorCanvasProps {
 
 /** Center canvas: the selected page rendered through ThemedDocument, edited in place. */
 export default function EditorCanvas({ page, theme, dispatch }: EditorCanvasProps) {
+  const isCoverStyle = page.kind === 'cover' || page.kind === 'sectionTitle';
   return (
     <div className={styles.canvas}>
-      <div className={styles.canvasInner}>
+      <div className={styles.canvasInner} style={isCoverStyle ? { flexDirection: 'column', alignItems: 'center', gap: 12 } : undefined}>
+        {isCoverStyle && (
+          <BackgroundDesignToolbar
+            value={page.kind === 'cover' ? page.coverFields?.backgroundDesignId : page.sectionTitleFields?.backgroundDesignId}
+            onChange={(backgroundDesignId) =>
+              page.kind === 'cover'
+                ? dispatch({ t: 'updateCoverFields', pageId: page.id, fields: { backgroundDesignId } })
+                : dispatch({ t: 'updateSectionFields', pageId: page.id, fields: { backgroundDesignId } })
+            }
+          />
+        )}
         <ThemedDocument theme={theme}>
           {page.kind === 'cover' && <EditableCover page={page} theme={theme} dispatch={dispatch} />}
           {page.kind === 'sectionTitle' && (
@@ -36,6 +49,25 @@ export default function EditorCanvas({ page, theme, dispatch }: EditorCanvasProp
           )}
         </ThemedDocument>
       </div>
+    </div>
+  );
+}
+
+/** Only rendered for the two full-bleed-eligible page kinds (cover/sectionTitle) — a
+ * document can carry a different design on its cover than on a section-title page three
+ * pages later, so this lives per-page rather than in the document-level top bar next to
+ * the theme picker. */
+function BackgroundDesignToolbar({
+  value,
+  onChange,
+}: {
+  value: string | undefined;
+  onChange: (designId: string | undefined) => void;
+}) {
+  return (
+    <div className={styles.pageToolbar}>
+      <span className={styles.pageToolbarLabel}>Background design</span>
+      <BackgroundDesignPicker id="page-bg-design" value={value} onChange={onChange} className={styles.pageToolbarSelect} />
     </div>
   );
 }
@@ -54,6 +86,7 @@ function EditableCover({
     dispatch({ t: 'updateCoverFields', pageId: page.id, fields });
   return (
     <section className={`${coverStyles.cover} ${theme.coverPage.fullBleedBackground ? coverStyles.fullBleed : ''}`}>
+      <BackgroundLayer designId={f.backgroundDesignId} theme={theme} width={816} height={1056} />
       <header className={coverStyles.top}>
         <Image src="/BYTEFLOW_LOGO.png" alt="ByteFlow Solutions" width={200} height={196} unoptimized className={coverStyles.logo} />
       </header>
@@ -88,12 +121,15 @@ function EditableCover({
       <footer className={coverStyles.footer}>
         <div className={coverStyles.keyline} aria-hidden />
         <div className={coverStyles.footerRow}>
+          {/* Paper is always light regardless of the chrome dark/light toggle, so this
+              pins color-scheme locally rather than inheriting tokens.css's dark default. */}
           <input
             type="date"
             className={styles.coverDateInput}
             value={(f.date ?? '').slice(0, 10)}
             onChange={(e) => set({ date: e.target.value })}
             aria-label="Cover date"
+            style={{ colorScheme: 'light' }}
           />
           <p className={coverStyles.brand}>ByteFlow Solutions · Akron, Ohio</p>
         </div>
@@ -116,6 +152,7 @@ function EditableSection({
     dispatch({ t: 'updateSectionFields', pageId: page.id, fields });
   return (
     <section className={`${sectionStyles.section} ${theme.coverPage.fullBleedBackground ? sectionStyles.fullBleed : ''}`}>
+      <BackgroundLayer designId={f.backgroundDesignId} theme={theme} width={816} height={1056} />
       <div className={sectionStyles.main}>
         <PlainTextEditable
           value={f.eyebrow ?? ''}

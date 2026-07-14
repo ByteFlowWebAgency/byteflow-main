@@ -56,6 +56,7 @@ function PageView({
         clientName={f.clientName ?? ''}
         date={f.date ?? ''}
         theme={theme}
+        backgroundDesignId={f.backgroundDesignId}
       />
     );
   }
