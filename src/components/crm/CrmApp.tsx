@@ -2,12 +2,14 @@
 
 // The CRM shell: tabs (Pipeline is the default view), pipeline summary strip, CSV
 // exports, backup/restore, and the list↔detail navigation. All data flows through
-// CrmProvider → the storage adapter; nothing here touches fetch or Supabase.
+// CrmProvider (mounted at the internal-tools layout, not here — see
+// (protected)/layout.tsx — so it survives navigating away and back) → the storage
+// adapter; nothing here touches fetch or Supabase.
 
 import { useState } from 'react';
 import '@/components/internal-tools/tokens.css';
 import styles from './CrmApp.module.css';
-import { CrmProvider, useCrm } from './CrmContext';
+import { useCrm } from './CrmContext';
 import PipelineBoard from './PipelineBoard';
 import ContactsView from './ContactsView';
 import OrganizationsView, { OrganizationDetail } from './OrganizationsView';
@@ -27,15 +29,7 @@ type Detail =
   | { kind: 'organization'; id: string }
   | null;
 
-export default function CrmApp({ serviceOptions }: { serviceOptions: string[] }) {
-  return (
-    <CrmProvider serviceOptions={serviceOptions}>
-      <CrmShell />
-    </CrmProvider>
-  );
-}
-
-function CrmShell() {
+export default function CrmApp() {
   const { data, loading, loadError, reload } = useCrm();
   const [view, setView] = useState<View>('pipeline');
   const [detail, setDetail] = useState<Detail>(null);

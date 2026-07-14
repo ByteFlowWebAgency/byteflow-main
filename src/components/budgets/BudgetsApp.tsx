@@ -5,65 +5,24 @@
 // persistence through the storage adapter; loading and error states are explicit — an
 // unreachable database never looks like an empty list.
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import '@/components/internal-tools/tokens.css';
 import MonthPicker from '@/components/internal-tools/datepicker/MonthPicker';
 import styles from './BudgetsApp.module.css';
 import BudgetDetail from './BudgetDetail';
 import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
-import { createStore } from '@/lib/internal-tools/storage/client';
+import { useBudgets } from './BudgetsContext';
 import { duplicateBudget, nextPeriodKey, totalsOf } from '@/lib/budgets/math';
 import { formatUsd } from '@/lib/internal-tools/format';
 import type { Budget, BudgetKind } from '@/lib/budgets/types';
 
-const budgetStore = createStore<Budget>('budgets');
-
 export default function BudgetsApp() {
-  const [budgets, setBudgets] = useState<Budget[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [loadNonce, setLoadNonce] = useState(0);
+  const { budgets, loading, loadError, reload, persist, remove } = useBudgets();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
   const [renaming, setRenaming] = useState<Budget | null>(null);
   const [duplicating, setDuplicating] = useState<Budget | null>(null);
   const [deleting, setDeleting] = useState<Budget | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
-    budgetStore
-      .list()
-      .then((list) => {
-        if (cancelled) return;
-        setBudgets(list);
-        setLoading(false);
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return;
-        setLoadError(
-          error instanceof Error ? error.message : 'Could not load budgets.',
-        );
-        setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [loadNonce]);
-
-  const reload = useCallback(() => setLoadNonce((n) => n + 1), []);
-
-  const persist = useCallback(async (budget: Budget) => {
-    const touched = { ...budget, updatedAt: new Date().toISOString() };
-    await budgetStore.save(touched);
-    setBudgets((list) =>
-      list.some((b) => b.id === touched.id)
-        ? list.map((b) => (b.id === touched.id ? touched : b))
-        : [...list, touched],
-    );
-    return touched;
-  }, []);
 
   const selected = budgets.find((b) => b.id === selectedId) ?? null;
 
@@ -272,8 +231,7 @@ export default function BudgetsApp() {
           danger
           onCancel={() => setDeleting(null)}
           onConfirm={async () => {
-            await budgetStore.remove(deleting.id);
-            setBudgets((list) => list.filter((b) => b.id !== deleting.id));
+            await remove(deleting.id);
             if (selectedId === deleting.id) setSelectedId(null);
             setDeleting(null);
           }}
