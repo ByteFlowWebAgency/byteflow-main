@@ -2,10 +2,21 @@
    tools chrome tokens for the shell; the canvas itself is themed separately via
    ThemedDocument). */
 
+/* Height is set inline from DeckEditorApp (measured: window.innerHeight minus this
+   element's real top offset minus the shared footer's real height — see the
+   useEffect there). The internal-tools shell (InternalShell.module.css, shared by every
+   tool) only sets `min-height: 100vh` on the page, not a hard cap, which is correct for
+   normal scrolling content pages but wrong for this editor: without an explicit,
+   accurately-measured height + `overflow: hidden` here, the editor's content pushes the
+   whole page taller than the viewport and the *page* scrolls, on top of the rail's and
+   field panel's own internal scrolling — two scrollbars fighting each other. Measuring
+   in JS (rather than guessing a `calc(100vh - Npx)`) is the only reliable way to get this
+   exactly right, since the header/footer's real rendered height isn't a constant this
+   component should hardcode. */
 .editor {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 220px);
+  overflow: hidden;
 }
 
 .topBar {
@@ -18,9 +29,7 @@
   background: var(--bf-color-bg-2);
   border: 1px solid var(--bf-color-line);
   border-radius: var(--bf-radius-md);
-  position: sticky;
-  top: 12px;
-  z-index: 20;
+  flex-shrink: 0;
 }
 
 .topLeft,
@@ -130,24 +139,23 @@
   margin-top: 16px;
   flex: 1;
   min-height: 0;
-  align-items: flex-start;
-  /* So the rail/field-panel's `position: sticky; max-height: calc(100vh - Npx)` has a
-     real viewport-relative anchor to measure from regardless of page scroll position. */
-  height: calc(100vh - 132px);
+  /* stretch (the default, set explicitly for clarity): the rail/canvas/field-panel all
+     fill the workarea's full height with no height value of their own to compute — one
+     less place for a stale/guessed number to drift out of sync with the others. */
+  align-items: stretch;
 }
 
 .railSticky {
-  position: sticky;
-  top: 84px;
-  height: calc(100vh - 120px);
   flex-shrink: 0;
+  min-height: 0;
 }
 
 .canvasArea {
   flex: 1;
   min-width: 0;
-  height: 100%;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -163,13 +171,11 @@
 
 .fieldPanel {
   flex: 0 0 340px;
+  min-height: 0;
   background: var(--bf-color-bg-2);
   border: 1px solid var(--bf-color-line);
   border-radius: var(--bf-radius-md);
   padding: 16px;
-  position: sticky;
-  top: 84px;
-  height: calc(100vh - 120px);
   overflow-y: auto;
 }
 

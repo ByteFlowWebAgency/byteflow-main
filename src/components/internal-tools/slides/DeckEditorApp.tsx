@@ -39,13 +39,41 @@ export default function DeckEditorApp({ id }: { id: string }) {
   const [railOpen, setRailOpen] = useState(true);
   const [fieldPanelOpen, setFieldPanelOpen] = useState(true);
   const [canvasW, setCanvasW] = useState(MAX_CANVAS_W);
+  const [editorHeight, setEditorHeight] = useState<number | null>(null);
   const firstRun = useRef(true);
   const canvasAreaRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setDeck(getDeck(id) ?? null);
     setLoaded(true);
   }, [id]);
+
+  // Fill exactly the space between this element's top (below the shell's sticky header)
+  // and the shared footer, measured directly rather than guessed via `calc(100vh -
+  // <magic number>)` — see the comment on .editor in DeckEditor.module.css for why a
+  // guessed constant caused both an outer page scrollbar and the rail/field-panel's
+  // internal scrollbars fighting each other.
+  //
+  // Depends on `deck` (not `[]`): before the deck finishes loading, this component
+  // returns the "Loading…" placeholder instead of the real editor, so `editorRef` isn't
+  // attached to anything yet on the very first commit. An effect with an empty
+  // dependency array runs exactly once, on that first commit, and never gets a second
+  // chance once the real editor (and the ref) exist — it would silently no-op forever.
+  useEffect(() => {
+    function measure() {
+      const el = editorRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top;
+      const footer = document.querySelector('footer');
+      const footerH = footer ? footer.getBoundingClientRect().height : 0;
+      const available = window.innerHeight - top - footerH;
+      setEditorHeight(Math.max(400, Math.round(available)));
+    }
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [deck]);
 
   // The canvas has a fixed intrinsic width (see slideCanvas.module.css — ThemedDocument's
   // `width: fit-content` wrapper gives a plain `width: 100%` nothing to resolve against),
@@ -162,7 +190,11 @@ export default function DeckEditorApp({ id }: { id: string }) {
   }
 
   return (
-    <div className={`bfScope ${styles.editor}`}>
+    <div
+      className={`bfScope ${styles.editor}`}
+      ref={editorRef}
+      style={editorHeight ? { height: editorHeight } : undefined}
+    >
       <header className={styles.topBar}>
         <div className={styles.topLeft}>
           <Link href="/internal/slides" className={styles.backLink}>
