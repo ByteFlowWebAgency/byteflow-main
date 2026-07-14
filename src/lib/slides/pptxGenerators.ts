@@ -61,6 +61,15 @@ function newSlide(pptx: PptxGenJS): PSlide {
   return pptx.addSlide({ masterName: MASTER_NAME });
 }
 
+/** Adds the rasterized background-design PNG as a full-bleed image layer — must be called
+ * before any other addText/addShape/addImage call on the slide, since pptxgenjs stacks
+ * elements in call order (first added paints at the bottom). Only titleCover/
+ * sectionDivider/thankYouClosing ever pass bgImage; every other generator never calls this. */
+function addBackgroundImage(pSlide: PSlide, bgImage: string | undefined): void {
+  if (!bgImage) return;
+  pSlide.addImage({ data: bgImage, x: 0, y: 0, w: SLIDE_W, h: SLIDE_H });
+}
+
 function addTitle(pSlide: PSlide, theme: Theme, text: string): void {
   pSlide.addText(text, {
     x: CONTENT_X,
@@ -136,9 +145,10 @@ function rowSlots(count: number, top = BODY_TOP, bottom = BODY_BOTTOM, gap = 0.1
 
 // ---- 1. titleCover ---------------------------------------------------------------------------
 
-export function genTitleCover(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genTitleCover(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as TitleCoverContent;
   const pSlide = newSlide(pptx);
+  addBackgroundImage(pSlide, bgImage);
   let y = 2.3;
   if (c.eyebrow) {
     pSlide.addText(c.eyebrow, {
@@ -213,9 +223,10 @@ export function genAgenda(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
 
 // ---- 3. sectionDivider ------------------------------------------------------------------------
 
-export function genSectionDivider(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genSectionDivider(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as SectionDividerContent;
   const pSlide = newSlide(pptx);
+  addBackgroundImage(pSlide, bgImage);
   pSlide.addText(c.title, {
     x: MARGIN,
     y: SLIDE_H / 2 - 1,
@@ -973,9 +984,10 @@ export function genContactNextSteps(pptx: PptxGenJS, slide: Slide, theme: Theme)
 
 // ---- 24. thankYouClosing ------------------------------------------------------------------------
 
-export function genThankYouClosing(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genThankYouClosing(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ThankYouClosingContent;
   const pSlide = newSlide(pptx);
+  addBackgroundImage(pSlide, bgImage);
   pSlide.addText(c.title, {
     x: MARGIN,
     y: SLIDE_H / 2 - 1,
@@ -1023,7 +1035,10 @@ export function genBlankCustom(pptx: PptxGenJS, slide: Slide, theme: Theme): voi
 
 // ---- dispatch table -----------------------------------------------------------------------------
 
-export const PPTX_GENERATORS: Record<Slide['templateId'], (pptx: PptxGenJS, slide: Slide, theme: Theme) => void> = {
+export const PPTX_GENERATORS: Record<
+  Slide['templateId'],
+  (pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string) => void
+> = {
   titleCover: genTitleCover,
   agenda: genAgenda,
   sectionDivider: genSectionDivider,
