@@ -240,6 +240,45 @@ export function createSlide(templateId: SlideTemplateId): Slide {
   return { id: newId(), ...defaultContentFor(templateId) };
 }
 
+/**
+ * Deep-clone a slide with every id-bearing field regenerated — a slide and its duplicate
+ * never share an id, at any nesting level (crypto.randomUUID() throughout, per
+ * docs/slides/02-SLIDE-DATA-MODEL.md).
+ */
+export function cloneSlideFresh(slide: Slide): Slide {
+  const clone = structuredClone(slide);
+  clone.id = newId();
+  switch (clone.templateId) {
+    case 'processSteps':
+      clone.content.steps = clone.content.steps.map((s) => ({ ...s, id: newId() }));
+      break;
+    case 'timeline':
+      clone.content.milestones = clone.content.milestones.map((m) => ({ ...m, id: newId() }));
+      break;
+    case 'teamIntro':
+      clone.content.members = clone.content.members.map((m) => ({ ...m, id: newId() }));
+      break;
+    case 'statsGrid':
+      clone.content.stats = clone.content.stats.map((s) => ({ ...s, id: newId() }));
+      break;
+    case 'pricingInvestment':
+      clone.content.lineItems = clone.content.lineItems.map((li) => ({ ...li, id: newId() }));
+      break;
+    case 'servicesOverview':
+      clone.content.services = clone.content.services.map((s) => ({ ...s, id: newId() }));
+      break;
+    case 'faq':
+      clone.content.qaPairs = clone.content.qaPairs.map((qa) => ({ ...qa, id: newId() }));
+      break;
+    case 'roadmap':
+      clone.content.phases = clone.content.phases.map((p) => ({ ...p, id: newId() }));
+      break;
+    default:
+      break;
+  }
+  return clone;
+}
+
 /** A brand-new deck: one titleCover slide, classic theme, per docs/slides/02-SLIDE-DATA-MODEL.md. */
 export function createDefaultDeck(): Deck {
   const now = new Date().toISOString();

@@ -1,0 +1,156 @@
+/* Deck editor chrome — mirrors document-builder/editor.module.css's conventions (internal-
+   tools chrome tokens for the shell; the canvas itself is themed separately via
+   ThemedDocument). */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 220px);
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+}
+
+.topLeft,
+.topRight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.backLink {
+  color: var(--bf-color-fg-muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.backLink:hover {
+  color: var(--bf-color-fg);
+}
+
+.deckName {
+  background: var(--bf-color-bg);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-display);
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 12px;
+  min-width: 220px;
+}
+
+.saveStatus {
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--bf-color-line);
+}
+
+.status_saved {
+  color: var(--bf-color-fg-soft);
+}
+
+.status_saving {
+  color: var(--bf-color-accent);
+}
+
+.status_error {
+  color: var(--bf-color-error);
+  border-color: var(--bf-color-error);
+}
+
+.primaryBtn,
+.secondaryBtn {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: var(--bf-radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.primaryBtn {
+  background: var(--bf-color-accent);
+  color: #fff;
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.secondaryBtn {
+  background: var(--bf-color-glass);
+  border-color: var(--bf-color-line);
+  color: var(--bf-color-fg);
+}
+
+.workarea {
+  display: flex;
+  gap: 20px;
+  margin-top: 16px;
+  flex: 1;
+  min-height: 0;
+  align-items: flex-start;
+}
+
+.railSticky {
+  position: sticky;
+  top: 84px;
+  max-height: calc(100vh - 120px);
+}
+
+.canvasArea {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.canvasWrap {
+  width: 100%;
+  max-width: 780px;
+}
+
+.fieldPanel {
+  flex: 0 0 340px;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  padding: 16px;
+  position: sticky;
+  top: 84px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.fieldPanelHeading {
+  font-family: var(--bf-font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bf-color-fg);
+  margin-bottom: 12px;
+}
+
+.notFound {
+  padding: 60px 24px;
+  text-align: center;
+  color: var(--bf-color-fg-muted);
+}
