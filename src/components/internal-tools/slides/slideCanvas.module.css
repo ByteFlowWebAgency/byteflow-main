@@ -1,0 +1,375 @@
+/* Shared 16:9 slide canvas + per-template layout classes. Mirrors the layout decisions in
+   lib/slides/pptxGenerators.ts (same margins-as-percentages, same visual grammar) so the
+   preview clearly corresponds to what the .pptx export produces — see
+   docs/slides/03-EDITOR-SCREEN.md: "layout, color, and content placement should clearly
+   correspond." Exact pixel fidelity to the pptx is NOT the goal (fonts/spacing may render
+   slightly differently in real PowerPoint — see docs/slides/HANDOFF.md's known limitations).
+
+   Colors/fonts come entirely from the CSS custom properties ThemedDocument sets — never a
+   hardcoded color or font here, per docs/slides/00-GUARDRAILS.md / 04-SLIDE-LIBRARY.md. */
+
+/* A fixed intrinsic width, not a percentage: ThemedDocument's wrapper is `width:
+   fit-content` (sized for the document system's 816px-fixed pages), so a percentage width
+   here has no basis to resolve against and collapses to zero — this bit a first pass of
+   this file, caught by screenshotting a real render before moving past this phase (see
+   docs/slides/HANDOFF.md). Callers that need a smaller canvas (e.g. a slide-rail
+   thumbnail) override --bf-slide-w on a wrapping element. */
+.canvas {
+  position: relative;
+  width: var(--bf-slide-w, 960px);
+  aspect-ratio: 16 / 9;
+  background: var(--bf-paper-bg);
+  color: var(--bf-paper-fg);
+  font-family: var(--bf-font-body);
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.pad {
+  position: absolute;
+  inset: 0;
+  padding: 5.5% 4.5%;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo {
+  position: absolute;
+  right: 3%;
+  bottom: 4%;
+  width: 5.5%;
+  height: auto;
+  opacity: 0.9;
+}
+
+.footerBrand {
+  position: absolute;
+  left: 4.5%;
+  bottom: 4.2%;
+  font-size: 0.6em;
+  color: var(--bf-paper-fg-soft);
+}
+
+.title {
+  font-family: var(--bf-font-display);
+  font-weight: 700;
+  font-size: clamp(14px, 2.6vw, 28px);
+  color: var(--bf-color-accent);
+  margin-bottom: 4%;
+  line-height: 1.15;
+}
+
+.body {
+  font-size: clamp(10px, 1.15vw, 15px);
+  line-height: 1.5;
+  color: var(--bf-paper-fg);
+  white-space: pre-wrap;
+}
+
+.muted {
+  color: var(--bf-paper-fg-soft);
+}
+
+.bulletList {
+  list-style: disc;
+  padding-left: 1.2em;
+  font-size: clamp(10px, 1.15vw, 15px);
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+
+.numberedList {
+  list-style: decimal;
+  padding-left: 1.2em;
+  font-size: clamp(11px, 1.3vw, 17px);
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+
+.columns {
+  display: grid;
+  gap: 3%;
+  flex: 1;
+  min-height: 0;
+}
+
+.columnHeading {
+  font-family: var(--bf-font-display);
+  font-weight: 700;
+  font-size: clamp(10px, 1.2vw, 16px);
+  margin-bottom: 0.4em;
+}
+
+.centered {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.dividerTitle {
+  font-family: var(--bf-font-display);
+  font-weight: 700;
+  font-size: clamp(18px, 3.6vw, 38px);
+  color: var(--bf-paper-fg);
+}
+
+.dividerSubtitle {
+  margin-top: 0.6em;
+  font-size: clamp(10px, 1.3vw, 16px);
+  color: var(--bf-color-accent);
+}
+
+.quote {
+  font-family: var(--bf-font-display);
+  font-style: italic;
+  font-size: clamp(14px, 2.2vw, 24px);
+  line-height: 1.4;
+  max-width: 80%;
+}
+
+.attribution {
+  margin-top: 1em;
+  font-size: clamp(10px, 1.2vw, 15px);
+  font-weight: 700;
+  color: var(--bf-color-accent);
+}
+
+.attributionRole {
+  font-size: clamp(9px, 1vw, 13px);
+  color: var(--bf-paper-fg-soft);
+}
+
+.bigStatNumber {
+  font-family: var(--bf-font-display);
+  font-weight: 700;
+  font-size: clamp(28px, 7vw, 88px);
+  color: var(--bf-color-accent);
+  line-height: 1;
+}
+
+.bigStatLabel {
+  margin-top: 0.4em;
+  font-size: clamp(11px, 1.4vw, 18px);
+}
+
+.statsGrid {
+  display: grid;
+  gap: 3%;
+  flex: 1;
+  align-items: center;
+}
+
+.statNumber {
+  font-family: var(--bf-font-display);
+  font-weight: 700;
+  font-size: clamp(18px, 3.4vw, 36px);
+  color: var(--bf-color-accent);
+  text-align: center;
+}
+
+.statLabel {
+  margin-top: 0.3em;
+  font-size: clamp(9px, 1vw, 13px);
+  text-align: center;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(9px, 1.1vw, 14px);
+}
+
+.table th {
+  background: var(--bf-color-accent);
+  color: var(--bf-paper-bg);
+  text-align: left;
+  padding: 0.4em 0.6em;
+}
+
+.table td {
+  padding: 0.4em 0.6em;
+  border-bottom: 1px solid var(--bf-paper-line);
+}
+
+.table .amountCell {
+  text-align: right;
+}
+
+.tableTotalRow td {
+  font-weight: 700;
+  color: var(--bf-color-accent);
+  border-bottom: none;
+}
+
+.imageBox {
+  background: var(--bf-paper-line);
+  background-size: cover;
+  background-position: center;
+  border-radius: 2px;
+}
+
+.fullBleedImage {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.fullBleedCaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2% 4.5%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: clamp(9px, 1vw, 13px);
+}
+
+.stepBadge {
+  width: 2.2em;
+  height: 2.2em;
+  border-radius: 999px;
+  background: var(--bf-color-accent);
+  color: var(--bf-paper-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-family: var(--bf-font-display);
+  margin: 0 auto 0.5em;
+}
+
+.stepLabel {
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(10px, 1.15vw, 15px);
+}
+
+.stepDescription {
+  text-align: center;
+  font-size: clamp(8px, 0.95vw, 12px);
+  color: var(--bf-paper-fg-soft);
+  margin-top: 0.3em;
+}
+
+.timelineRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.3em 0;
+  border-bottom: 1px solid var(--bf-paper-line);
+}
+
+.timelineDot {
+  width: 0.6em;
+  height: 0.6em;
+  border-radius: 999px;
+  background: var(--bf-color-accent);
+  flex-shrink: 0;
+}
+
+.timelineLabel {
+  flex: 1;
+  font-size: clamp(9px, 1.05vw, 14px);
+}
+
+.timelineDate {
+  font-size: clamp(8px, 0.95vw, 12px);
+  color: var(--bf-paper-fg-soft);
+}
+
+.memberPhoto {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bf-paper-line);
+  margin-bottom: 0.5em;
+}
+
+.memberName {
+  text-align: center;
+  font-weight: 700;
+  font-size: clamp(9px, 1.05vw, 14px);
+}
+
+.memberRole {
+  text-align: center;
+  font-size: clamp(8px, 0.9vw, 12px);
+  color: var(--bf-color-accent);
+}
+
+.caseBlock {
+  display: flex;
+  gap: 4%;
+  padding: 0.5em 0;
+}
+
+.caseLabel {
+  width: 22%;
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: clamp(8px, 0.95vw, 12px);
+  color: var(--bf-color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.caseBody {
+  font-size: clamp(9px, 1.05vw, 14px);
+}
+
+.serviceRow {
+  padding: 0.4em 0;
+}
+
+.serviceName {
+  font-family: var(--bf-font-display);
+  font-weight: 700;
+  color: var(--bf-color-accent);
+  font-size: clamp(10px, 1.15vw, 15px);
+}
+
+.faqQuestion {
+  font-weight: 700;
+  color: var(--bf-color-accent);
+  font-size: clamp(9px, 1.05vw, 14px);
+}
+
+.faqAnswer {
+  font-size: clamp(8px, 1vw, 13px);
+  margin-top: 0.15em;
+}
+
+.roadmapBar {
+  height: 0.15em;
+  background: var(--bf-color-accent);
+  margin-bottom: 0.5em;
+}
+
+.calloutBox {
+  background: color-mix(in srgb, var(--bf-color-accent) 12%, transparent);
+  border: 1px solid var(--bf-color-accent);
+  border-radius: 4px;
+  padding: 0.6em 0.8em;
+  font-size: clamp(9px, 1.1vw, 14px);
+}
+
+.contactBlock > * + * {
+  margin-top: 0.3em;
+}
+
+.contactName {
+  font-size: clamp(12px, 1.6vw, 20px);
+  font-weight: 700;
+}
