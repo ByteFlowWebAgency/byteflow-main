@@ -116,15 +116,6 @@ export function computeCutPositions(
   return cuts;
 }
 
-/**
- * Capture a rendered document DOM node and download it as a paginated US Letter PDF.
- * Shared by every internal tool (proposals, audits, …): the on-screen document is the
- * single source of truth and the PDF is an exact rasterized copy of it (text is not
- * selectable — documented tradeoff). Callers build their own `filename` (use
- * sanitizeFilePart for user-derived fragments); this function knows nothing about any
- * specific document type. Layout contract: elements marked data-pdf-block are never cut
- * across pages, and data-pdf-keep-next headings are never orphaned at a page bottom.
- */
 export interface GeneratePdfOptions {
   /**
    * Page background — fills short pages and shows behind transparent regions. Defaults
@@ -134,11 +125,21 @@ export interface GeneratePdfOptions {
   backgroundColor?: string;
 }
 
-export async function generateDocumentPdf(
+/** One rasterized US Letter page, ready to embed in a PDF or show in an on-screen preview. */
+export interface CapturedPage {
+  dataUrl: string;
+}
+
+/**
+ * Capture and paginate a document node into page images, using the exact same cut
+ * algorithm as the PDF export. Shared by generateDocumentPdf (which embeds these pages
+ * in a jsPDF and saves) and renderDocumentPreview (which hands them to an on-screen
+ * modal) — so the preview a user sees is guaranteed pixel-identical to the download.
+ */
+async function capturePages(
   documentNode: HTMLElement,
-  filename: string,
   opts: GeneratePdfOptions = {},
-): Promise<void> {
+): Promise<CapturedPage[]> {
   const pageBackground = opts.backgroundColor ?? PAPER_BG;
   // Capture a detached clone at natural size inside an off-screen .bfScope wrapper so
   // the CSS custom properties still resolve and preview scrolling/shadows don't affect
@@ -225,12 +226,11 @@ export async function generateDocumentPdf(
     const pageStarts = [0, ...cuts];
     const pageEnds = [...cuts, totalHeightPx];
 
-    const pdf = new jsPDF({ unit: 'pt', format: 'letter' });
     const pageCanvas = document.createElement('canvas');
     const context = pageCanvas.getContext('2d');
     if (!context) throw new Error('Canvas 2D context unavailable');
 
-    pageStarts.forEach((startPx, pageIndex) => {
+    return pageStarts.map((startPx, pageIndex) => {
       // Each page renders exactly [start, next cut) — a page that broke early at a block
       // boundary is a little short at the bottom, never overlapping the next page.
       const endPx = pageEnds[pageIndex];
@@ -262,19 +262,43 @@ export async function generateDocumentPdf(
         Math.round(sliceHeightPx * pxToCanvas),
       );
 
-      if (pageIndex > 0) pdf.addPage();
-      pdf.addImage(
-        pageCanvas.toDataURL('image/jpeg', JPEG_QUALITY),
-        'JPEG',
-        0,
-        0,
-        PAGE_WIDTH_PT,
-        PAGE_HEIGHT_PT,
-      );
+      return { dataUrl: pageCanvas.toDataURL('image/jpeg', JPEG_QUALITY) };
     });
-
-    pdf.save(filename);
   } finally {
     wrapper.remove();
   }
+}
+
+/**
+ * Capture a rendered document DOM node and download it as a paginated US Letter PDF.
+ * Shared by every internal tool (proposals, audits, …): the on-screen document is the
+ * single source of truth and the PDF is an exact rasterized copy of it (text is not
+ * selectable — documented tradeoff). Callers build their own `filename` (use
+ * sanitizeFilePart for user-derived fragments); this function knows nothing about any
+ * specific document type. Layout contract: elements marked data-pdf-block are never cut
+ * across pages, and data-pdf-keep-next headings are never orphaned at a page bottom.
+ */
+export async function generateDocumentPdf(
+  documentNode: HTMLElement,
+  filename: string,
+  opts: GeneratePdfOptions = {},
+): Promise<void> {
+  const pages = await capturePages(documentNode, opts);
+  const pdf = new jsPDF({ unit: 'pt', format: 'letter' });
+  pages.forEach((page, pageIndex) => {
+    if (pageIndex > 0) pdf.addPage();
+    pdf.addImage(page.dataUrl, 'JPEG', 0, 0, PAGE_WIDTH_PT, PAGE_HEIGHT_PT);
+  });
+  pdf.save(filename);
+}
+
+/**
+ * Paginate a document node into on-screen preview images — the same page images that
+ * generateDocumentPdf would embed in the download, minus the jsPDF/save step.
+ */
+export async function renderDocumentPreview(
+  documentNode: HTMLElement,
+  opts: GeneratePdfOptions = {},
+): Promise<CapturedPage[]> {
+  return capturePages(documentNode, opts);
 }

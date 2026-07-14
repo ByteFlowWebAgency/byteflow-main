@@ -8,9 +8,11 @@ import PageRail from './PageRail';
 import EditorCanvas from './EditorCanvas';
 import BuiltDocumentView from './BuiltDocumentView';
 import SaveTemplateDialog from './SaveTemplateDialog';
+import PreviewModal from './PreviewModal';
 import ThemePicker from '../themes/ThemePicker';
 import { resolveTheme } from '../themes/themeStorage';
-import { generateDocumentPdf, sanitizeFilePart } from '../pdf/generateDocumentPdf';
+import { generateDocumentPdf, renderDocumentPreview, sanitizeFilePart } from '../pdf/generateDocumentPdf';
+import type { CapturedPage } from '../pdf/generateDocumentPdf';
 import { editorReducer, type EditorAction } from './editorState';
 import { getDoc, saveDoc } from '@/lib/document-builder/storage';
 import {
@@ -29,6 +31,9 @@ export default function DocumentEditorApp({ id }: { id: string }) {
   const [status, setStatus] = useState<SaveStatus>('saved');
   const [exporting, setExporting] = useState(false);
   const [saveTplOpen, setSaveTplOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [previewPages, setPreviewPages] = useState<CapturedPage[] | null>(null);
   const firstRun = useRef(true);
   const exportRef = useRef<HTMLDivElement>(null);
 
@@ -86,6 +91,21 @@ export default function DocumentEditorApp({ id }: { id: string }) {
     }
   }
 
+  async function onPreview() {
+    if (!exportRef.current) return;
+    setPreviewOpen(true);
+    setPreviewLoading(true);
+    setPreviewPages(null);
+    try {
+      const pages = await renderDocumentPreview(exportRef.current, {
+        backgroundColor: theme.colors.background,
+      });
+      setPreviewPages(pages);
+    } finally {
+      setPreviewLoading(false);
+    }
+  }
+
   return (
     <div className={styles.editor}>
       <header className={styles.topBar}>
@@ -117,6 +137,9 @@ export default function DocumentEditorApp({ id }: { id: string }) {
           <button type="button" onClick={() => setSaveTplOpen(true)} className={styles.secondaryBtn}>
             Save as template
           </button>
+          <button type="button" onClick={onPreview} className={styles.secondaryBtn}>
+            Preview
+          </button>
           <button type="button" onClick={onExport} disabled={exporting} className={styles.primaryBtn}>
             {exporting ? 'Exporting…' : 'Export PDF'}
           </button>
@@ -147,6 +170,16 @@ export default function DocumentEditorApp({ id }: { id: string }) {
       <div aria-hidden className={styles.exportHost}>
         <BuiltDocumentView ref={exportRef} document={doc} theme={theme} />
       </div>
+
+      {previewOpen && (
+        <PreviewModal
+          pages={previewPages}
+          loading={previewLoading}
+          onClose={() => setPreviewOpen(false)}
+          onDownload={onExport}
+          downloading={exporting}
+        />
+      )}
 
       {saveTplOpen && (
         <SaveTemplateDialog

@@ -73,6 +73,18 @@
   color: var(--bf-color-error);
 }
 
+.switchLine {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--bf-color-fg-muted);
+  text-align: center;
+}
+
+.switchLine a {
+  color: var(--bf-color-fg);
+  font-weight: 600;
+}
+
 .submit {
   font: inherit;
   font-size: 14px;

@@ -1,11 +1,10 @@
-// Server-only Supabase access for the internal tools. This is the ONLY module in the
-// codebase allowed to import @supabase/supabase-js or read the service-role key. It is
-// imported from API route handlers: the CRM/budget routes check the session cookie first;
-// the /api/internal-login route calls verifyInternalCredentials() pre-auth (that IS the
-// auth check) and never returns anything beyond a pass/fail.
-// RLS is enabled with zero policies on every table — the service-role key is the only
-// key that can touch them, and it must never reach a client bundle. The hard throw
-// below makes any accidental client import fail loudly at load time.
+// Server-only Supabase access for the internal tools (service-role client, for the
+// CRM/budget data tables — NOT auth; sign-in/up goes through Supabase Auth directly, see
+// lib/internal-tools/auth/server.ts). This is the ONLY module in the codebase allowed to
+// import @supabase/supabase-js with the service-role key. RLS is enabled with zero
+// policies on every table it touches — the service-role key is the only key that can
+// read/write them, and it must never reach a client bundle. The hard throw below makes
+// any accidental client import fail loudly at load time.
 
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import type { EntityName } from './types';
@@ -153,21 +152,21 @@ export async function removeEntity(entity: EntityName, id: string): Promise<void
 }
 
 /**
- * Verify a /internal sign-in against the internal_users table. The bcrypt comparison
- * happens inside the database (verify_internal_login RPC, see the internal_auth
- * migration) so the password hash never leaves Postgres. Returns true only for a
- * matching username+password; throws UpstreamError on a database failure so the login
- * route can fail safe (deny) without leaking the reason.
+ * Create a new /internal account via the admin API, pre-confirmed (email_confirm: true)
+ * so it can sign in immediately in the same request — no confirmation-email round trip,
+ * and no window where a signed-up user can't yet sign in. Domain restriction is enforced
+ * by the caller (/api/internal-signup) and again by the enforce_internal_email_domain
+ * trigger on auth.users (defense in depth) — this function trusts its caller.
  */
-export async function verifyInternalCredentials(
-  username: string,
+export async function adminCreateConfirmedUser(
+  email: string,
   password: string,
-): Promise<boolean> {
-  const { data, error } = await getClient().rpc('verify_internal_login', {
-    p_username: username,
-    p_password: password,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const { error } = await getClient().auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
   });
-  if (error) throw new UpstreamError(error.message);
-  // The function returns the user's uuid on success, null otherwise.
-  return typeof data === 'string' && data.length > 0;
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
 }

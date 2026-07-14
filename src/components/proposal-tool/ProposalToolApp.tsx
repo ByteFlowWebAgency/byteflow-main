@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import '@/components/internal-tools/tokens.css';
 import styles from './ProposalToolApp.module.css';
 import ProposalForm from './ProposalForm/ProposalForm';
@@ -18,6 +19,9 @@ import {
   useCustomTemplates,
 } from '@/components/internal-tools/templates/templateStorage';
 import type { DocumentTemplate } from '@/components/internal-tools/templates/templateTypes';
+import { instantiateTemplate } from '@/components/internal-tools/document-builder/templateStorage';
+import type { DocTemplate } from '@/components/internal-tools/document-builder/templateTypes';
+import { saveDoc } from '@/lib/document-builder/storage';
 import {
   generateDocumentPdf,
   sanitizeFilePart,
@@ -198,6 +202,7 @@ interface ProposalToolAppProps {
 }
 
 export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps) {
+  const router = useRouter();
   const [proposal, dispatch] = useReducer(reducer, undefined, createDefaultProposal);
   const documentRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
@@ -237,6 +242,12 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
       dispatch({ type: 'applyTemplate', data: applyProposalTemplate(template, proposal) });
     }
     setShowChooser(false);
+  };
+
+  const pickDocumentBuilderTemplate = (template: DocTemplate) => {
+    const doc = instantiateTemplate(template);
+    const result = saveDoc(doc);
+    if (result.ok) router.push(`/internal/documents/${doc.id}`);
   };
 
   const saveAsTemplate = (name: string, description: string): string | null => {
@@ -350,6 +361,7 @@ export default function ProposalToolApp({ serviceOptions }: ProposalToolAppProps
           documentType="proposal"
           documentLabel="proposal"
           onPick={pickTemplate}
+          onPickDocumentBuilderTemplate={pickDocumentBuilderTemplate}
         />
       )}
       {savingTemplate && (

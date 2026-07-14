@@ -1,10 +1,10 @@
 // Shared request handling for every storage API route (/api/crm/* and /api/budgets/*).
-// Order of checks is deliberate and identical everywhere: session cookie first (an
+// Order of checks is deliberate and identical everywhere: session first (an
 // unauthenticated request learns nothing, not even whether Supabase is configured),
 // then configuration, then payload validation, then the actual query.
 
 import { NextResponse, type NextRequest } from 'next/server';
-import { SESSION_COOKIE, verifySessionToken } from '@/lib/internal-tools/session';
+import { getCurrentInternalUser } from '@/lib/internal-tools/auth/server';
 import {
   isSupabaseConfigured,
   listEntities,
@@ -25,11 +25,9 @@ function ok(data: unknown, status = 200) {
   return NextResponse.json({ data }, { status });
 }
 
-async function gate(request: NextRequest): Promise<NextResponse | null> {
-  const authenticated = await verifySessionToken(
-    request.cookies.get(SESSION_COOKIE)?.value,
-  );
-  if (!authenticated) {
+async function gate(): Promise<NextResponse | null> {
+  const user = await getCurrentInternalUser();
+  if (!user) {
     return fail(401, 'UNAUTHENTICATED', 'Sign in to the internal tools first.');
   }
   if (!isSupabaseConfigured()) {
@@ -51,7 +49,7 @@ function upstream(error: unknown) {
 }
 
 export async function handleList(request: NextRequest, entity: EntityName) {
-  const denied = await gate(request);
+  const denied = await gate();
   if (denied) return denied;
   try {
     return ok(await listEntities(entity));
@@ -65,7 +63,7 @@ export async function handleGet(
   entity: EntityName,
   id: string,
 ) {
-  const denied = await gate(request);
+  const denied = await gate();
   if (denied) return denied;
   try {
     const record = await getEntity(entity, id);
@@ -79,7 +77,7 @@ export async function handleGet(
 }
 
 export async function handleSave(request: NextRequest, entity: EntityName) {
-  const denied = await gate(request);
+  const denied = await gate();
   if (denied) return denied;
   let payload: unknown;
   try {
@@ -98,7 +96,7 @@ export async function handleSave(request: NextRequest, entity: EntityName) {
 }
 
 export async function handleSaveMany(request: NextRequest, entity: EntityName) {
-  const denied = await gate(request);
+  const denied = await gate();
   if (denied) return denied;
   let payload: unknown;
   try {
@@ -126,7 +124,7 @@ export async function handleRemove(
   entity: EntityName,
   id: string,
 ) {
-  const denied = await gate(request);
+  const denied = await gate();
   if (denied) return denied;
   try {
     await removeEntity(entity, id);

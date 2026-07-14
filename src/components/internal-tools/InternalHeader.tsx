@@ -16,7 +16,7 @@ const TOOLS = [
   { href: '/internal/theme-editor', label: 'Themes' },
 ];
 
-export default function InternalHeader() {
+export default function InternalHeader({ email }: { email?: string }) {
   const pathname = usePathname();
 
   return (
@@ -44,11 +44,14 @@ export default function InternalHeader() {
           })}
         </nav>
 
-        <form method="post" action="/api/internal-logout">
-          <button type="submit" className={styles.logout}>
-            Log out
-          </button>
-        </form>
+        <div className={styles.session}>
+          {email && <span className={styles.sessionEmail}>{email}</span>}
+          <form method="post" action="/api/internal-logout">
+            <button type="submit" className={styles.logout}>
+              Log out
+            </button>
+          </form>
+        </div>
       </div>
     </header>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import '@/components/internal-tools/tokens.css';
 import styles from './login.module.css';
 
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 // Plain server-rendered form, zero client JS. Credentials are only ever compared
-// server-side in /api/internal-login; the error flag is a generic one by design.
+// server-side (Supabase Auth, in /api/internal-login); the error flag is a generic one
+// by design.
 export default async function InternalLoginPage({
   searchParams,
 }: {
@@ -26,14 +28,14 @@ export default async function InternalLoginPage({
 
         <form method="post" action="/api/internal-login" className={styles.form}>
           <div className={styles.field}>
-            <label htmlFor="login-username" className={styles.label}>
-              Username
+            <label htmlFor="login-email" className={styles.label}>
+              Work email
             </label>
             <input
-              id="login-username"
-              name="username"
-              type="text"
-              autoComplete="username"
+              id="login-email"
+              name="email"
+              type="email"
+              autoComplete="email"
               required
               className={styles.input}
             />
@@ -55,7 +57,7 @@ export default async function InternalLoginPage({
 
           {error && (
             <p className={styles.error} role="alert">
-              Invalid username or password.
+              Invalid email or password.
             </p>
           )}
 
@@ -63,6 +65,10 @@ export default async function InternalLoginPage({
             Sign in
           </button>
         </form>
+
+        <p className={styles.switchLine}>
+          Need an account? <Link href="/internal/signup">Sign up</Link>
+        </p>
       </div>
     </main>
   );

@@ -12,6 +12,11 @@ import {
   templateToJson,
   useCustomTemplates,
 } from './templateStorage';
+import type { DocTemplate } from '@/components/internal-tools/document-builder/templateTypes';
+import {
+  BUILT_IN_TEMPLATES as BUILDER_BUILT_IN_TEMPLATES,
+  useCustomTemplates as useBuilderTemplates,
+} from '@/components/internal-tools/document-builder/templateStorage';
 
 interface TemplateChooserProps {
   documentType: TemplateDocumentType;
@@ -19,6 +24,13 @@ interface TemplateChooserProps {
   documentLabel: string;
   /** null = start blank. */
   onPick: (template: DocumentTemplate | null) => void;
+  /**
+   * When provided, an additional "From Document Builder" section lists Document Builder
+   * templates (a separate, freeform pages/blocks system — not a ProposalData/AuditData
+   * shape). Picking one does not fill this form; the caller is expected to create a new
+   * Document Builder document from it and navigate there instead.
+   */
+  onPickDocumentBuilderTemplate?: (template: DocTemplate) => void;
 }
 
 /**
@@ -31,9 +43,12 @@ export default function TemplateChooser({
   documentType,
   documentLabel,
   onPick,
+  onPickDocumentBuilderTemplate,
 }: TemplateChooserProps) {
   const customs = useCustomTemplates(documentType);
   const builtIns = BUILT_IN_TEMPLATES.filter((t) => t.documentType === documentType);
+  const builderCustoms = useBuilderTemplates();
+  const builderTemplates = [...BUILDER_BUILT_IN_TEMPLATES, ...builderCustoms];
   const [error, setError] = useState<string | null>(null);
   const [renaming, setRenaming] = useState<DocumentTemplate | null>(null);
   const [deleting, setDeleting] = useState<DocumentTemplate | null>(null);
@@ -153,6 +168,38 @@ export default function TemplateChooser({
             </div>
           ))}
         </div>
+
+        {onPickDocumentBuilderTemplate && builderTemplates.length > 0 && (
+          <>
+            <h3 className={styles.sectionHead}>From Document Builder</h3>
+            <p className={styles.sectionNote}>
+              These open as freeform Document Builder documents, not a structured{' '}
+              {documentLabel} — pick one to jump into the Document Builder editor instead.
+            </p>
+            <div className={styles.grid}>
+              {builderTemplates.map((template) => (
+                <button
+                  key={template.id}
+                  type="button"
+                  className={styles.card}
+                  onClick={() => onPickDocumentBuilderTemplate(template)}
+                >
+                  <span className={styles.cardName}>
+                    {template.name}
+                    {template.isBuiltIn ? (
+                      <span className={styles.badgeBuiltIn}>Built-in</span>
+                    ) : (
+                      <span className={styles.badgeCustom}>Custom</span>
+                    )}
+                  </span>
+                  <span className={styles.cardDescription}>
+                    {template.description || 'Opens in Document Builder.'}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
 
         {error && (
           <p className={styles.error} role="alert">
