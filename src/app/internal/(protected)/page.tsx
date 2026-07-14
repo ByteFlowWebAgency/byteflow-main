@@ -66,6 +66,13 @@ export default function InternalHubPage() {
             status="live"
           />
           <HubTile
+            title="Documents"
+            description="Compose free-form, on-brand documents from typed blocks — one-pagers, briefs, pitches, reports — with templates, themes, and PDF export."
+            monogram="Dc"
+            href="/internal/documents"
+            status="live"
+          />
+          <HubTile
             title="Monthly Reports"
             description="Recurring SEO and retainer reporting for active clients."
             monogram="Re"
