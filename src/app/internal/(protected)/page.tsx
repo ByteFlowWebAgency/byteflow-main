@@ -52,6 +52,13 @@ export default function InternalHubPage() {
             status="live"
           />
           <HubTile
+            title="Presentations"
+            description="25 BYTEFLOW-branded slide templates — assemble a deck, edit inline, download a real, editable .pptx for proposal follow-ups and live calls."
+            monogram="Pr"
+            href="/internal/slides"
+            status="live"
+          />
+          <HubTile
             title="Document Themes"
             description="Create and manage the color and font themes documents render with — including dark covers for pitch decks."
             monogram="Th"

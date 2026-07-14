@@ -9,6 +9,7 @@ import styles from './InternalShell.module.css';
 // to (accidentally) provide — now purpose-built for the internal area.
 const TOOLS = [
   { href: '/internal/documents', label: 'Documents' },
+  { href: '/internal/slides', label: 'Presentations' },
   { href: '/internal/crm', label: 'CRM' },
   { href: '/internal/budgets', label: 'Budgets' },
   { href: '/internal/theme-editor', label: 'Themes' },
