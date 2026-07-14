@@ -137,6 +137,10 @@
   display: flex;
   gap: 20px;
   margin-top: 16px;
+  /* Left breathing room for the rail, matching the top bar's own 20px inset (the
+     "← Decks" link above lines up with the rail below it instead of the rail sitting
+     flush against the window edge). */
+  padding-left: 20px;
   flex: 1;
   min-height: 0;
   /* stretch (the default, set explicitly for clarity): the rail/canvas/field-panel all
