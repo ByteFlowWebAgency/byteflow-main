@@ -97,3 +97,44 @@ export function formatLongDate(value: string | undefined): string {
   if (!date) return '';
   return `${MONTHS[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
 }
+
+export const TIME_STEP_MINUTES = 15;
+
+/** Parse "HH:mm" into { hour, minute }; null if malformed or out of range. */
+export function parseHm(value: string | undefined): { hour: number; minute: number } | null {
+  const match = /^(\d{2}):(\d{2})$/.exec(value ?? '');
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2]);
+  if (hour < 0 || hour > 23 || minute < 0 || minute > 59) return null;
+  return { hour, minute };
+}
+
+export function toHm(hour: number, minute: number): string {
+  return `${pad(hour)}:${pad(minute)}`;
+}
+
+/** "HH:mm" (24h, on-the-quarter-hour) slots covering a full day, for the time picker list. */
+export function timeSlots(): string[] {
+  const count = (24 * 60) / TIME_STEP_MINUTES;
+  return Array.from({ length: count }, (_, i) => {
+    const minutes = i * TIME_STEP_MINUTES;
+    return toHm(Math.floor(minutes / 60), minutes % 60);
+  });
+}
+
+/** Nearest quarter-hour slot at or after now, e.g. for the picker's "Now" shortcut. */
+export function nearestTimeSlot(date: Date = new Date()): string {
+  const total = date.getHours() * 60 + Math.ceil(date.getMinutes() / TIME_STEP_MINUTES) * TIME_STEP_MINUTES;
+  const clamped = Math.min(total, 24 * 60 - TIME_STEP_MINUTES);
+  return toHm(Math.floor(clamped / 60), clamped % 60);
+}
+
+/** "2:30 PM" for a "HH:mm" value; '' for empty/invalid. */
+export function formatTimeLabel(value: string | undefined): string {
+  const parsed = parseHm(value);
+  if (!parsed) return '';
+  const period = parsed.hour < 12 ? 'AM' : 'PM';
+  const hour12 = parsed.hour % 12 === 0 ? 12 : parsed.hour % 12;
+  return `${hour12}:${pad(parsed.minute)} ${period}`;
+}

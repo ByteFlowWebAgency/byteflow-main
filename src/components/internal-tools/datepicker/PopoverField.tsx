@@ -16,6 +16,8 @@ interface PopoverFieldProps {
   displayValue: string; // '' → placeholder shown
   disabled?: boolean;
   popoverLabel: string;
+  /** Trigger glyph — calendar (default, DatePicker/MonthPicker) or clock (TimePicker). */
+  icon?: 'calendar' | 'clock';
   children: (api: { close: () => void }) => React.ReactNode;
 }
 
@@ -26,6 +28,7 @@ export default function PopoverField({
   displayValue,
   disabled,
   popoverLabel,
+  icon = 'calendar',
   children,
 }: PopoverFieldProps) {
   const [open, setOpen] = useState(false);
@@ -108,10 +111,17 @@ export default function PopoverField({
         onClick={() => setOpen((o) => !o)}
       >
         <span className={styles.triggerText}>{displayValue || placeholder}</span>
-        <svg className={styles.icon} viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <rect x="3" y="4.5" width="18" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
-          <path d="M3 9h18M8 3v3M16 3v3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
-        </svg>
+        {icon === 'clock' ? (
+          <svg className={styles.icon} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.7" />
+            <path d="M12 7.5V12l3 2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        ) : (
+          <svg className={styles.icon} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="4.5" width="18" height="16" rx="2.5" stroke="currentColor" strokeWidth="1.7" />
+            <path d="M3 9h18M8 3v3M16 3v3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+          </svg>
+        )}
       </button>
 
       {open &&

@@ -254,20 +254,47 @@
   min-width: 0;
 }
 
-.timeInput {
-  font: inherit;
-  font-size: 14px;
-  color: var(--bf-color-fg);
-  background: var(--bf-color-glass-solid);
-  border: 1px solid var(--bf-color-line-strong);
-  border-radius: var(--bf-radius-sm);
-  padding: 9px 10px;
-  width: 116px;
+.dateTimeTime {
+  width: 138px;
   flex-shrink: 0;
-  color-scheme: dark;
 }
 
-.timeInput:focus-visible {
+/* Time list (TimePicker popover) */
+
+.timeList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.timeSlot {
+  font: inherit;
+  font-size: 13px;
+  color: var(--bf-color-fg);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--bf-radius-sm);
+  padding: 8px 10px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.timeSlot:hover {
+  background: var(--bf-color-glass-solid);
+}
+
+.timeSlot:focus-visible {
   outline: var(--bf-focus-ring);
-  outline-offset: 1px;
+  outline-offset: -1px;
+}
+
+.timeSlotSelected,
+.timeSlotSelected:hover {
+  background: var(--bf-grad-primary);
+  color: #fff;
+  font-weight: 600;
+  border-color: transparent;
 }

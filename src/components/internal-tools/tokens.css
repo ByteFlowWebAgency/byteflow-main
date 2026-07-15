@@ -52,10 +52,39 @@ html:has(.bfScope)::-webkit-scrollbar-corner,
   background: #0b0f1f;
 }
 
+/* Native checkbox/radio accent — otherwise these render as the browser/OS default
+   (blue on most platforms) instead of the brand accent, everywhere a tool uses a plain
+   <input type="checkbox"> instead of a custom toggle. */
+.bfScope input[type='checkbox'],
+.bfScope input[type='radio'] {
+  accent-color: var(--bf-color-accent);
+}
+
+/* Native <select> chrome: appearance:none strips the OS dropdown arrow across every tool
+   (CRM, budgets, audits, themes) and this swaps in one branded chevron instead of leaving
+   selects arrow-less; the popup option list also gets the tool's surface colors rather
+   than the OS default white-on-black/black-on-white. */
+.bfScope select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='rgba(255,255,255,0.6)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+.bfScope select option {
+  background: var(--bf-color-bg-2);
+  color: var(--bf-color-fg);
+}
+
 /* Native date/time/month pickers inside the dark tool chrome: without an explicit
    dark color-scheme the calendar icon renders near-black on the ink background and the
-   popup calendar opens in light mode. Scoped to the input types, so the light paper
-   documents (which contain no inputs) are untouched. */
+   popup calendar opens in light mode. The one input living on paper (the document cover's
+   date field) overrides this locally back to light — see .coverDateInput. */
 .bfScope input[type='date'],
 .bfScope input[type='datetime-local'],
 .bfScope input[type='month'],
@@ -188,6 +217,10 @@ html[data-bf-chrome='light'] .bfScope::-webkit-scrollbar-thumb {
 html[data-bf-chrome='light']:has(.bfScope)::-webkit-scrollbar-corner,
 html[data-bf-chrome='light'] .bfScope ::-webkit-scrollbar-corner {
   background: #e6e8f2;
+}
+
+html[data-bf-chrome='light'] .bfScope select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='rgba(11,15,31,0.62)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
 }
 
 html[data-bf-chrome='light'] .bfScope input[type='date'],
