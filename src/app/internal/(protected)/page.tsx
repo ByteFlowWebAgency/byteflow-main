@@ -3,6 +3,7 @@ import '@/components/internal-tools/tokens.css';
 import HubTile from '@/components/internal-tools/HubTile';
 import ChromeModeToggle from '@/components/internal-tools/ChromeModeToggle';
 import CalendarConnection from '@/components/internal-tools/calendar/CalendarConnection';
+import MeetingsSectionGate from '@/components/internal-tools/meetings/MeetingsSectionGate';
 import styles from './hub.module.css';
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default async function InternalHubPage({
             <p className={styles.sectionHint}>What&rsquo;s coming up, and who it&rsquo;s with.</p>
           </div>
           <CalendarConnection status={calendar} />
+          <MeetingsSectionGate />
         </section>
 
         <section className={styles.section} aria-labelledby="section-pipeline">

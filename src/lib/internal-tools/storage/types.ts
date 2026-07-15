@@ -9,6 +9,7 @@ export type EntityName =
   | 'deals'
   | 'activities'
   | 'meetings'
+  | 'documents'
   | 'budgets';
 
 export const CRM_ENTITIES = [
@@ -17,6 +18,7 @@ export const CRM_ENTITIES = [
   'deals',
   'activities',
   'meetings',
+  'documents',
 ] as const satisfies readonly EntityName[];
 
 export type CrmEntityName = (typeof CRM_ENTITIES)[number];

@@ -263,8 +263,15 @@ export function validateDocument(
   };
   const templateId = str(input.templateId, 100);
   if (templateId) doc.templateId = templateId;
+  // The CRM link. This validator deliberately never returns the input object, so a field
+  // that isn't copied here is silently dropped on every save — organizationId has to be
+  // carried explicitly or the link would evaporate the moment the document is written.
+  const organizationId = str(input.organizationId, 40);
+  if (UUID_RE.test(organizationId)) doc.organizationId = organizationId;
   return { doc };
 }
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // ---- CRUD -------------------------------------------------------------------------------
 

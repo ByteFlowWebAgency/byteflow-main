@@ -93,6 +93,10 @@ const extractColumns: Record<EntityName, (e: Row) => Row> = {
     starts_at: e.startsAt,
     match_source: e.matchSource,
   }),
+  documents: (e) => ({
+    name: e.name,
+    organization_id: uuidOrNull(e.organizationId),
+  }),
   budgets: (e) => ({
     name: e.name,
     kind: e.kind,
@@ -177,6 +181,34 @@ export async function adminCreateConfirmedUser(
   });
   if (error) return { ok: false, error: error.message };
   return { ok: true };
+}
+
+// --- Documents ---------------------------------------------------------------------
+// `documents` IS a registered entity (so it gets /api/crm/documents, validation and
+// backup for free), but its `data` blob holds whole pages including images as data URLs
+// and runs to megabytes. listEntities() selects `data`, which is exactly what the
+// documents list and the meeting "is it ready?" badge must NOT do — hence this summary
+// read, which touches only the extracted columns.
+
+export interface DocumentSummary {
+  id: string;
+  organizationId: string | null;
+  name: string;
+  updatedAt: string;
+}
+
+export async function listDocumentSummaries(): Promise<DocumentSummary[]> {
+  const { data, error } = await getClient()
+    .from('documents')
+    .select('id, organization_id, name, updated_at')
+    .order('updated_at', { ascending: false });
+  if (error) throw new UpstreamError(error.message);
+  return (data ?? []).map((row) => ({
+    id: row.id as string,
+    organizationId: (row.organization_id as string) ?? null,
+    name: row.name as string,
+    updatedAt: row.updated_at as string,
+  }));
 }
 
 // --- Google Calendar authorization grants -----------------------------------------

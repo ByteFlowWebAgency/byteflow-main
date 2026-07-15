@@ -171,6 +171,12 @@ export interface BuiltDocument {
   pages: DocumentPage[];
   /** Which template it was created from, if any (informational). */
   templateId?: string;
+  /**
+   * The CRM organization this document is for — the link that makes "does this client have
+   * a proposal ready?" answerable. Optional: a blank draft legitimately has no client yet.
+   * Unlike the cover page's free-text `clientName`, this is a real foreign key.
+   */
+  organizationId?: string;
 }
 
 /** The eleven insertable block types, in the order the block picker offers them. */

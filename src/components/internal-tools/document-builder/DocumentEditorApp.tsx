@@ -15,6 +15,7 @@ import { generateDocumentPdf, renderDocumentPreview, sanitizeFilePart } from '..
 import type { CapturedPage } from '../pdf/generateDocumentPdf';
 import { editorReducer, type EditorAction } from './editorState';
 import { getDoc, saveDoc } from '@/lib/document-builder/storage';
+import { pushDocumentToServer } from '@/lib/document-builder/sync';
 import {
   captureTemplateFromDoc,
   saveCustomTemplate,
@@ -54,6 +55,11 @@ export default function DocumentEditorApp({ id }: { id: string }) {
     const handle = setTimeout(() => {
       const result = saveDoc(doc);
       setStatus(result.ok ? 'saved' : 'error');
+      // Mirror to the shared server copy so teammates and the meetings badge see it.
+      // Deliberately after the local save and deliberately not awaited: localStorage is
+      // the editing store and has already succeeded, so a network blip must not surface as
+      // "save failed" on work that is, in fact, saved.
+      if (result.ok) void pushDocumentToServer(doc);
     }, 600);
     return () => clearTimeout(handle);
   }, [doc]);

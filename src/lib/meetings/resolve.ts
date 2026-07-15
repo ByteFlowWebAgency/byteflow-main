@@ -8,9 +8,14 @@ import { createHash } from 'node:crypto';
 import type { CrmData } from '@/lib/crm/references';
 import type { Contact, Organization } from '@/lib/crm/types';
 import { listCalendarEvents, type CalendarEvent } from '@/lib/google/calendar';
-import { listEntities, saveEntity } from '@/lib/internal-tools/storage/server';
+import {
+  listEntities,
+  saveEntity,
+  listDocumentSummaries,
+  type DocumentSummary,
+} from '@/lib/internal-tools/storage/server';
 import { matchEvent } from './match';
-import type { Meeting, ResolvedMeeting } from './types';
+import type { LinkedDocument, Meeting, ResolvedMeeting } from './types';
 
 if (typeof window !== 'undefined') {
   throw new Error('lib/meetings/resolve.ts must never be imported from client code');
@@ -99,11 +104,23 @@ export async function resolveMeetings(
   from: Date,
   to: Date,
 ): Promise<ResolvedMeeting[]> {
-  const [events, data, stored] = await Promise.all([
+  const [events, data, stored, docs] = await Promise.all([
     listCalendarEvents(userId, from, to),
     loadCrmData(),
     loadMeetingsByEventId(),
+    // Summaries only — never the full documents. Pulling megabytes of embedded images to
+    // answer "does this client have one?" would be absurd.
+    listDocumentSummaries().catch(() => [] as DocumentSummary[]),
   ]);
+
+  // Index documents by the org they're for, so each meeting is an O(1) lookup.
+  const docsByOrg = new Map<string, LinkedDocument[]>();
+  for (const doc of docs) {
+    if (!doc.organizationId) continue;
+    const list = docsByOrg.get(doc.organizationId) ?? [];
+    list.push({ id: doc.id, name: doc.name, updatedAt: doc.updatedAt });
+    docsByOrg.set(doc.organizationId, list);
+  }
 
   const orgExists = (id: string | undefined) =>
     id !== undefined && data.organizations.some((o) => o.id === id);
@@ -115,17 +132,23 @@ export async function resolveMeetings(
     const existing = stored.get(event.id);
 
     if (existing && existing.matchSource === 'manual') {
-      resolved.push(toResolved(event, data, existing));
+      resolved.push(toResolved(event, data, existing, docsByOrg));
       continue;
     }
     if (existing && orgExists(existing.organizationId)) {
-      resolved.push(toResolved(event, data, existing));
+      resolved.push(toResolved(event, data, existing, docsByOrg));
       continue;
     }
 
     const outcome = matchEvent(event, data);
     if (!outcome) {
-      resolved.push({ event, match: null, isManual: false });
+      resolved.push({
+        event,
+        match: null,
+        isManual: false,
+        docStatus: 'unknown',
+        documents: [],
+      });
       continue;
     }
 
@@ -142,7 +165,7 @@ export async function resolveMeetings(
       updatedAt: now,
     };
     toPersist.push(meeting);
-    resolved.push(toResolved(event, data, meeting));
+    resolved.push(toResolved(event, data, meeting, docsByOrg));
   }
 
   // Persist after resolving so a write failure degrades to "re-match next load" rather
@@ -160,12 +183,22 @@ function toResolved(
   event: CalendarEvent,
   data: CrmData,
   meeting: Meeting,
+  docsByOrg: Map<string, LinkedDocument[]>,
 ): ResolvedMeeting {
   const isManual = meeting.matchSource === 'manual';
-  if (!meeting.organizationId) return { event, match: null, isManual };
+  const unmatched: ResolvedMeeting = {
+    event,
+    match: null,
+    isManual,
+    docStatus: 'unknown',
+    documents: [],
+  };
+  if (!meeting.organizationId) return unmatched;
 
   const described = describeMatch(data, meeting.organizationId, meeting.contactId);
-  if (!described) return { event, match: null, isManual };
+  if (!described) return unmatched; // org deleted since the match was stored
+
+  const documents = docsByOrg.get(meeting.organizationId) ?? [];
 
   return {
     event,
@@ -178,6 +211,9 @@ function toResolved(
       signal: meeting.matchSignal,
     },
     isManual,
+    // Matched to a client, so the question now applies: do they have paperwork or not?
+    docStatus: documents.length > 0 ? 'ready' : 'needs-prep',
+    documents,
   };
 }
 

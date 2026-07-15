@@ -41,6 +41,21 @@ export interface MatchOutcome {
   signal: MatchSignal;
 }
 
+/**
+ * Whether the matched client's paperwork is ready.
+ *  - 'ready'     — at least one document is linked to this organization
+ *  - 'needs-prep' — matched to a client, but no document exists for them yet
+ *  - 'unknown'   — no CRM match, so the question doesn't apply yet
+ */
+export type DocStatus = 'ready' | 'needs-prep' | 'unknown';
+
+/** A document belonging to the matched client, enough to link to it. */
+export interface LinkedDocument {
+  id: string;
+  name: string;
+  updatedAt: string;
+}
+
 /** An event plus its resolution — what both the list and the grid render from. */
 export interface ResolvedMeeting {
   event: CalendarEvent;
@@ -55,4 +70,7 @@ export interface ResolvedMeeting {
   } | null;
   /** True when a human set (or cleared) this — the matcher must not touch it again. */
   isManual: boolean;
+  docStatus: DocStatus;
+  /** Documents linked to the matched org. Empty when docStatus isn't 'ready'. */
+  documents: LinkedDocument[];
 }

@@ -1,0 +1,542 @@
+/* Meetings list + calendar grid + missing-document flow. Every value is an existing --bf-*
+   token, and everything flips in light chrome. Shared by both views so the grid can't drift
+   from the list (06-CALENDAR-VIEW.md: reuse the indicator, don't build a second one). */
+
+/* ---- status badge (shared by list rows and grid chips) ---------------------------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  font-family: var(--bf-font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 3px 9px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.badgeReady {
+  color: var(--bf-color-cyan-soft);
+}
+
+.badgeNeedsPrep {
+  color: var(--bf-color-warning);
+}
+
+.badgeUnknown {
+  color: var(--bf-color-fg-dim);
+  border-color: var(--bf-color-line-strong);
+}
+
+/* ---- section shell ---------------------------------------------------------------- */
+
+.card {
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  padding: 8px;
+}
+
+.viewSwitch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px 10px;
+  border-bottom: 1px solid var(--bf-color-line);
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.switchButton {
+  font-family: var(--bf-font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--bf-radius-sm);
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+.switchButton:hover {
+  color: var(--bf-color-fg);
+}
+
+.switchActive {
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border-color: var(--bf-color-line-strong);
+}
+
+.switchButton:focus-visible,
+.navButton:focus-visible,
+.row:focus-visible,
+.chip:focus-visible,
+.linkButton:focus-visible,
+.primaryButton:focus-visible,
+.ghostButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 2px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.rangeLabel {
+  font-family: var(--bf-font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bf-color-fg);
+  min-width: 132px;
+  text-align: center;
+}
+
+.navButton {
+  font-size: 14px;
+  line-height: 1;
+  color: var(--bf-color-fg-soft);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.navButton:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+/* ---- list view -------------------------------------------------------------------- */
+
+.dayHeading {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 10px 6px;
+  font-family: var(--bf-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-muted);
+}
+
+/* Today's accent — the same treatment the grid's today cell uses, so the two views agree. */
+.todayHeading {
+  color: var(--bf-color-accent-soft);
+}
+
+.dayHeadingDate {
+  font-size: 11px;
+  letter-spacing: 0.4px;
+  text-transform: none;
+  font-weight: 500;
+  color: var(--bf-color-fg-dim);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  border: 1px solid transparent;
+  border-radius: var(--bf-radius-md);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--bf-font-body);
+}
+
+.row:hover {
+  background: var(--bf-color-glass-solid);
+  border-color: var(--bf-color-line);
+}
+
+.rowTime {
+  flex-shrink: 0;
+  width: 72px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bf-color-fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.rowMain {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rowTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowOrg {
+  font-size: 12.5px;
+  color: var(--bf-color-fg-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowUnmatched {
+  color: var(--bf-color-fg-dim);
+  font-style: italic;
+}
+
+/* ---- grid view -------------------------------------------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--bf-color-line);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  overflow: hidden;
+}
+
+.weekday {
+  background: var(--bf-color-bg-2);
+  padding: 7px 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-dim);
+  text-align: center;
+}
+
+.cell {
+  background: var(--bf-color-bg);
+  min-height: 92px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cellOutside {
+  background: var(--bf-color-glass);
+}
+
+.cellDate {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bf-color-fg-soft);
+  font-variant-numeric: tabular-nums;
+  padding: 1px 3px;
+}
+
+.cellOutside .cellDate {
+  color: var(--bf-color-fg-dim);
+}
+
+/* Today, matching the list's today accent. Ringed AND labelled — not colour alone. */
+.cellToday .cellDate {
+  color: var(--bf-color-fg);
+  background: var(--bf-color-accent);
+  border-radius: 999px;
+  padding: 1px 7px;
+  align-self: flex-start;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  text-align: left;
+  font-family: var(--bf-font-body);
+  font-size: 11px;
+  padding: 3px 5px;
+  border-radius: 5px;
+  border: 1px solid var(--bf-color-line-strong);
+  border-left-width: 3px;
+  background: var(--bf-color-glass-solid);
+  color: var(--bf-color-fg-muted);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.chip:hover {
+  color: var(--bf-color-fg);
+  background: var(--bf-color-bg-2);
+}
+
+/* Status carried on the chip's left edge, mirroring the badge colours. Paired with the
+   status word in the popover and the title attribute — never colour alone. */
+.chipReady {
+  border-left-color: var(--bf-color-cyan-soft);
+}
+
+.chipNeedsPrep {
+  border-left-color: var(--bf-color-warning);
+}
+
+.chipUnknown {
+  border-left-color: var(--bf-color-line-strong);
+}
+
+.chipTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.moreButton {
+  font-family: var(--bf-font-body);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--bf-color-fg-dim);
+  background: transparent;
+  border: none;
+  padding: 2px 5px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.moreButton:hover {
+  color: var(--bf-color-accent-soft);
+}
+
+/* ---- empty / error states --------------------------------------------------------- */
+
+.empty {
+  padding: 26px 12px;
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--bf-color-fg-soft);
+}
+
+.errorNote {
+  padding: 12px;
+  font-size: 13px;
+  color: var(--bf-color-error);
+}
+
+/* ---- dialog (event detail + missing-document flow) -------------------------------- */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(11, 15, 31, 0.6);
+  backdrop-filter: blur(3px);
+}
+
+.dialog {
+  width: 100%;
+  max-width: 460px;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dialogTitle {
+  font-family: var(--bf-font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--bf-color-fg);
+}
+
+.dialogMeta {
+  font-size: 13px;
+  color: var(--bf-color-fg-soft);
+  line-height: 1.5;
+}
+
+.dialogRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-dim);
+}
+
+.problemList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--bf-color-warning);
+  border-radius: var(--bf-radius-md);
+  background: var(--bf-color-glass);
+}
+
+.problem {
+  font-size: 13px;
+  color: var(--bf-color-fg-muted);
+  line-height: 1.45;
+}
+
+.docList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.docLink {
+  font-size: 13px;
+  color: var(--bf-color-accent-soft);
+  text-decoration: none;
+  padding: 5px 8px;
+  border-radius: var(--bf-radius-sm);
+  border: 1px solid var(--bf-color-line);
+}
+
+.docLink:hover {
+  background: var(--bf-color-glass-solid);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+
+.primaryButton {
+  font-family: var(--bf-font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--bf-radius-sm);
+  border: 1px solid transparent;
+  background: var(--bf-grad-primary);
+  color: #ffffff; /* literal: sits on the fixed brand gradient in both modes */
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.primaryButton:hover {
+  opacity: 0.9;
+}
+
+.ghostButton,
+.linkButton {
+  font-family: var(--bf-font-body);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--bf-radius-sm);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  color: var(--bf-color-fg-muted);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.ghostButton:hover,
+.linkButton:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.ghostButton:disabled,
+.primaryButton:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ---- org picker ------------------------------------------------------------------- */
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.search {
+  font-family: var(--bf-font-body);
+  font-size: 13.5px;
+  padding: 8px 10px;
+  border-radius: var(--bf-radius-sm);
+  border: 1px solid var(--bf-color-line-strong);
+  background: var(--bf-color-bg);
+  color: var(--bf-color-fg);
+  width: 100%;
+}
+
+.search:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 190px;
+  overflow-y: auto;
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  padding: 4px;
+}
+
+.option {
+  font-family: var(--bf-font-body);
+  font-size: 13.5px;
+  text-align: left;
+  padding: 7px 9px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--bf-color-fg-muted);
+  cursor: pointer;
+}
+
+.option:hover,
+.optionActive {
+  background: var(--bf-color-glass-solid);
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-line-strong);
+}
+
+.option:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: -2px;
+}
+
+.optionNone {
+  color: var(--bf-color-fg-dim);
+  font-style: italic;
+}
