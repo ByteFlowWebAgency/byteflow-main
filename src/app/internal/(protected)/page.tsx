@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import '@/components/internal-tools/tokens.css';
 import HubTile from '@/components/internal-tools/HubTile';
 import ChromeModeToggle from '@/components/internal-tools/ChromeModeToggle';
+import CalendarConnection from '@/components/internal-tools/calendar/CalendarConnection';
 import styles from './hub.module.css';
 
 export const metadata: Metadata = {
@@ -15,7 +16,17 @@ export const dynamic = 'force-dynamic';
 // (header/footer) is provided by the (protected) layout; this page is the landing
 // masthead plus the tool tiles, grouped by what the tool is *for*: the pipeline
 // itself, the deliverables that go out, and the brand system those render with.
-export default function InternalHubPage() {
+//
+// "Meetings" leads because it's the section that will carry pending action — the
+// upcoming-meetings list (05-MEETINGS-WIDGET.md) lands here once its prerequisites are
+// met. Today it holds the calendar connection that makes that possible.
+export default async function InternalHubPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ calendar?: string }>;
+}) {
+  const { calendar } = await searchParams;
+
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
@@ -29,6 +40,16 @@ export default function InternalHubPage() {
             documents — in one place.
           </p>
         </header>
+
+        <section className={styles.section} aria-labelledby="section-meetings">
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle} id="section-meetings">
+              Meetings
+            </h2>
+            <p className={styles.sectionHint}>What&rsquo;s coming up, and who it&rsquo;s with.</p>
+          </div>
+          <CalendarConnection status={calendar} />
+        </section>
 
         <section className={styles.section} aria-labelledby="section-pipeline">
           <div className={styles.sectionHead}>

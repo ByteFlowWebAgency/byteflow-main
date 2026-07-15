@@ -14,14 +14,22 @@ import type { EntityName } from './types';
 export const BACKUP_FORMAT = 'byteflow-internal-tools-backup' as const;
 export const BACKUP_VERSION = 1 as const;
 
-/** FK dependency order: orgs before contacts before deals before activities. */
+/** FK dependency order: orgs before contacts before deals before activities/meetings. */
 const ENTITY_ORDER: EntityName[] = [
   'organizations',
   'contacts',
   'deals',
   'activities',
+  'meetings',
   'budgets',
 ];
+
+/**
+ * Entities added after BACKUP_VERSION 1 shipped. A backup written before they existed
+ * simply has no key for them, and must still restore — so a missing section is read as
+ * empty rather than rejected as malformed. (A present-but-wrong section is still an error.)
+ */
+const ADDED_AFTER_V1: ReadonlySet<EntityName> = new Set(['meetings']);
 
 export interface BackupFile {
   format: typeof BACKUP_FORMAT;
@@ -51,6 +59,7 @@ export interface RestoreCounts {
   contacts: number;
   deals: number;
   activities: number;
+  meetings: number;
   budgets: number;
 }
 
@@ -77,6 +86,11 @@ export function validateBackup(parsed: unknown): asserts parsed is BackupFile {
   }
   const data = file.data as Record<string, unknown>;
   for (const entity of ENTITY_ORDER) {
+    // Backfill sections that a pre-existing backup couldn't have contained, so older
+    // files keep restoring cleanly instead of failing validation on a key they predate.
+    if (data[entity] === undefined && ADDED_AFTER_V1.has(entity)) {
+      data[entity] = [];
+    }
     const records = data[entity];
     if (!Array.isArray(records)) {
       throw new Error(`Backup data.${entity} must be an array.`);
@@ -107,6 +121,7 @@ export async function restoreAll(parsed: unknown): Promise<RestoreCounts> {
     contacts: parsed.data.contacts.length,
     deals: parsed.data.deals.length,
     activities: parsed.data.activities.length,
+    meetings: parsed.data.meetings.length,
     budgets: parsed.data.budgets.length,
   };
 }
