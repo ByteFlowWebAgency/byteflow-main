@@ -10,7 +10,8 @@ claim in that document.
 | **BLOCKER 2** — documents have no CRM linkage | ✅ **RESOLVED** — `documents` table + `organization_id` FK + sync, `d549eda`. Phases 4–6 built. |
 | **BLOCKER 3** — the OAuth scope cleanup never happened | ⚠️ **OPEN** (console task) — 13 scopes incl. full delete are still configured. Code now refuses over-broad tokens, so this is not blocking. |
 
-Phases 1, 2 and 3 are complete. Phases 4–6 remain blocked on BLOCKER 2.
+**All six phases are complete.** BLOCKER 3 is the only thing still open, and it's a console
+task that doesn't block anything — the code refuses over-broad tokens regardless.
 
 ---
 
