@@ -1,0 +1,124 @@
+/*
+ * Cover sheet: exactly one US Letter page (816×1056 at 96dpi, border-box) — the PDF
+ * paginator's firm-break contract depends on this height staying exact. Reads only the
+ * themed custom properties, so any theme works without edits here.
+ */
+
+.cover {
+  box-sizing: border-box;
+  width: 816px;
+  height: 1056px;
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background: var(--bf-paper-bg);
+  color: var(--bf-paper-fg);
+  font-family: var(--bf-font-body);
+  border-radius: 4px;
+  box-shadow: 0 24px 80px -24px rgba(0, 0, 0, 0.8);
+  /* Preview-only page gap — the export engine zeroes margins on data-pdf-document. */
+  margin: 0 auto 28px;
+}
+
+/* Full-bleed treatment: soft brand washes in the theme's own gradient colors. The
+   ::before/::after pseudo-elements keep the washes out of the content flow. */
+.fullBleed::before,
+.fullBleed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.fullBleed::before {
+  background: var(--bf-grad-primary);
+  opacity: 0.16;
+}
+
+.fullBleed::after {
+  /* Vignette toward the bottom so title/footer text sits on calmer ground. */
+  background: linear-gradient(200deg, transparent 0%, var(--bf-paper-bg) 62%);
+}
+
+/* Content sits above the washes. */
+.top,
+.main,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-bottom: 48px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 3.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-accent);
+  margin-bottom: 18px;
+}
+
+.title {
+  font-family: var(--bf-font-display);
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -1px;
+  /* No max-height/overflow here: html2canvas mis-clips through glyphs. Extreme titles
+     are contained by the sheet's own fixed height + overflow:hidden at the page edge. */
+  max-width: 600px;
+  overflow-wrap: anywhere;
+  margin-bottom: 26px;
+}
+
+.client {
+  font-size: 17px;
+  color: var(--bf-paper-fg-muted);
+}
+
+.clientName {
+  font-weight: 600;
+  color: var(--bf-paper-fg);
+}
+
+.footer {
+  margin-top: auto;
+}
+
+.keyline {
+  height: 3px;
+  border-radius: 999px;
+  background: var(--bf-grad-primary);
+  margin-bottom: 16px;
+}
+
+.footerRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.date {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.brand {
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  color: var(--bf-paper-fg-soft);
+}

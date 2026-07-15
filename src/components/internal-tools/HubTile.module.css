@@ -1,0 +1,79 @@
+.tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.tile:hover:not(.tileDisabled) {
+  background: var(--bf-color-glass-solid);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.tile:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.tileDisabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.monogram {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: var(--bf-radius-md);
+  background: var(--bf-grad-primary);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.tileDisabled .monogram {
+  background: var(--bf-color-glass-solid);
+  color: var(--bf-color-fg-dim);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--bf-font-display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--bf-color-fg);
+}
+
+.badge {
+  font-family: var(--bf-font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-dim);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+
+.description {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--bf-color-fg-soft);
+}

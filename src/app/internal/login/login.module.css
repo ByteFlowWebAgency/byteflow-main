@@ -1,0 +1,109 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  /* Clear the site's fixed pill Nav. */
+  padding: 128px 24px 64px;
+  background: var(--bf-color-bg);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-body);
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  padding: 32px;
+}
+
+.eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-violet-soft);
+  margin-bottom: 6px;
+}
+
+.heading {
+  font-family: var(--bf-font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  margin-bottom: 24px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-muted);
+}
+
+.input {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 10px 12px;
+}
+
+.input:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.error {
+  font-size: 13px;
+  color: var(--bf-color-error);
+}
+
+.switchLine {
+  margin-top: 20px;
+  font-size: 13px;
+  color: var(--bf-color-fg-muted);
+  text-align: center;
+}
+
+.switchLine a {
+  color: var(--bf-color-fg);
+  font-weight: 600;
+}
+
+.submit {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  background: var(--bf-grad-primary);
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 22px;
+  cursor: pointer;
+  margin-top: 4px;
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.6);
+}
+
+.submit:hover {
+  filter: brightness(1.08);
+}
+
+.submit:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}

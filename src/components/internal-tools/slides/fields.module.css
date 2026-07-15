@@ -1,0 +1,187 @@
+/* Shared field-editing primitives for the deck editor's field panel. Plain inputs only —
+   no rich text toolbar, per docs/slides/00-GUARDRAILS.md. */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bf-color-fg-muted);
+}
+
+.input,
+.textarea {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 64px;
+}
+
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.listItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.listItemBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.listItemRow {
+  display: flex;
+  gap: 6px;
+}
+
+.listItemControls {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.iconButton {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--bf-color-fg-soft);
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.iconButton:hover:not(:disabled) {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.iconButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.iconButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.addButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px dashed var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 8px 12px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.addButton:hover:not(:disabled) {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.addButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.imageField {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.imagePreview {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  flex-shrink: 0;
+}
+
+.imageActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fileButton {
+  font: inherit;
+  font-size: 12px;
+  color: var(--bf-color-fg-soft);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.fileButton:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.removeLink {
+  font: inherit;
+  font-size: 12px;
+  color: var(--bf-color-fg-dim);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.removeLink:hover {
+  color: var(--bf-color-error);
+  text-decoration: underline;
+}
+
+.sectionHeading {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--bf-color-fg);
+  margin: 18px 0 8px;
+}
+
+.sectionHeading:first-child {
+  margin-top: 0;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--bf-color-fg-dim);
+  margin: -8px 0 12px;
+}

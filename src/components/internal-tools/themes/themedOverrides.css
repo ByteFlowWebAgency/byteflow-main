@@ -1,0 +1,13 @@
+/* Document-theme override rules that can't be expressed as custom-property values.
+   Scoped to ThemedDocument's wrapper attributes — nothing here can leak outside a
+   themed document. */
+
+/* The brand logo asset is dark-indigo-on-transparent and disappears on dark paper. Reads
+   the --bf-logo-filter custom property (themeToCss.ts) rather than an attribute selector,
+   so a nested per-page/per-slide theme override correctly re-cascades — the nearest
+   ancestor's value always wins, unlike an attribute selector which matches ANY ancestor
+   with the attribute set, even one further out than a lighter override underneath it.
+   Verified to survive html2canvas PDF capture. */
+img[alt='ByteFlow Solutions'] {
+  filter: var(--bf-logo-filter, none);
+}

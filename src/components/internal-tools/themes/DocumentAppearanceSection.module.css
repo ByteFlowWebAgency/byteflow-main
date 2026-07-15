@@ -1,0 +1,59 @@
+/* Matches the form-section card conventions the proposal and audit forms both use. */
+
+.section {
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  padding: 20px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-violet-soft);
+  margin-bottom: 14px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px 20px;
+  align-items: end;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-muted);
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  padding-bottom: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--bf-color-accent);
+  cursor: pointer;
+}
+
+.checkbox:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}

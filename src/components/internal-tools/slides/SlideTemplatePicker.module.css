@@ -1,0 +1,111 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 16, 0.72);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  z-index: 60;
+  padding: 24px;
+}
+
+.dialog {
+  width: min(760px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-lg);
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.heading {
+  font-family: var(--bf-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--bf-color-fg);
+}
+
+.closeButton {
+  font: inherit;
+  font-size: 16px;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.searchInput {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 8px 12px;
+  width: 100%;
+  margin: 12px 0 16px;
+}
+
+.searchInput:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+/* Flat grid — no categories, no grouping, no tabs (docs/slides/00-GUARDRAILS.md). */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.card {
+  font: inherit;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  color: var(--bf-color-fg);
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: var(--bf-color-accent-soft);
+  background: var(--bf-color-glass-solid);
+}
+
+.card:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.cardName {
+  font-family: var(--bf-font-display);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cardDescription {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--bf-color-fg-muted);
+}
+
+.empty {
+  padding: 24px;
+  text-align: center;
+  color: var(--bf-color-fg-muted);
+  font-size: 13px;
+}
