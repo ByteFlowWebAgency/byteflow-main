@@ -13,11 +13,17 @@ deployed; `main`/`dev` untouched.
 | 5 | `06-CALENDAR-VIEW.md` | ⛔ **Blocked** — BLOCKER 2 |
 | 6 | `07-MISSING-DOCUMENT-FLOW.md` | ⛔ **Blocked** — BLOCKER 2 |
 
-**Two things need a human before the calendar works end to end** — see `BLOCKERS.md`:
-1. Register `…/api/google/callback` as an Authorized redirect URI in the Google Cloud
-   Console (console task, cannot be done from code).
-2. Apply `supabase/migrations/20260715180000_google_calendar_and_meetings.sql` with
-   `supabase db push` — `supabase/` is gitignored, so it is **not in the commit**.
+**Manual steps — status** (see `BLOCKERS.md`):
+- ✅ Redirect URI registered — a real consent round trip completed 2026-07-15 and returned
+  `scope=email calendar.events.readonly userinfo.email openid`.
+- ✅ Migration applied to the live project (over the `aws-1` session pooler; the direct
+  `db.<ref>` host is IPv6-only and unreachable from WSL). Verified `service_role` reads both
+  new tables and `anon` is blocked with `42501`.
+- ⚠️ **Trim the OAuth consent screen's scopes** — BLOCKER 3. 13 scopes incl. "permanently
+  delete all the calendars" are still configured, contrary to `01-CONTEXT.md`. Not blocking:
+  the code now refuses any token carrying scope it didn't ask for.
+- ▶️ **Next: hit Connect again.** The first attempt failed only because the table didn't
+  exist yet.
 
 ---
 

@@ -1,35 +1,84 @@
 # Blockers
 
-Two hard prerequisite gaps found in Phase 2 recon. Both are cases where `01-CONTEXT.md`
-describes something as already built, and the code said otherwise.
+Three prerequisite gaps. **Every one is a case where `01-CONTEXT.md` describes something as
+already done and the reality says otherwise** — worth remembering before trusting any other
+claim in that document.
 
 | | Status |
 |---|---|
-| **BLOCKER 1** — Google Calendar OAuth | ✅ **RESOLVED** — built on this branch (`3844433`) after Tyrone explicitly authorised it. One manual step remains, below. |
+| **BLOCKER 1** — Google Calendar OAuth was never built | ✅ **RESOLVED** — built on this branch (`3844433`) after Tyrone authorised it. Migration applied; consent round trip confirmed working. |
 | **BLOCKER 2** — documents have no CRM linkage | ⛔ **OPEN** — still blocks Phases 4–6. |
+| **BLOCKER 3** — the OAuth scope cleanup never happened | ⚠️ **OPEN** (console task) — 13 scopes incl. full delete are still configured. Code now refuses over-broad tokens, so this is not blocking. |
 
 Phases 1, 2 and 3 are complete. Phases 4–6 remain blocked on BLOCKER 2.
 
 ---
 
-## ⚠️ ACTION REQUIRED — one manual step before the calendar connection will work
+## Status of the manual steps
 
-**Google Cloud Console → APIs & Services → Credentials → the OAuth 2.0 Client** used by
-`GOOGLE_CLIENT_ID` needs the callback registered under **Authorized redirect URIs**. Google
-rejects the flow with `redirect_uri_mismatch` until it matches *exactly*:
+- ✅ **Redirect URI registered** — confirmed working: a real consent round trip on
+  2026-07-15 returned to `/api/google/callback` with a code and
+  `scope=email calendar.events.readonly userinfo.email openid`.
+- ✅ **Migration applied** — `20260715180000_google_calendar_and_meetings.sql` pushed to the
+  live project over the `aws-1-us-east-2` session pooler (the direct `db.<ref>` host is
+  IPv6-only and unreachable from WSL). Verified: `service_role` reads both new tables;
+  `anon` gets `42501 insufficient_privilege` on both, so RLS + REVOKE are doing their job.
+- ⚠️ **Trim the OAuth consent screen's scopes** — see BLOCKER 3 below. Not required for the
+  connection to work (the code now refuses over-broad tokens), but it should be done.
 
-- Local dev: `http://localhost:3000/api/google/callback`
-- Production: `https://<your-domain>/api/google/callback`
+---
 
-Also confirm the **Google Calendar API** is enabled for the project, and that the OAuth
-consent screen lists `calendar.events.readonly` + `userinfo.email` (per
-`GOOGLE-CALENDAR-SCOPES-CLEANUP.md`'s intent — that file doesn't exist in this repo).
+## BLOCKER 3 — the OAuth scope cleanup never happened either ⚠️ OPEN (console task)
 
-This is a console task and cannot be done from code. Nothing else is outstanding for the
-connection.
+`01-CONTEXT.md` claims:
 
-**Also not applied:** `supabase/migrations/20260715180000_google_calendar_and_meetings.sql`
-must be applied with `supabase db push`. See the `supabase/` gitignore note below.
+> **OAuth scope cleanup** — the Google Cloud Console project's Data Access page has been
+> trimmed to only the scopes actually needed (`openid`, `userinfo.email`,
+> `calendar.events.readonly`). This was a manual console task, not code.
+
+**It has not been.** A screenshot of the Data Access page (2026-07-15) shows **13 scopes**,
+including:
+
+| Scope | Google's own description |
+|---|---|
+| `.../auth/calendar` | "See, **edit**, share, and **permanently delete** all the calendars you can access" |
+| `.../auth/calendar.acls` | "See and **change the sharing permissions** of Google calendars you own" |
+| `.../auth/calendar.events` | "**View and edit** events on all your calendars" |
+| `.../auth/calendar.events.owned` | "See, **create, change, and delete** events on Google calendars you own" |
+| `.../auth/calendar.calendars` | "See and change the properties of Google calendars… and **create** secondary calendars" |
+| `.../auth/service.management` | "**Manage** your Google API service configuration" |
+
+…plus `calendar.readonly`, `calendar.calendarlist`, and four `.readonly` variants.
+
+This is the **third** premise in the package to turn out false, after the OAuth integration
+itself (BLOCKER 1) and the document↔CRM linkage (BLOCKER 2).
+
+**Why it mattered to the code, not just the console.** The grant observed in the real round
+trip was clean (read-only), but the config made two of this branch's original choices unsafe,
+both now fixed in `c2eff6c`:
+1. `buildConsentUrl` set `include_granted_scopes=true` — incremental authorization, where the
+   minted token inherits **every scope the user previously granted this client**. That bounds
+   the token's authority by the *consent screen's config* rather than by what we request. With
+   `.../auth/calendar` available there, a user who had once granted it would have handed this
+   read-only integration a calendar-destroying token. Removed; it bought nothing.
+2. The callback verified `calendar.events.readonly` was **present**, not that nothing else
+   was — so a token holding read-only *and* full-delete passed. It now checks the granted set
+   against an **allowlist** and refuses the grant outright (`?calendar=scope-too-broad`)
+   rather than storing a write-capable credential. An allowlist, not a denylist: the console
+   config can change without warning, and the failure mode of guessing wrong must be "refuse".
+
+**Recommended (console, ~2 min):** on the Data Access page, delete every scope except
+`openid`, `.../auth/userinfo.email`, and `.../auth/calendar.events.readonly` — i.e. actually
+do the cleanup `01-CONTEXT.md` describes.
+
+⚠️ **Check first** whether anything else in that Google Cloud project uses the same consent
+screen. Scopes there are per-project, so removing them affects every OAuth client in it, not
+just this one. If the project is dedicated to byteflow.us, trimming is safe.
+
+Two further reasons to do it: `.../auth/calendar` is a Google **restricted scope**, which
+drags in verification requirements for external users; and a consent screen that *asks* for
+"permanently delete all your calendars" is a bad look for a tool whose entire pitch is that it
+only reads.
 
 ---
 
