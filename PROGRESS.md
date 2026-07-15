@@ -8,7 +8,7 @@ deployed; `main`/`dev` untouched.
 | 1 | `02-DASHBOARD-CLEANUP.md` | ✅ **Complete** — gate met, `20d358f` |
 | 2 | `03-RECON.md` | ✅ **Complete** — gate met; found two hard prerequisite gaps, `6c177c4` |
 | 2.5 | *(not in the package)* | ✅ **Complete** — Calendar OAuth built after Tyrone authorised it, `3844433` |
-| 3 | `04-CRM-LINKING.md` | ✅ **Complete** — gate met (matching verified on fixtures, not live data — see caveat), `3844433` |
+| 3 | `04-CRM-LINKING.md` | ✅ **Complete** — gate met, incl. on live data, `3844433` |
 | 4 | `05-MEETINGS-WIDGET.md` | ⛔ **Blocked** — BLOCKER 2 (no document↔CRM link) |
 | 5 | `06-CALENDAR-VIEW.md` | ⛔ **Blocked** — BLOCKER 2 |
 | 6 | `07-MISSING-DOCUMENT-FLOW.md` | ⛔ **Blocked** — BLOCKER 2 |
@@ -22,8 +22,8 @@ deployed; `main`/`dev` untouched.
 - ⚠️ **Trim the OAuth consent screen's scopes** — BLOCKER 3. 13 scopes incl. "permanently
   delete all the calendars" are still configured, contrary to `01-CONTEXT.md`. Not blocking:
   the code now refuses any token carrying scope it didn't ask for.
-- ▶️ **Next: hit Connect again.** The first attempt failed only because the table didn't
-  exist yet.
+- ✅ **Connected** as `tyrone_johnson@byteflowsolutions.com`; granted scope is exactly
+  `openid userinfo.email calendar.events.readonly` — nothing broader.
 
 ---
 
@@ -69,10 +69,10 @@ revocable.
 tests); every route fails closed unauthenticated (307/401); `GET` disconnect → 405;
 `/api/crm/google_calendar_tokens` → 404; connection card renders in both chrome modes.
 
-**Not verified — needs you:** the actual consent round trip, token refresh against real
-Google, and reading real events. All three need a Google account to click through consent,
-plus the redirect URI registered in the Cloud Console. Nothing in the flow has been exercised
-against live Google.
+**Verified against live Google (2026-07-15):** consent round trip completed; the stored grant
+is exactly `openid userinfo.email calendar.events.readonly`; refresh-token → access-token →
+event fetch all work. `include_granted_scopes` was removed and an allowlist added first — see
+BLOCKER 3 — so a token carrying anything broader is now refused rather than stored.
 
 ---
 
@@ -92,15 +92,26 @@ same path. `/api/meetings/assign` is the manual override both will call.
 - ✅ *Manual override persists and is not overwritten* — a `manual` row short-circuits the
   matcher before it runs; a manual row with no org is a deliberate "not a client meeting"
   and is likewise never re-matched.
-- ⚠️ *"A real upcoming meeting resolves to the correct CRM record"* — **verified against
-  fixtures, not real data.** 26 tests over the real compiled matcher cover all three tiers,
-  precedence, ambiguity, and the wrong-match regressions. But no live calendar has been read
-  and no real CRM row inspected, because both need the console step + consent above. **This
-  part of the gate is not fully met and should not be reported as met.**
+- ✅ *"A real upcoming meeting resolves to the correct CRM record, or is correctly left
+  unmatched"* — **now verified on live data** (2026-07-15, read-only dry run calling the real
+  `listCalendarEvents` + `matchEvent` against the real calendar and real CRM):
+  - Token refresh + calendar fetch worked; 3 events in the next 30 days.
+  - **1 correctly matched**: "Chris / Tyrone" → *Summit County Continuum of Care*, via tier 1
+    (attendee `…@summitcoc.org` = a stored `Contact.email`). Note the title contains **no org
+    name**, so tier 3 could never have caught it — this meeting matched *only* because of the
+    exact-contact-email signal, which `03-RECON.md` didn't list and recon added.
+  - **2 correctly unmatched**: two Contentful webinars with no external attendees. No signal,
+    left alone rather than force-matched — exactly what `00-GUARDRAILS.md` requires.
+  - Both halves of the gate demonstrated. Caveat: a 3-event sample, and the dry run
+    deliberately did not call `resolveMeetings` (which persists), so **the persistence path is
+    still only fixture-tested**.
 
-**Also unmeasured:** whether the email/domain signals actually fire on this CRM's real data.
-`RECON.md` § Step 5 recommends sampling real `Organization.website` / `Contact.email` values
-before trusting the matcher — still worth doing.
+**Real-data quality — measured, and better than feared:** 4 organizations (3 with a usable
+website domain: `summitcoc.org`, `progressakron.org`, `akronsneakeracademy.org`) and 4 contacts
+(3 with both an email and an org). Contact emails are on **corporate** domains, not personal
+ones — so tiers 1 and 2 are both genuinely viable here, and the consumer-domain blocklist is
+insurance rather than load-bearing. The `RECON.md` § Step 5 recommendation to sample before
+trusting the matcher is now done.
 
 ---
 
