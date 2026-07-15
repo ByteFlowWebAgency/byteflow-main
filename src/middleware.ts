@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
 import { resolveSupabaseAuthEnv } from '@/lib/internal-tools/auth/env';
+import { externalUrl } from '@/lib/internal-tools/auth/requestOrigin';
 
 const PUBLIC_PATHS = ['/internal/login', '/internal/signup'];
 
@@ -44,13 +45,13 @@ export async function middleware(request: NextRequest) {
   if (isPublicPath) {
     // Already signed in — skip the form and go to the internal tools hub.
     if (authenticated) {
-      return NextResponse.redirect(new URL('/internal', request.url));
+      return NextResponse.redirect(externalUrl(request, '/internal'));
     }
     return response;
   }
 
   if (!authenticated) {
-    return NextResponse.redirect(new URL('/internal/login', request.url));
+    return NextResponse.redirect(externalUrl(request, '/internal/login'));
   }
   return response;
 }
