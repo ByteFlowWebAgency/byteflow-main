@@ -22,60 +22,62 @@ export default function BackgroundsGalleryApp() {
   const { theme, missing } = resolveTheme(themeId);
 
   return (
-    <div className="bfScope">
-      <header className={styles.header}>
-        <div>
-          <h1 className={styles.heading}>Background designs</h1>
-          <p className={styles.subhead}>
-            All 20 built-in decorative backgrounds, previewed under any theme. Each recolors
-            entirely from the selected theme&apos;s colors — nothing here is hardcoded per
-            design. Pick one at the actual page/slide it belongs to (Documents or
-            Presentations); this page is preview-only.
-          </p>
-        </div>
-        <div className={styles.controls}>
+    <div className={`bfScope ${styles.page}`}>
+      <div className={styles.inner}>
+        <header className={styles.header}>
           <div>
-            <label htmlFor="gallery-theme" className={styles.controlLabel}>
-              Preview theme
-            </label>
-            <ThemePicker id="gallery-theme" value={themeId} onChange={setThemeId} missing={missing} />
-          </div>
-          <div>
-            <span className={styles.controlLabel}>Sample title</span>
-            <div className={styles.titleToggle}>
-              <button
-                type="button"
-                className={titleIndex === 0 ? styles.titleToggleActive : ''}
-                onClick={() => setTitleIndex(0)}
-              >
-                Short
-              </button>
-              <button
-                type="button"
-                className={titleIndex === 1 ? styles.titleToggleActive : ''}
-                onClick={() => setTitleIndex(1)}
-              >
-                Long
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className={styles.grid}>
-        {BACKGROUND_DESIGNS.map((design) => (
-          <div key={design.id} className={styles.card}>
-            <div className={styles.canvas} style={{ background: theme.colors.background }}>
-              <div aria-hidden dangerouslySetInnerHTML={{ __html: design.renderSvg(theme, 960, 540) }} />
-              <p className={styles.sampleTitle} style={{ color: theme.colors.foreground, fontFamily: theme.fonts.display }}>
-                {SAMPLE_TITLES[titleIndex]}
-              </p>
-            </div>
-            <p className={styles.cardName} style={{ color: theme.colors.accent }}>
-              {design.name}
+            <h1 className={styles.heading}>Background Designs</h1>
+            <p className={styles.subhead}>
+              Browse all 20 built-in decorative backgrounds and preview how each recolors under
+              any saved theme. To use one, pick it from the picker on the actual document page
+              or slide you&apos;re editing in Documents or Presentations — this page is preview
+              only.
             </p>
           </div>
-        ))}
+          <div className={styles.controls}>
+            <div>
+              <label htmlFor="gallery-theme" className={styles.controlLabel}>
+                Preview theme
+              </label>
+              <ThemePicker id="gallery-theme" value={themeId} onChange={setThemeId} missing={missing} />
+            </div>
+            <div>
+              <span className={styles.controlLabel}>Sample title</span>
+              <div className={styles.titleToggle}>
+                <button
+                  type="button"
+                  className={titleIndex === 0 ? styles.titleToggleActive : ''}
+                  onClick={() => setTitleIndex(0)}
+                >
+                  Short
+                </button>
+                <button
+                  type="button"
+                  className={titleIndex === 1 ? styles.titleToggleActive : ''}
+                  onClick={() => setTitleIndex(1)}
+                >
+                  Long
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className={styles.grid}>
+          {BACKGROUND_DESIGNS.map((design) => (
+            <div key={design.id} className={styles.card}>
+              <div className={styles.canvas} style={{ background: theme.colors.background }}>
+                <div aria-hidden dangerouslySetInnerHTML={{ __html: design.renderSvg(theme, 960, 540) }} />
+                <p className={styles.sampleTitle} style={{ color: theme.colors.foreground, fontFamily: theme.fonts.display }}>
+                  {SAMPLE_TITLES[titleIndex]}
+                </p>
+              </div>
+              <p className={styles.cardName} style={{ color: theme.colors.accent }}>
+                {design.name}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

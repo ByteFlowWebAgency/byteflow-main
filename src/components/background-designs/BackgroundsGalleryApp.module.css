@@ -1,10 +1,26 @@
+/* Padding only, no max-width/margin:auto here — .page is a direct flex child of the
+   internal-tools shell's .main (flex-direction: column). A block box with auto cross-axis
+   margins disables flex stretch per spec, so the box would shrink-to-fit its own content
+   instead of filling the available width — which quietly starves a CSS grid inside it down
+   to far fewer columns than it should have room for. The optional max-width cap for very
+   wide screens lives on .inner below instead, which is a plain block child (not a flex
+   item), where max-width + margin:auto behaves the ordinary, expected way. */
+.page {
+  padding: 48px 32px 64px;
+}
+
+.inner {
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 24px;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin-bottom: 36px;
 }
 
 .heading {
@@ -61,16 +77,17 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+  gap: 28px;
 }
 
 .card {
   border-radius: var(--bf-radius-md);
   border: 1px solid var(--bf-color-line);
-  padding: 12px;
+  background: var(--bf-color-bg-2);
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .canvas {
