@@ -1,12 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseAuthServerClient } from '@/lib/internal-tools/auth/server';
 import { isAllowedSignupEmail } from '@/lib/internal-tools/auth/env';
+import { externalUrl } from '@/lib/internal-tools/auth/requestOrigin';
 import { adminCreateConfirmedUser } from '@/lib/internal-tools/storage/server';
 
 export const runtime = 'nodejs';
 
 function fail(request: NextRequest, code: string) {
-  return NextResponse.redirect(new URL(`/internal/signup?error=${code}`, request.url), 303);
+  return NextResponse.redirect(externalUrl(request, `/internal/signup?error=${code}`), 303);
 }
 
 // Native <form> POST from /internal/signup. Only @byteflowsolutions.com emails may
@@ -55,5 +56,5 @@ export async function POST(request: NextRequest) {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return fail(request, 'signup-failed');
 
-  return NextResponse.redirect(new URL('/internal', request.url), 303);
+  return NextResponse.redirect(externalUrl(request, '/internal'), 303);
 }
