@@ -9,9 +9,10 @@ deployed; `main`/`dev` untouched.
 | 2 | `03-RECON.md` | ✅ **Complete** — gate met; found two hard prerequisite gaps, `6c177c4` |
 | 2.5 | *(not in the package)* | ✅ **Complete** — Calendar OAuth built after Tyrone authorised it, `3844433` |
 | 3 | `04-CRM-LINKING.md` | ✅ **Complete** — gate met, incl. on live data, `3844433` |
-| 4 | `05-MEETINGS-WIDGET.md` | ⛔ **Blocked** — BLOCKER 2 (no document↔CRM link) |
-| 5 | `06-CALENDAR-VIEW.md` | ⛔ **Blocked** — BLOCKER 2 |
-| 6 | `07-MISSING-DOCUMENT-FLOW.md` | ⛔ **Blocked** — BLOCKER 2 |
+| 2.6 | *(not in the package)* | ✅ **Complete** — documents linked to CRM clients, closing BLOCKER 2, `d549eda` |
+| 4 | `05-MEETINGS-WIDGET.md` | ✅ **Complete** — `d549eda` |
+| 5 | `06-CALENDAR-VIEW.md` | ✅ **Complete** — `d549eda` |
+| 6 | `07-MISSING-DOCUMENT-FLOW.md` | ✅ **Complete** — `d549eda` |
 
 **Manual steps — status** (see `BLOCKERS.md`):
 - ✅ Redirect URI registered — a real consent round trip completed 2026-07-15 and returned
@@ -129,8 +130,46 @@ Both were the "wrong match is worse than no match" failure the guardrails single
 
 ---
 
-## Phases 4–6 ⛔ Not started
+## Phase 2.6 — Documents ↔ CRM ✅ *(not in the original package; closed BLOCKER 2)*
 
-Blocked on BLOCKER 2: documents live only in browser localStorage with no CRM link, so the
-"Ready" vs "Needs prep" badge — the point of all three phases — has no data to read. Not
-started rather than built against a model that doesn't exist.
+`documents` table with an `organization_id` FK; `BuiltDocument.organizationId` threaded
+through `validateDocument` (which rebuilds a fresh object — an uncopied field is dropped on
+every save, so the link had to be explicit or it would have silently evaporated).
+localStorage remains the editing store, the server is the shared copy, and `sync.ts` mirrors
+up on save + reconciles on list load.
+
+**Safety:** the sync never deletes a local document and never overwrites a newer copy in
+either direction. It is deliberately not delete-propagating — a document missing locally but
+present on the server means "a teammate made it", not "I deleted it".
+
+**Cost control:** the badge reads `listDocumentSummaries()` (extracted columns only). The
+generic `listEntities` selects `data`, which for documents means megabytes of embedded image
+data URLs — fine for backup, absurd for a yes/no question.
+
+---
+
+## Phases 4, 5, 6 ✅
+
+`MeetingsSection` owns the data for both views — **one** fetch over a range covering the
+7-day list and the visible month.
+
+**Gates:**
+- ✅ 7-day list, sorted, today distinct, doc status per row, inline reassignment.
+- ✅ Month grid, native (not Google's iframe — no public sharing anywhere), prev/next +
+  Today, `+N more` overflow, chips reusing the list's status indicator.
+- ✅ *"Navigating months doesn't trigger a duplicate/competing fetch"* — true by
+  construction: one owner, one fetch, two slices.
+- ✅ *"A reassignment in the grid is reflected in the list without a full page reload, and
+  vice versa"* — both render from the same array.
+- ✅ *Flow stops at "fix the CRM record" and does not offer generation prematurely* —
+  verified: a client whose only contact has no email gets the problem named, a deep-link to
+  the record, and **no generate button**.
+- ✅ *needs-prep → ready after a document is linked* — verified end to end against the live
+  project.
+
+**Verified on live data:** all three match signals fire (`contact-email` → Summit County,
+`org-domain` → Progressive Alliance CDC Akron, `org-name-in-title` → Clutch DNA).
+
+**Not yet exercised by a human:** the reassignment round trip and the pre-filled
+`?forOrg` document creation were verified by fixtures and by direct calls, not by clicking
+through the real UI. Worth a pass.

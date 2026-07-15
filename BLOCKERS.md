@@ -7,7 +7,7 @@ claim in that document.
 | | Status |
 |---|---|
 | **BLOCKER 1** — Google Calendar OAuth was never built | ✅ **RESOLVED** — built on this branch (`3844433`) after Tyrone authorised it. Migration applied; consent round trip confirmed working. |
-| **BLOCKER 2** — documents have no CRM linkage | ⛔ **OPEN** — still blocks Phases 4–6. |
+| **BLOCKER 2** — documents have no CRM linkage | ✅ **RESOLVED** — `documents` table + `organization_id` FK + sync, `d549eda`. Phases 4–6 built. |
 | **BLOCKER 3** — the OAuth scope cleanup never happened | ⚠️ **OPEN** (console task) — 13 scopes incl. full delete are still configured. Code now refuses over-broad tokens, so this is not blocking. |
 
 Phases 1, 2 and 3 are complete. Phases 4–6 remain blocked on BLOCKER 2.
@@ -164,7 +164,18 @@ believed the integration was built. `src/lib/google/env.ts` is the first consume
 
 ---
 
-## BLOCKER 2 — Documents have no CRM linkage and live only in localStorage (blocks the document-status core of Phases 4–6)
+## BLOCKER 2 — Documents had no CRM linkage and lived only in localStorage ✅ RESOLVED
+
+> **Resolution (2026-07-15, `d549eda`).** A `documents` table with an `organization_id` FK,
+> `BuiltDocument.organizationId` threaded through `validateDocument`, and a two-way sync that
+> mirrors localStorage up and reconciles down — never deleting a local document, never
+> overwriting a newer copy either way. The badge reads a cheap summary (extracted columns
+> only), never the full `data` blob. Verified end to end: a meeting flips needs-prep → ready
+> when a document is linked to its client. The original finding is kept below because it
+> documents what was actually there. **Still true and worth knowing:** documents are now in
+> two places (localStorage + server). localStorage is authoritative for editing; the sync
+> reconciles on list load. A document edited in two browsers between syncs resolves
+> last-writer-wins by `updatedAt` — acceptable for a small team, but not a CRDT.
 
 This one is independent of Blocker 1. **Even if Calendar OAuth existed tomorrow, the
 "Ready" vs "Needs prep" badge — the entire point of the feature per `01-CONTEXT.md`'s
