@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseAuthServerClient } from '@/lib/internal-tools/auth/server';
+import { externalUrl } from '@/lib/internal-tools/auth/requestOrigin';
 
 export const runtime = 'nodejs';
 
@@ -8,5 +9,5 @@ export const runtime = 'nodejs';
 export async function POST(request: NextRequest) {
   const supabase = await createSupabaseAuthServerClient();
   if (supabase) await supabase.auth.signOut();
-  return NextResponse.redirect(new URL('/internal/login', request.url), 303);
+  return NextResponse.redirect(externalUrl(request, '/internal/login'), 303);
 }

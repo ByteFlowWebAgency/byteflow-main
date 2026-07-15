@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createSupabaseAuthServerClient } from '@/lib/internal-tools/auth/server';
+import { externalUrl } from '@/lib/internal-tools/auth/requestOrigin';
 
 export const runtime = 'nodejs';
 
@@ -10,7 +11,7 @@ export const runtime = 'nodejs';
 // error flag — never which field was wrong, never a crash when Supabase env is unset
 // (fail safe = deny).
 export async function POST(request: NextRequest) {
-  const loginUrl = new URL('/internal/login?error=1', request.url);
+  const loginUrl = externalUrl(request, '/internal/login?error=1');
 
   let email = '';
   let password = '';
@@ -37,5 +38,5 @@ export async function POST(request: NextRequest) {
   }
 
   // Land on the internal-tools hub — the shared entry point to the gated area.
-  return NextResponse.redirect(new URL('/internal', request.url), 303);
+  return NextResponse.redirect(externalUrl(request, '/internal'), 303);
 }
