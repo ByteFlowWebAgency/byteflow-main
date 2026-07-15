@@ -46,6 +46,9 @@ export default function Footer({ logo, tagline, columns, copyrightText }: Footer
 
         <div className={styles.bottom}>
           <span className={styles.copyLeft}>{copyrightText}</span>
+          <Link href="/internal/login" className={styles.loginLink}>
+            Login
+          </Link>
         </div>
       </div>
     </footer>

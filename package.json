@@ -1,6 +1,6 @@
 {
   "name": "byteflow-main",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -13,8 +13,13 @@
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
+    "@supabase/ssr": "^0.12.1",
+    "@supabase/supabase-js": "^2.110.3",
     "contentful": "^11.12.5",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
     "next": "^15.5.12",
+    "pptxgenjs": "4.0.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

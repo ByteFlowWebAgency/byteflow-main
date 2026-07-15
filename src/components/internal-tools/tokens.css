@@ -1,0 +1,233 @@
+/*
+ * Proposal-tool brand tokens — extracted from src/app/globals.css and
+ * public/design_docs/01_COLOR_SYSTEM.md (see docs/proposal-tool/DESIGN-TOKENS.md).
+ * Scoped to .bfScope so nothing leaks into the marketing site. Every proposal-tool
+ * *.module.css references these via var(--bf-*) instead of restating raw values.
+ */
+
+/* Branded scrollbars — internal pages only. The page-level scrollbar is scoped with
+   :has(.bfScope) so marketing routes keep the browser default; inner scrollables
+   (panes, boards, tables, dialogs) are covered by the .bfScope descendant rules.
+   Literal brand values here because the --bf-* vars live on .bfScope, not html. */
+html:has(.bfScope) {
+  scrollbar-color: rgba(129, 140, 248, 0.6) #0b0f1f; /* Firefox */
+}
+
+.bfScope,
+.bfScope * {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(129, 140, 248, 0.6) rgba(11, 15, 31, 0.6);
+}
+
+html:has(.bfScope)::-webkit-scrollbar,
+.bfScope ::-webkit-scrollbar,
+.bfScope::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html:has(.bfScope)::-webkit-scrollbar-track,
+.bfScope ::-webkit-scrollbar-track,
+.bfScope::-webkit-scrollbar-track {
+  background: #0b0f1f;
+  border-radius: 999px;
+}
+
+html:has(.bfScope)::-webkit-scrollbar-thumb,
+.bfScope ::-webkit-scrollbar-thumb,
+.bfScope::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 60%, #06b6d4 100%);
+  border-radius: 999px;
+  border: 2px solid #0b0f1f;
+}
+
+html:has(.bfScope)::-webkit-scrollbar-thumb:hover,
+.bfScope ::-webkit-scrollbar-thumb:hover,
+.bfScope::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #818cf8 0%, #a78bfa 60%, #22d3ee 100%);
+}
+
+html:has(.bfScope)::-webkit-scrollbar-corner,
+.bfScope ::-webkit-scrollbar-corner {
+  background: #0b0f1f;
+}
+
+/* Native checkbox/radio accent — otherwise these render as the browser/OS default
+   (blue on most platforms) instead of the brand accent, everywhere a tool uses a plain
+   <input type="checkbox"> instead of a custom toggle. */
+.bfScope input[type='checkbox'],
+.bfScope input[type='radio'] {
+  accent-color: var(--bf-color-accent);
+}
+
+/* Native <select> chrome: appearance:none strips the OS dropdown arrow across every tool
+   (CRM, budgets, audits, themes) and this swaps in one branded chevron instead of leaving
+   selects arrow-less; the popup option list also gets the tool's surface colors rather
+   than the OS default white-on-black/black-on-white. */
+.bfScope select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='rgba(255,255,255,0.6)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+}
+
+.bfScope select option {
+  background: var(--bf-color-bg-2);
+  color: var(--bf-color-fg);
+}
+
+/* Native date/time/month pickers inside the dark tool chrome: without an explicit
+   dark color-scheme the calendar icon renders near-black on the ink background and the
+   popup calendar opens in light mode. The one input living on paper (the document cover's
+   date field) overrides this locally back to light — see .coverDateInput. */
+.bfScope input[type='date'],
+.bfScope input[type='datetime-local'],
+.bfScope input[type='month'],
+.bfScope input[type='time'],
+.bfScope input[type='search'],
+.bfScope select {
+  color-scheme: dark;
+}
+
+.bfScope input[type='date']::-webkit-calendar-picker-indicator,
+.bfScope input[type='datetime-local']::-webkit-calendar-picker-indicator,
+.bfScope input[type='month']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.bfScope input[type='date']::-webkit-calendar-picker-indicator:hover,
+.bfScope input[type='datetime-local']::-webkit-calendar-picker-indicator:hover,
+.bfScope input[type='month']::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.bfScope {
+  /* Ink canvas (site dark theme — tool chrome) */
+  --bf-color-bg: #0b0f1f;
+  --bf-color-bg-2: #1a1f3a;
+  --bf-color-fg: #ffffff;
+  --bf-color-fg-muted: rgba(255, 255, 255, 0.7);
+  --bf-color-fg-soft: rgba(255, 255, 255, 0.6);
+  --bf-color-fg-dim: rgba(255, 255, 255, 0.5);
+  --bf-color-line: rgba(255, 255, 255, 0.08);
+  --bf-color-line-strong: rgba(255, 255, 255, 0.14);
+  --bf-color-glass: rgba(255, 255, 255, 0.04);
+  --bf-color-glass-solid: rgba(255, 255, 255, 0.06);
+
+  /* Brand accents */
+  --bf-color-accent: #6366f1;
+  --bf-color-accent-soft: #818cf8;
+  --bf-color-violet: #8b5cf6;
+  --bf-color-violet-soft: #a78bfa;
+  --bf-color-cyan: #06b6d4;
+  --bf-color-cyan-soft: #22d3ee;
+  --bf-color-error: #f87171;
+
+  /* Signature gradients (verbatim from globals.css) */
+  --bf-grad-primary: linear-gradient(105deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  --bf-grad-text: linear-gradient(105deg, #818cf8 0%, #a78bfa 40%, #22d3ee 100%);
+
+  /* Paper (document) palette — design_docs/01_COLOR_SYSTEM.md §6 inverse pairing */
+  --bf-paper-bg: #f7f7fa;
+  --bf-paper-fg: #0b0f1f;
+  --bf-paper-fg-muted: rgba(11, 15, 31, 0.72);
+  --bf-paper-fg-soft: rgba(11, 15, 31, 0.6);
+  --bf-paper-line: rgba(11, 15, 31, 0.08);
+  --bf-paper-line-strong: rgba(11, 15, 31, 0.16);
+  --bf-paper-glass: rgba(11, 15, 31, 0.04);
+
+  /* Type — fonts are loaded by the root layout via next/font (variables on <html>) */
+  --bf-font-display: var(--font-jakarta), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --bf-font-body: var(--font-jakarta), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --bf-font-mono: var(--font-mono), ui-monospace, Menlo, monospace;
+
+  /* Focus convention (globals.css :focus-visible) */
+  --bf-focus-ring: 2px solid #22d3ee;
+  --bf-focus-offset: 3px;
+
+  /* Radii in use on site cards/inputs */
+  --bf-radius-sm: 8px;
+  --bf-radius-md: 12px;
+  --bf-radius-lg: 16px;
+}
+
+/*
+ * App-chrome light mode (hub/forms chrome ONLY — never documents). The default chrome
+ * is the dark ink above; html[data-bf-chrome='light'] flips the *chrome* variables to
+ * a light equivalent. Documents are unaffected by construction: ThemedDocument pins
+ * every document-consumed custom property inline, which always wins over these
+ * cascaded values. Toggled from the hub; persisted as localStorage 'bf-app-dark-mode'.
+ * The selector repeats on inner .bfScope roots (tools re-declare the vars), so the
+ * attribute lives once on <html>, set pre-paint by the (protected) layout script.
+ */
+html[data-bf-chrome='light'] .bfScope,
+html[data-bf-chrome='light'] .bfScope .bfScope {
+  --bf-color-bg: #eef0f7;
+  --bf-color-bg-2: #ffffff;
+  --bf-color-fg: #0b0f1f;
+  --bf-color-fg-muted: rgba(11, 15, 31, 0.75);
+  --bf-color-fg-soft: rgba(11, 15, 31, 0.62);
+  --bf-color-fg-dim: rgba(11, 15, 31, 0.5);
+  --bf-color-line: rgba(11, 15, 31, 0.1);
+  --bf-color-line-strong: rgba(11, 15, 31, 0.2);
+  --bf-color-glass: rgba(11, 15, 31, 0.04);
+  --bf-color-glass-solid: rgba(11, 15, 31, 0.07);
+
+  /* Soft accent tints don't read as text on light ground — step down to the darker
+     brand tones (accent tokens stay untouched for the documents' sake; those are
+     pinned inline anyway). */
+  --bf-color-accent-soft: #4f46e5;
+  --bf-color-violet-soft: #7c3aed;
+  --bf-color-cyan-soft: #0e7490;
+  --bf-color-error: #b91c1c;
+  --bf-grad-text: linear-gradient(105deg, #6366f1 0%, #8b5cf6 40%, #06b6d4 100%);
+
+  /* Shell surfaces whose dark values are literals (translucent ink + blur). */
+  --bf-chrome-header-bg: rgba(244, 245, 250, 0.85);
+  --bf-chrome-footer-bg: rgba(244, 245, 250, 0.7);
+}
+
+html[data-bf-chrome='light']:has(.bfScope) {
+  scrollbar-color: rgba(99, 102, 241, 0.65) #e6e8f2;
+}
+
+html[data-bf-chrome='light'] .bfScope,
+html[data-bf-chrome='light'] .bfScope * {
+  scrollbar-color: rgba(99, 102, 241, 0.65) rgba(230, 232, 242, 0.8);
+}
+
+html[data-bf-chrome='light']:has(.bfScope)::-webkit-scrollbar-track,
+html[data-bf-chrome='light'] .bfScope ::-webkit-scrollbar-track,
+html[data-bf-chrome='light'] .bfScope::-webkit-scrollbar-track {
+  background: #e6e8f2;
+}
+
+html[data-bf-chrome='light']:has(.bfScope)::-webkit-scrollbar-thumb,
+html[data-bf-chrome='light'] .bfScope ::-webkit-scrollbar-thumb,
+html[data-bf-chrome='light'] .bfScope::-webkit-scrollbar-thumb {
+  border-color: #e6e8f2;
+}
+
+html[data-bf-chrome='light']:has(.bfScope)::-webkit-scrollbar-corner,
+html[data-bf-chrome='light'] .bfScope ::-webkit-scrollbar-corner {
+  background: #e6e8f2;
+}
+
+html[data-bf-chrome='light'] .bfScope select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='rgba(11,15,31,0.62)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+}
+
+html[data-bf-chrome='light'] .bfScope input[type='date'],
+html[data-bf-chrome='light'] .bfScope input[type='datetime-local'],
+html[data-bf-chrome='light'] .bfScope input[type='month'],
+html[data-bf-chrome='light'] .bfScope input[type='time'],
+html[data-bf-chrome='light'] .bfScope input[type='search'],
+html[data-bf-chrome='light'] .bfScope select {
+  color-scheme: light;
+}

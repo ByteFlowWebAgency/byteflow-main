@@ -1,0 +1,202 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(4, 6, 16, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* ---- save-as-template dialog ---- */
+.dialog {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.dialogTitle {
+  font-family: var(--bf-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--bf-color-fg);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--bf-color-fg-muted);
+}
+.field input {
+  background: var(--bf-color-bg);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  color: var(--bf-color-fg);
+  font-size: 14px;
+  padding: 9px 11px;
+}
+.warn {
+  color: var(--bf-color-fg);
+  font-size: 13px;
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 8px 10px;
+}
+.error {
+  color: var(--bf-color-error);
+  font-size: 13px;
+}
+.dialogActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+.ghostBtn,
+.primaryBtn {
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: var(--bf-radius-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.ghostBtn {
+  background: transparent;
+  border-color: var(--bf-color-line);
+  color: var(--bf-color-fg-muted);
+}
+.primaryBtn {
+  background: var(--bf-color-accent);
+  color: #fff;
+}
+
+/* ---- template chooser ---- */
+.chooser {
+  width: 100%;
+  max-width: 920px;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  overflow: hidden;
+}
+.chooserHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--bf-color-line);
+}
+.chooserHeadActions {
+  display: flex;
+  gap: 8px;
+}
+.chooserBody {
+  overflow-y: auto;
+  padding: 18px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.groupHead {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--bf-color-accent);
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.cardWrap {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  overflow: hidden;
+  background: var(--bf-color-bg);
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  padding: 14px;
+  background: var(--bf-color-bg);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  cursor: pointer;
+  height: 100%;
+}
+.cardWrap .card {
+  border: 0;
+  border-radius: 0;
+}
+.card:hover {
+  border-color: var(--bf-color-accent);
+  background: var(--bf-color-glass);
+}
+.cardName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--bf-font-display);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+}
+.cardDesc {
+  font-size: 13px;
+  color: var(--bf-color-fg-muted);
+  line-height: 1.45;
+}
+.badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--bf-color-cyan);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+.cardManage {
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px;
+  border-top: 1px solid var(--bf-color-line);
+}
+.cardManage button {
+  background: transparent;
+  border: 0;
+  color: var(--bf-color-fg-soft);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.cardManage button:hover {
+  background: var(--bf-color-glass);
+  color: var(--bf-color-fg);
+}
+.danger:hover {
+  color: var(--bf-color-error) !important;
+}

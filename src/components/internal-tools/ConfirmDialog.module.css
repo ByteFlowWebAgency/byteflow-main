@@ -1,0 +1,163 @@
+/* Shared confirmation dialog for the internal tools (CRM + budgets). Self-contained so
+   any tool can use it without importing another tool's stylesheet. */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 16, 0.72);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  z-index: 60;
+}
+
+.dialog {
+  background: var(--bf-color-bg-2);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-lg);
+  padding: 24px;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
+  color: var(--bf-color-fg);
+  font-family: var(--bf-font-body);
+}
+
+.title {
+  font-family: var(--bf-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+
+.body {
+  font-size: 14px;
+  color: var(--bf-color-fg-muted);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-muted);
+}
+
+.required::after {
+  content: ' *';
+  color: var(--bf-color-accent-soft);
+}
+
+.input {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 9px 12px;
+  width: 100%;
+}
+
+.input:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.error {
+  font-size: 13px;
+  color: var(--bf-color-error);
+  margin-top: 8px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.cancelButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 9px 16px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.cancelButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.confirmButton {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  background: var(--bf-grad-primary);
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.confirmButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.confirmButton:disabled {
+  background: var(--bf-color-glass-solid);
+  color: rgba(255, 255, 255, 0.25);
+  cursor: not-allowed;
+}
+
+.confirmButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.dangerButton {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-error);
+  background: transparent;
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  border-radius: 999px;
+  padding: 9px 16px;
+  cursor: pointer;
+}
+
+.dangerButton:hover:not(:disabled) {
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.dangerButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.dangerButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}

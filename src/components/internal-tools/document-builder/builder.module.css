@@ -1,0 +1,312 @@
+/* Read-only renderer styles for Document Builder pages + blocks. Everything reads the
+   theme's --bf-paper-* / --bf-color-accent / --bf-grad-* / --bf-font-* variables (injected
+   by ThemedDocument), so a built document restyles wholesale when the theme changes and
+   stays on-brand by construction. Preview-only chrome (shadow/radius/margin) is stripped
+   from the PDF by the export engine (data-pdf-document). */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* No flex `gap` here: gap is NOT a margin, so the PDF export engine (which zeroes
+     margins on data-pdf-document sheets) can't strip it, and each gap would become a
+     sliver page. Inter-sheet spacing lives on each sheet's margin-bottom instead. */
+}
+
+/* ---- content / closing sheet ---- */
+.sheet {
+  box-sizing: border-box;
+  width: 816px;
+  min-height: 1056px; /* one US Letter page — honest proportions in the preview */
+  background: var(--bf-paper-bg);
+  color: var(--bf-paper-fg);
+  font-family: var(--bf-font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 76px 72px;
+  border-radius: 6px;
+  box-shadow: 0 18px 48px rgba(6, 8, 20, 0.28);
+  /* Preview-only page gap — the export engine zeroes margins on data-pdf-document. */
+  margin: 0 auto 28px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1 1 auto;
+}
+
+.emptyPage {
+  margin: auto;
+  color: var(--bf-paper-fg-soft);
+  font-size: 14px;
+  font-style: italic;
+}
+
+/* ---- headings ---- */
+.h1,
+.h2,
+.h3 {
+  font-family: var(--bf-font-display);
+  color: var(--bf-paper-fg);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.h1 {
+  font-size: 30px;
+  letter-spacing: -0.01em;
+}
+.h2 {
+  font-size: 23px;
+}
+.h3 {
+  font-size: 18px;
+  color: var(--bf-paper-fg-muted);
+}
+
+/* ---- title banner ---- */
+.banner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 6px 0 14px;
+}
+.bannerEyebrow {
+  font-family: var(--bf-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bf-color-accent);
+}
+.bannerTitle {
+  font-family: var(--bf-font-display);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--bf-paper-fg);
+}
+.bannerSubtitle {
+  font-size: 16px;
+  color: var(--bf-paper-fg-muted);
+}
+.bannerRule {
+  margin-top: 8px;
+  height: 3px;
+  width: 72px;
+  border-radius: 2px;
+  background: var(--bf-grad-primary);
+}
+
+/* ---- rich text ---- */
+.prose {
+  color: var(--bf-paper-fg-muted);
+}
+.prose p {
+  margin: 0 0 10px;
+}
+.prose p:last-child {
+  margin-bottom: 0;
+}
+.prose strong {
+  color: var(--bf-paper-fg);
+  font-weight: 700;
+}
+.prose a {
+  color: var(--bf-color-accent);
+  text-decoration: underline;
+}
+.prose ul,
+.prose ol {
+  margin: 0 0 10px;
+  padding-left: 22px;
+}
+.prose li {
+  margin: 0 0 4px;
+}
+
+/* ---- image ---- */
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.figureHalf {
+  width: 50%;
+}
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--bf-paper-line);
+}
+.imagePlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  border: 1px dashed var(--bf-paper-line-strong);
+  border-radius: 6px;
+  color: var(--bf-paper-fg-soft);
+  font-size: 13px;
+  background: var(--bf-paper-glass);
+}
+.caption {
+  font-size: 13px;
+  color: var(--bf-paper-fg-soft);
+  font-style: italic;
+}
+
+/* ---- generic table ---- */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.table th {
+  text-align: left;
+  font-family: var(--bf-font-display);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--bf-paper-fg);
+  padding: 9px 10px;
+  border-bottom: 2px solid var(--bf-paper-line-strong);
+}
+.table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--bf-paper-line);
+  color: var(--bf-paper-fg-muted);
+  vertical-align: top;
+}
+
+/* ---- divider / spacer ---- */
+.divider {
+  border: 0;
+  border-top: 1px solid var(--bf-paper-line-strong);
+  margin: 6px 0;
+  width: 100%;
+}
+.spacerSmall {
+  height: 12px;
+}
+.spacerMedium {
+  height: 28px;
+}
+.spacerLarge {
+  height: 56px;
+}
+
+/* ---- callout ---- */
+.callout {
+  padding: 18px 22px;
+  border-radius: 8px;
+  border: 1px solid var(--bf-paper-line-strong);
+  border-left: 4px solid var(--bf-color-accent);
+  background: var(--bf-grad-callout);
+  color: var(--bf-paper-fg);
+}
+.callout p {
+  margin: 0 0 8px;
+}
+.callout p:last-child {
+  margin-bottom: 0;
+}
+.callout a {
+  color: var(--bf-color-accent);
+  text-decoration: underline;
+}
+
+/* ---- pricing table (mirrors the fixed proposal InvestmentTable) ---- */
+.investment {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.investment td {
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--bf-paper-line);
+  color: var(--bf-paper-fg-muted);
+  vertical-align: top;
+}
+.amount {
+  text-align: right;
+  font-family: var(--bf-font-mono);
+  white-space: nowrap;
+}
+.perMonth {
+  color: var(--bf-paper-fg-soft);
+  font-size: 12px;
+}
+.groupRow td {
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--bf-paper-fg);
+  border-bottom: 2px solid var(--bf-paper-line-strong);
+  padding-top: 16px;
+}
+.subtotalRow td {
+  font-weight: 600;
+  color: var(--bf-paper-fg);
+}
+.totalRow td {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--bf-paper-fg);
+  border-top: 2px solid var(--bf-paper-fg);
+  border-bottom: 0;
+}
+.tableNote {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--bf-paper-fg-soft);
+}
+
+/* ---- key/value list ---- */
+.kvList {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 22px;
+  font-size: 15px;
+}
+.kvLabel {
+  font-family: var(--bf-font-display);
+  font-weight: 600;
+  color: var(--bf-paper-fg);
+}
+.kvValue {
+  color: var(--bf-paper-fg-muted);
+}
+
+/* ---- closing footer treatment ---- */
+.closingFooter {
+  margin-top: auto;
+  padding-top: 22px;
+}
+.footerKeyline {
+  height: 3px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--bf-grad-primary);
+  margin-bottom: 14px;
+}
+.footerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 13px;
+  color: var(--bf-paper-fg-soft);
+}
+.footerBrand {
+  font-family: var(--bf-font-display);
+  font-weight: 600;
+  color: var(--bf-paper-fg-muted);
+}
