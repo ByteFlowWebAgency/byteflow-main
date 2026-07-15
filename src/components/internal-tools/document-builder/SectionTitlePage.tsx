@@ -8,6 +8,9 @@ import BackgroundLayer from '@/components/background-designs/BackgroundLayer';
 interface SectionTitlePageProps {
   fields: SectionTitleFields;
   theme: Theme;
+  /** A background-designs registry id, or undefined — lives on the page itself, not
+   * SectionTitleFields, so it's independent of which fields the section carries. */
+  backgroundDesignId?: string;
   /** Forces a PDF page break at this sheet's top (every page after the first). */
   breakBefore?: boolean;
 }
@@ -19,7 +22,7 @@ interface SectionTitlePageProps {
  * data-pdf-document (loses preview chrome in the PDF) and data-pdf-break-before so it
  * always starts — and, being exactly one page tall, occupies — its own page.
  */
-export default function SectionTitlePage({ fields, theme, breakBefore }: SectionTitlePageProps) {
+export default function SectionTitlePage({ fields, theme, backgroundDesignId, breakBefore }: SectionTitlePageProps) {
   const fullBleed = theme.coverPage.fullBleedBackground;
   return (
     <section
@@ -28,7 +31,7 @@ export default function SectionTitlePage({ fields, theme, breakBefore }: Section
       data-pdf-break-before={breakBefore ? '' : undefined}
       aria-label="Section title page"
     >
-      <BackgroundLayer designId={fields.backgroundDesignId} theme={theme} width={816} height={1056} />
+      <BackgroundLayer designId={backgroundDesignId} theme={theme} width={816} height={1056} />
       <div className={styles.main}>
         {fields.eyebrow ? <p className={styles.eyebrow}>{fields.eyebrow}</p> : null}
         <h2 className={styles.title}>{fields.title}</h2>

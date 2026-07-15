@@ -137,16 +137,11 @@ export interface CoverFields {
   subtitle?: string;
   clientName?: string;
   date?: string;
-  /** A background-designs registry id, or undefined for today's plain background —
-   * independent of the document's themeId, see lib/background-designs/. */
-  backgroundDesignId?: string;
 }
 export interface SectionTitleFields {
   title: string;
   subtitle?: string;
   eyebrow?: string;
-  /** See CoverFields.backgroundDesignId. */
-  backgroundDesignId?: string;
 }
 
 export interface DocumentPage {
@@ -156,6 +151,12 @@ export interface DocumentPage {
   blocks: Block[];
   coverFields?: CoverFields;
   sectionTitleFields?: SectionTitleFields;
+  /** A background-designs registry id, or undefined for a plain background —
+   * independent of theme, available on every page kind (see lib/background-designs/). */
+  backgroundDesignId?: string;
+  /** A theme id overriding the document's own themeId for just this page, or undefined to
+   * inherit the document's theme. */
+  themeId?: string;
 }
 
 export interface BuiltDocument {

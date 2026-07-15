@@ -183,6 +183,38 @@
   overflow-y: auto;
 }
 
+.designSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--bf-color-line);
+}
+
+.designField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.designLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bf-color-fg-muted);
+}
+
+.designSelect {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 8px 10px;
+  width: 100%;
+}
+
 .fieldPanelHeading {
   font-family: var(--bf-font-display);
   font-size: 14px;

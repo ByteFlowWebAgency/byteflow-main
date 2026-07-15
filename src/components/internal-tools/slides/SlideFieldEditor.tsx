@@ -7,7 +7,6 @@
 
 import { newId } from '@/lib/slides/defaults';
 import {
-  BackgroundDesignField,
   ImageField,
   NumberField,
   ObjectListField,
@@ -55,7 +54,6 @@ function TitleCoverEditor({ content, onChange }: { content: TitleCoverContent; o
       <TextField label="Subtitle" value={content.subtitle ?? ''} onChange={(v) => onChange({ ...content, subtitle: v })} />
       <TextField label="Presented to" value={content.presentedTo ?? ''} onChange={(v) => onChange({ ...content, presentedTo: v })} />
       <TextField label="Date" value={content.date ?? ''} onChange={(v) => onChange({ ...content, date: v })} />
-      <BackgroundDesignField value={content.backgroundDesignId} onChange={(backgroundDesignId) => onChange({ ...content, backgroundDesignId })} />
     </>
   );
 }
@@ -78,7 +76,6 @@ function SectionDividerEditor({ content, onChange }: { content: SectionDividerCo
     <>
       <TextField label="Title" value={content.title} onChange={(v) => onChange({ ...content, title: v })} />
       <TextField label="Subtitle" value={content.subtitle ?? ''} onChange={(v) => onChange({ ...content, subtitle: v })} />
-      <BackgroundDesignField value={content.backgroundDesignId} onChange={(backgroundDesignId) => onChange({ ...content, backgroundDesignId })} />
     </>
   );
 }
@@ -423,7 +420,6 @@ function ThankYouClosingEditor({ content, onChange }: { content: ThankYouClosing
     <>
       <TextField label="Title" value={content.title} onChange={(v) => onChange({ ...content, title: v })} />
       <TextField label="Subtitle" value={content.subtitle ?? ''} onChange={(v) => onChange({ ...content, subtitle: v })} />
-      <BackgroundDesignField value={content.backgroundDesignId} onChange={(backgroundDesignId) => onChange({ ...content, backgroundDesignId })} />
     </>
   );
 }

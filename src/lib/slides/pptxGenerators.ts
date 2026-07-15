@@ -57,8 +57,14 @@ type PSlide = PptxGenJS.Slide;
 
 // ---- shared layout helpers -----------------------------------------------------------------
 
-function newSlide(pptx: PptxGenJS): PSlide {
-  return pptx.addSlide({ masterName: MASTER_NAME });
+function newSlide(pptx: PptxGenJS, theme: Theme): PSlide {
+  const pSlide = pptx.addSlide({ masterName: MASTER_NAME });
+  // Per-slide fill so a slide's own effective theme (deck theme, or this slide's own
+  // themeId override) always wins over the shared master's base-theme background —
+  // the master itself stays deck-theme-colored only for its logo/footer-brand/slide-
+  // number chrome (see pptxMasters.ts's known-limitation note).
+  pSlide.background = { color: toPptxColor(theme.colors.background) };
+  return pSlide;
 }
 
 /** Adds the rasterized background-design PNG as a full-bleed image layer — must be called
@@ -147,7 +153,7 @@ function rowSlots(count: number, top = BODY_TOP, bottom = BODY_BOTTOM, gap = 0.1
 
 export function genTitleCover(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as TitleCoverContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
   addBackgroundImage(pSlide, bgImage);
   let y = 2.3;
   if (c.eyebrow) {
@@ -203,9 +209,10 @@ export function genTitleCover(pptx: PptxGenJS, slide: Slide, theme: Theme, bgIma
 
 // ---- 2. agenda --------------------------------------------------------------------------------
 
-export function genAgenda(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genAgenda(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as AgendaContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const runs: PptxGenJS.TextProps[] = c.items.map((text, i) => ({
     text,
@@ -225,7 +232,7 @@ export function genAgenda(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
 
 export function genSectionDivider(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as SectionDividerContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
   addBackgroundImage(pSlide, bgImage);
   pSlide.addText(c.title, {
     x: MARGIN,
@@ -256,9 +263,10 @@ export function genSectionDivider(pptx: PptxGenJS, slide: Slide, theme: Theme, b
 
 // ---- 4. problemStatement ------------------------------------------------------------------------
 
-export function genProblemStatement(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genProblemStatement(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ProblemStatementContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   pSlide.addText(c.body, {
     x: CONTENT_X,
@@ -275,9 +283,10 @@ export function genProblemStatement(pptx: PptxGenJS, slide: Slide, theme: Theme)
 
 // ---- 5. solutionOverview ------------------------------------------------------------------------
 
-export function genSolutionOverview(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genSolutionOverview(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as SolutionOverviewContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   pSlide.addText(c.body, {
     x: CONTENT_X,
@@ -294,9 +303,10 @@ export function genSolutionOverview(pptx: PptxGenJS, slide: Slide, theme: Theme)
 
 // ---- 6. threeColumn ------------------------------------------------------------------------------
 
-export function genThreeColumn(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genThreeColumn(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ThreeColumnContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const xs = columnXs(3);
   const w = columnW(3);
@@ -326,9 +336,10 @@ export function genThreeColumn(pptx: PptxGenJS, slide: Slide, theme: Theme): voi
 
 // ---- 7. twoColumnComparison ------------------------------------------------------------------
 
-export function genTwoColumnComparison(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genTwoColumnComparison(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as TwoColumnComparisonContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const xs = columnXs(2, 0.6);
   const w = columnW(2, 0.6);
@@ -365,9 +376,10 @@ export function genTwoColumnComparison(pptx: PptxGenJS, slide: Slide, theme: The
 
 // ---- 8. processSteps ---------------------------------------------------------------------------
 
-export function genProcessSteps(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genProcessSteps(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ProcessStepsContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const count = c.steps.length;
   const xs = columnXs(count, 0.3);
@@ -421,9 +433,10 @@ export function genProcessSteps(pptx: PptxGenJS, slide: Slide, theme: Theme): vo
 
 // ---- 9. timeline --------------------------------------------------------------------------------
 
-export function genTimeline(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genTimeline(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as TimelineContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const rows = rowSlots(c.milestones.length, BODY_TOP, BODY_BOTTOM, 0.1);
   c.milestones.forEach((m, i) => {
@@ -462,9 +475,10 @@ export function genTimeline(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
 
 // ---- 10. teamIntro ------------------------------------------------------------------------------
 
-export function genTeamIntro(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genTeamIntro(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as TeamIntroContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const count = c.members.length;
   const xs = columnXs(count, 0.3);
@@ -509,9 +523,10 @@ export function genTeamIntro(pptx: PptxGenJS, slide: Slide, theme: Theme): void 
 
 // ---- 11. caseStudySummary -----------------------------------------------------------------------
 
-export function genCaseStudySummary(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genCaseStudySummary(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as CaseStudySummaryContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const blocks: Array<[string, string]> = [
     ['Challenge', c.challenge],
@@ -548,9 +563,10 @@ export function genCaseStudySummary(pptx: PptxGenJS, slide: Slide, theme: Theme)
 
 // ---- 12. testimonial ----------------------------------------------------------------------------
 
-export function genTestimonial(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genTestimonial(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as TestimonialContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   pSlide.addText(`“${c.quote}”`, {
     x: MARGIN + 0.6,
     y: 1.6,
@@ -589,9 +605,10 @@ export function genTestimonial(pptx: PptxGenJS, slide: Slide, theme: Theme): voi
 
 // ---- 13. bigStat --------------------------------------------------------------------------------
 
-export function genBigStat(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genBigStat(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as BigStatContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   pSlide.addText(c.statNumber, {
     x: MARGIN,
     y: 1.9,
@@ -631,9 +648,10 @@ export function genBigStat(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
 
 // ---- 14. statsGrid ------------------------------------------------------------------------------
 
-export function genStatsGrid(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genStatsGrid(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as StatsGridContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const count = c.stats.length;
   const xs = columnXs(count, 0.3);
@@ -666,9 +684,10 @@ export function genStatsGrid(pptx: PptxGenJS, slide: Slide, theme: Theme): void 
 
 // ---- 15. pricingInvestment ----------------------------------------------------------------------
 
-export function genPricingInvestment(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genPricingInvestment(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as PricingInvestmentContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const total = computePricingTotal(c.lineItems);
   const headerFill = accentColor(theme);
@@ -718,9 +737,10 @@ export function genPricingInvestment(pptx: PptxGenJS, slide: Slide, theme: Theme
 
 // ---- 16. servicesOverview -----------------------------------------------------------------------
 
-export function genServicesOverview(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genServicesOverview(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ServicesOverviewContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const rows = rowSlots(c.services.length);
   c.services.forEach((service, i) => {
@@ -751,9 +771,10 @@ export function genServicesOverview(pptx: PptxGenJS, slide: Slide, theme: Theme)
 
 // ---- 17. fullBleedImage -------------------------------------------------------------------------
 
-export function genFullBleedImage(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genFullBleedImage(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as FullBleedImageContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   if (c.imageDataUrl) {
     pSlide.addImage({
       data: c.imageDataUrl,
@@ -788,9 +809,10 @@ export function genFullBleedImage(pptx: PptxGenJS, slide: Slide, theme: Theme): 
 
 // ---- 18. imageAndText ---------------------------------------------------------------------------
 
-export function genImageAndText(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genImageAndText(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ImageAndTextContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   const imgW = CONTENT_W * 0.45;
   if (c.imageDataUrl) {
     pSlide.addImage({
@@ -828,18 +850,20 @@ export function genImageAndText(pptx: PptxGenJS, slide: Slide, theme: Theme): vo
 
 // ---- 19. bulletList -----------------------------------------------------------------------------
 
-export function genBulletList(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genBulletList(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as BulletListContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   addBulletList(pSlide, c.bullets, { x: CONTENT_X, y: BODY_TOP, w: CONTENT_W, h: BODY_BOTTOM - BODY_TOP, theme, fontSize: 16 });
 }
 
 // ---- 20. chartImage -----------------------------------------------------------------------------
 
-export function genChartImage(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genChartImage(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ChartImageContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const chartH = c.caption ? BODY_BOTTOM - BODY_TOP - 0.5 : BODY_BOTTOM - BODY_TOP;
   if (c.chartImageDataUrl) {
@@ -869,9 +893,10 @@ export function genChartImage(pptx: PptxGenJS, slide: Slide, theme: Theme): void
 
 // ---- 21. faq ------------------------------------------------------------------------------------
 
-export function genFaq(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genFaq(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as FaqContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const rows = rowSlots(c.qaPairs.length, BODY_TOP, BODY_BOTTOM, 0.15);
   c.qaPairs.forEach((qa, i) => {
@@ -902,9 +927,10 @@ export function genFaq(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
 
 // ---- 22. roadmap --------------------------------------------------------------------------------
 
-export function genRoadmap(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genRoadmap(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as RoadmapContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const count = c.phases.length;
   const xs = columnXs(count, 0.3);
@@ -944,9 +970,10 @@ export function genRoadmap(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
 
 // ---- 23. contactNextSteps -----------------------------------------------------------------------
 
-export function genContactNextSteps(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genContactNextSteps(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ContactNextStepsContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   const lines = [c.contactName, c.email, c.phone, c.website].filter(Boolean) as string[];
   const runs: PptxGenJS.TextProps[] = lines.map((text, i) => ({
@@ -986,7 +1013,7 @@ export function genContactNextSteps(pptx: PptxGenJS, slide: Slide, theme: Theme)
 
 export function genThankYouClosing(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as ThankYouClosingContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
   addBackgroundImage(pSlide, bgImage);
   pSlide.addText(c.title, {
     x: MARGIN,
@@ -1017,9 +1044,10 @@ export function genThankYouClosing(pptx: PptxGenJS, slide: Slide, theme: Theme, 
 
 // ---- 25. blankCustom ----------------------------------------------------------------------------
 
-export function genBlankCustom(pptx: PptxGenJS, slide: Slide, theme: Theme): void {
+export function genBlankCustom(pptx: PptxGenJS, slide: Slide, theme: Theme, bgImage?: string): void {
   const c = slide.content as BlankCustomContent;
-  const pSlide = newSlide(pptx);
+  const pSlide = newSlide(pptx, theme);
+  addBackgroundImage(pSlide, bgImage);
   addTitle(pSlide, theme, c.title);
   pSlide.addText(c.freeText, {
     x: CONTENT_X,

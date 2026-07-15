@@ -2,10 +2,12 @@
    Scoped to ThemedDocument's wrapper attributes — nothing here can leak outside a
    themed document. */
 
-/* The brand logo asset is dark-indigo-on-transparent and disappears on dark paper.
-   On dark theme backgrounds (set from the background's computed luminance, see
-   ThemedDocument) it renders as a white knockout — the standard logo-on-dark
-   treatment. Verified to survive html2canvas PDF capture. */
-[data-bf-on-dark='true'] img[alt='ByteFlow Solutions'] {
-  filter: brightness(0) invert(1);
+/* The brand logo asset is dark-indigo-on-transparent and disappears on dark paper. Reads
+   the --bf-logo-filter custom property (themeToCss.ts) rather than an attribute selector,
+   so a nested per-page/per-slide theme override correctly re-cascades — the nearest
+   ancestor's value always wins, unlike an attribute selector which matches ANY ancestor
+   with the attribute set, even one further out than a lighter override underneath it.
+   Verified to survive html2canvas PDF capture. */
+img[alt='ByteFlow Solutions'] {
+  filter: var(--bf-logo-filter, none);
 }

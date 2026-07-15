@@ -25,6 +25,7 @@ export type EditorAction =
   | { t: 'deletePage'; index: number }
   | { t: 'updateCoverFields'; pageId: string; fields: Partial<CoverFields> }
   | { t: 'updateSectionFields'; pageId: string; fields: Partial<SectionTitleFields> }
+  | { t: 'updatePageMeta'; pageId: string; backgroundDesignId?: string; themeId?: string }
   | { t: 'addBlock'; pageId: string; blockType: BlockType; at: number }
   | { t: 'updateBlock'; pageId: string; block: Block }
   | { t: 'moveBlock'; pageId: string; index: number; dir: -1 | 1 }
@@ -141,6 +142,20 @@ export function editorReducer(doc: BuiltDocument, action: EditorAction): BuiltDo
         mapPage(doc, action.pageId, (p) => ({
           ...p,
           sectionTitleFields: { title: '', ...p.sectionTitleFields, ...action.fields },
+        })),
+      );
+
+    // Full overwrite (not a merge like the two actions above) — the caller always sends
+    // both fields' desired final state, since "unset this one but keep that one" is
+    // ambiguous to express as a sparse patch once `undefined` is itself a valid target
+    // value (clearing an override back to "inherit the document's theme"/"no design").
+    case 'updatePageMeta':
+      return withPages(
+        doc,
+        mapPage(doc, action.pageId, (p) => ({
+          ...p,
+          backgroundDesignId: action.backgroundDesignId,
+          themeId: action.themeId,
         })),
       );
 

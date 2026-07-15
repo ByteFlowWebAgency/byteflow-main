@@ -12,7 +12,8 @@ import PlainTextEditable from './PlainTextEditable';
 import InsertBlockControl from './InsertBlockControl';
 import BackgroundLayer from '@/components/background-designs/BackgroundLayer';
 import BackgroundDesignPicker from '@/components/background-designs/BackgroundDesignPicker';
-import { formatDisplayDate } from '@/lib/internal-tools/format';
+import ThemeOverridePicker from '../themes/ThemeOverridePicker';
+import { resolveEffectiveTheme } from '../themes/themeStorage';
 import type { EditorAction } from './editorState';
 import type { Theme } from '../themes/themeTypes';
 import type { DocumentPage } from '@/lib/document-builder/types';
@@ -23,29 +24,39 @@ interface EditorCanvasProps {
   dispatch: (action: EditorAction) => void;
 }
 
-/** Center canvas: the selected page rendered through ThemedDocument, edited in place. */
-export default function EditorCanvas({ page, theme, dispatch }: EditorCanvasProps) {
-  const isCoverStyle = page.kind === 'cover' || page.kind === 'sectionTitle';
+/** Center canvas: the selected page rendered through ThemedDocument, edited in place.
+ * Every page kind (not just cover/sectionTitle) can carry its own background design and
+ * theme override — the toolbar above the page applies uniformly. */
+export default function EditorCanvas({ page, theme: docTheme, dispatch }: EditorCanvasProps) {
+  const { theme, missing } = resolveEffectiveTheme(page.themeId, docTheme);
+
+  function setPageMeta(patch: { backgroundDesignId?: string } | { themeId?: string }) {
+    dispatch({
+      t: 'updatePageMeta',
+      pageId: page.id,
+      backgroundDesignId: page.backgroundDesignId,
+      themeId: page.themeId,
+      ...patch,
+    });
+  }
+
   return (
     <div className={styles.canvas}>
-      <div className={styles.canvasInner} style={isCoverStyle ? { flexDirection: 'column', alignItems: 'center', gap: 12 } : undefined}>
-        {isCoverStyle && (
-          <BackgroundDesignToolbar
-            value={page.kind === 'cover' ? page.coverFields?.backgroundDesignId : page.sectionTitleFields?.backgroundDesignId}
-            onChange={(backgroundDesignId) =>
-              page.kind === 'cover'
-                ? dispatch({ t: 'updateCoverFields', pageId: page.id, fields: { backgroundDesignId } })
-                : dispatch({ t: 'updateSectionFields', pageId: page.id, fields: { backgroundDesignId } })
-            }
-          />
-        )}
+      <div className={styles.canvasInner} style={{ flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+        <PageDesignToolbar
+          backgroundDesignId={page.backgroundDesignId}
+          themeId={page.themeId}
+          themeMissing={missing}
+          onBackgroundChange={(backgroundDesignId) => setPageMeta({ backgroundDesignId })}
+          onThemeChange={(themeId) => setPageMeta({ themeId })}
+        />
         <ThemedDocument theme={theme}>
           {page.kind === 'cover' && <EditableCover page={page} theme={theme} dispatch={dispatch} />}
           {page.kind === 'sectionTitle' && (
             <EditableSection page={page} theme={theme} dispatch={dispatch} />
           )}
           {(page.kind === 'content' || page.kind === 'closing') && (
-            <EditableContent page={page} dispatch={dispatch} />
+            <EditableContent page={page} theme={theme} dispatch={dispatch} />
           )}
         </ThemedDocument>
       </div>
@@ -53,21 +64,39 @@ export default function EditorCanvas({ page, theme, dispatch }: EditorCanvasProp
   );
 }
 
-/** Only rendered for the two full-bleed-eligible page kinds (cover/sectionTitle) — a
- * document can carry a different design on its cover than on a section-title page three
- * pages later, so this lives per-page rather than in the document-level top bar next to
- * the theme picker. */
-function BackgroundDesignToolbar({
-  value,
-  onChange,
+/** Lives per-page (not in the document-level top bar next to the document's own theme
+ * picker) — a document can carry a different design/theme on its cover than on a
+ * section-title or content page elsewhere in the same document. */
+function PageDesignToolbar({
+  backgroundDesignId,
+  themeId,
+  themeMissing,
+  onBackgroundChange,
+  onThemeChange,
 }: {
-  value: string | undefined;
-  onChange: (designId: string | undefined) => void;
+  backgroundDesignId: string | undefined;
+  themeId: string | undefined;
+  themeMissing: boolean;
+  onBackgroundChange: (designId: string | undefined) => void;
+  onThemeChange: (themeId: string | undefined) => void;
 }) {
   return (
     <div className={styles.pageToolbar}>
       <span className={styles.pageToolbarLabel}>Background design</span>
-      <BackgroundDesignPicker id="page-bg-design" value={value} onChange={onChange} className={styles.pageToolbarSelect} />
+      <BackgroundDesignPicker
+        id="page-bg-design"
+        value={backgroundDesignId}
+        onChange={onBackgroundChange}
+        className={styles.pageToolbarSelect}
+      />
+      <span className={styles.pageToolbarLabel}>Theme override</span>
+      <ThemeOverridePicker
+        id="page-theme-override"
+        value={themeId}
+        missing={themeMissing}
+        onChange={onThemeChange}
+        className={styles.pageToolbarSelect}
+      />
     </div>
   );
 }
@@ -86,7 +115,7 @@ function EditableCover({
     dispatch({ t: 'updateCoverFields', pageId: page.id, fields });
   return (
     <section className={`${coverStyles.cover} ${theme.coverPage.fullBleedBackground ? coverStyles.fullBleed : ''}`}>
-      <BackgroundLayer designId={f.backgroundDesignId} theme={theme} width={816} height={1056} />
+      <BackgroundLayer designId={page.backgroundDesignId} theme={theme} width={816} height={1056} />
       <header className={coverStyles.top}>
         <Image src="/BYTEFLOW_LOGO.png" alt="ByteFlow Solutions" width={200} height={196} unoptimized className={coverStyles.logo} />
       </header>
@@ -152,7 +181,7 @@ function EditableSection({
     dispatch({ t: 'updateSectionFields', pageId: page.id, fields });
   return (
     <section className={`${sectionStyles.section} ${theme.coverPage.fullBleedBackground ? sectionStyles.fullBleed : ''}`}>
-      <BackgroundLayer designId={f.backgroundDesignId} theme={theme} width={816} height={1056} />
+      <BackgroundLayer designId={page.backgroundDesignId} theme={theme} width={816} height={1056} />
       <div className={sectionStyles.main}>
         <PlainTextEditable
           value={f.eyebrow ?? ''}
@@ -184,13 +213,16 @@ function EditableSection({
 
 function EditableContent({
   page,
+  theme,
   dispatch,
 }: {
   page: DocumentPage;
+  theme: Theme;
   dispatch: (a: EditorAction) => void;
 }) {
   return (
     <section className={builder.sheet}>
+      <BackgroundLayer designId={page.backgroundDesignId} theme={theme} width={816} height={1056} />
       <div className={builder.blocks}>
         <InsertBlockControl onInsert={(blockType) => dispatch({ t: 'addBlock', pageId: page.id, blockType, at: 0 })} />
         {page.blocks.map((block, index) => (

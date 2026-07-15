@@ -3,7 +3,7 @@
 import { forwardRef } from 'react';
 import type { ReactNode } from 'react';
 import type { Theme } from './themeTypes';
-import { themeToCss, isDarkColor } from './themeToCss';
+import { themeToCss } from './themeToCss';
 import './themedOverrides.css';
 
 interface ThemedDocumentProps {
@@ -28,7 +28,6 @@ const ThemedDocument = forwardRef<HTMLDivElement, ThemedDocumentProps>(
         ref={ref}
         style={{ ...themeToCss(theme), width: 'fit-content', margin: '0 auto' }}
         data-bf-themed={theme.id}
-        data-bf-on-dark={isDarkColor(theme.colors.background) ? 'true' : undefined}
       >
         {children}
       </div>

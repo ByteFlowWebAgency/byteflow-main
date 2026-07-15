@@ -1,0 +1,104 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.heading {
+  font-family: var(--bf-font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--bf-color-fg);
+  margin-bottom: 8px;
+}
+
+.subhead {
+  font-size: 14px;
+  color: var(--bf-color-fg-soft);
+  max-width: 640px;
+  line-height: 1.5;
+}
+
+.controls {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.controlLabel {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bf-color-fg-muted);
+  margin-bottom: 4px;
+}
+
+.titleToggle {
+  display: flex;
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-sm);
+  overflow: hidden;
+}
+
+.titleToggle button {
+  font: inherit;
+  font-size: 13px;
+  padding: 8px 14px;
+  background: var(--bf-color-glass);
+  color: var(--bf-color-fg-soft);
+  cursor: pointer;
+}
+
+.titleToggleActive {
+  background: var(--bf-color-accent) !important;
+  color: #fff !important;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  border-radius: var(--bf-radius-md);
+  border: 1px solid var(--bf-color-line);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+}
+
+.canvas > div:first-child {
+  position: absolute;
+  inset: 0;
+}
+
+.sampleTitle {
+  position: relative;
+  font-size: clamp(13px, 2vw, 20px);
+  font-weight: 700;
+  line-height: 1.3;
+  padding: 0 8% 0 6%;
+}
+
+.cardName {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}

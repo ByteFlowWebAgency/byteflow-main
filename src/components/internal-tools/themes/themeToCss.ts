@@ -63,6 +63,12 @@ export function themeToCss(theme: Theme): CSSProperties {
     '--bf-grad-callout': `linear-gradient(180deg, ${from}, ${to})`,
     '--bf-font-display': theme.fonts.display,
     '--bf-font-body': theme.fonts.body,
+    // A CSS custom property (not the data-bf-on-dark attribute selector this used to be
+    // driven by) so a nested per-page/per-slide theme override correctly recascades: the
+    // nearest ancestor's value always wins for a descendant, the same as every other
+    // themed property here, whereas an attribute-selector rule matches ANY ancestor with
+    // the attribute set — including one further out than a lighter override underneath it.
+    '--bf-logo-filter': isDarkColor(background) ? 'brightness(0) invert(1)' : 'none',
   };
   return vars as CSSProperties;
 }

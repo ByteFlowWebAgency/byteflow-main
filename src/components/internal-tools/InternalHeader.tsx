@@ -13,6 +13,7 @@ const TOOLS = [
   { href: '/internal/crm', label: 'CRM' },
   { href: '/internal/budgets', label: 'Budgets' },
   { href: '/internal/theme-editor', label: 'Themes' },
+  { href: '/internal/backgrounds', label: 'Backgrounds' },
 ];
 
 export default function InternalHeader({ email }: { email?: string }) {

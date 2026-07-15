@@ -3,22 +3,14 @@
 // export elsewhere in this suite. docs/slides/05-PPTX-EXPORT.md.
 
 import PptxGenJS from 'pptxgenjs';
-import type { Deck, Slide } from './types';
+import type { Deck } from './types';
 import type { Theme } from '@/components/internal-tools/themes/themeTypes';
+import { resolveEffectiveTheme } from '@/components/internal-tools/themes/themeStorage';
 import { defineDeckMaster, SLIDE_H, SLIDE_W } from './pptxMasters';
 import { PPTX_GENERATORS } from './pptxGenerators';
 import { sanitizeFilePart } from '@/components/internal-tools/pdf/generateDocumentPdf';
 import { getBackgroundDesign } from '@/lib/background-designs/registry';
 import { rasterizeBackgroundDesign } from '@/lib/background-designs/rasterize';
-
-/** Only titleCover/sectionDivider/thankYouClosing ever carry a backgroundDesignId — every
- * other template's content type has no such field. */
-function slideBackgroundDesignId(slide: Slide): string | undefined {
-  if (slide.templateId === 'titleCover' || slide.templateId === 'sectionDivider' || slide.templateId === 'thankYouClosing') {
-    return slide.content.backgroundDesignId;
-  }
-  return undefined;
-}
 
 /** ~150dpi at the slide's real inch dimensions — crisp enough for a full-bleed background
  * without an oversized embed. */
@@ -27,32 +19,39 @@ const BG_RASTER_H = Math.round(SLIDE_H * 150);
 
 /** Build a PptxGenJS instance for the deck — does not download; callers may inspect/test it.
  * Async because any slide with a backgroundDesignId needs its design rasterized to a PNG
- * first (rasterize.ts is canvas/Image-based); rasterized designs are cached per designId so
- * a deck reusing the same design across several slides only rasterizes it once. */
+ * first (rasterize.ts is canvas/Image-based); rasterized designs are cached per (designId,
+ * effective theme id) pair so a deck reusing the same design+theme combination across
+ * several slides only rasterizes it once — a design recolors per its slide's own effective
+ * theme, so the same designId under two different theme overrides needs two renders. */
 export async function buildDeckPptx(deck: Deck, theme: Theme): Promise<PptxGenJS> {
   const pptx = new PptxGenJS();
   pptx.layout = 'LAYOUT_WIDE';
   pptx.author = 'ByteFlow Solutions';
   pptx.title = deck.name;
 
+  // The shared master's own chrome (logo, footer-brand, slide-number) stays keyed to the
+  // deck's base theme — a per-slide theme override recolors that slide's real content
+  // (text/shapes/background) via newSlide()'s explicit per-slide background fill and each
+  // generator's own color calls, not by redefining the master (see pptxMasters.ts).
   defineDeckMaster(pptx, theme);
 
   const bgCache = new Map<string, string>();
   for (const slide of deck.slides) {
     const generator = PPTX_GENERATORS[slide.templateId];
-    const designId = slideBackgroundDesignId(slide);
+    const { theme: effectiveTheme } = resolveEffectiveTheme(slide.themeId, theme);
     let bgImage: string | undefined;
-    if (designId) {
-      if (!bgCache.has(designId)) {
-        const design = getBackgroundDesign(designId);
+    if (slide.backgroundDesignId) {
+      const cacheKey = `${slide.backgroundDesignId}::${effectiveTheme.id}`;
+      if (!bgCache.has(cacheKey)) {
+        const design = getBackgroundDesign(slide.backgroundDesignId);
         if (design) {
-          const png = await rasterizeBackgroundDesign(design, theme, BG_RASTER_W, BG_RASTER_H);
-          bgCache.set(designId, png);
+          const png = await rasterizeBackgroundDesign(design, effectiveTheme, BG_RASTER_W, BG_RASTER_H);
+          bgCache.set(cacheKey, png);
         }
       }
-      bgImage = bgCache.get(designId);
+      bgImage = bgCache.get(cacheKey);
     }
-    generator(pptx, slide, theme, bgImage);
+    generator(pptx, slide, effectiveTheme, bgImage);
   }
 
   return pptx;

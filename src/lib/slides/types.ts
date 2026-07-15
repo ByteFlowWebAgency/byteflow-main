@@ -34,6 +34,12 @@ export type SlideTemplateId =
 
 export interface SlideBase {
   id: string;
+  /** A background-designs registry id, or undefined for a plain background — independent
+   * of theme, available on every template (see lib/background-designs/). */
+  backgroundDesignId?: string;
+  /** A theme id overriding the deck's own themeId for just this slide, or undefined to
+   * inherit the deck's theme. */
+  themeId?: string;
 }
 
 export interface TitleCoverContent {
@@ -42,9 +48,6 @@ export interface TitleCoverContent {
   subtitle?: string;
   presentedTo?: string;
   date?: string;
-  /** A background-designs registry id, or undefined for today's plain background —
-   * independent of themeId, see lib/background-designs/. */
-  backgroundDesignId?: string;
 }
 
 export interface AgendaContent {
@@ -55,8 +58,6 @@ export interface AgendaContent {
 export interface SectionDividerContent {
   title: string;
   subtitle?: string;
-  /** See TitleCoverContent.backgroundDesignId. */
-  backgroundDesignId?: string;
 }
 
 export interface ProblemStatementContent {
@@ -240,8 +241,6 @@ export interface ContactNextStepsContent {
 export interface ThankYouClosingContent {
   title: string;
   subtitle?: string;
-  /** See TitleCoverContent.backgroundDesignId. */
-  backgroundDesignId?: string;
 }
 
 export interface BlankCustomContent {

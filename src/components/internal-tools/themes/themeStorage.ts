@@ -66,6 +66,23 @@ export function resolveTheme(id: string | undefined): { theme: Theme; missing: b
   return theme ? { theme, missing: false } : { theme: CLASSIC_THEME, missing: true };
 }
 
+/**
+ * A page/slide's effective theme: its own themeId override if set (and it still exists),
+ * else the parent document/deck's already-resolved theme. Falls back the same way
+ * resolveTheme does when the override id points at a deleted theme — Classic, with
+ * `missing: true` so the caller can surface the same "deleted theme" note.
+ */
+export function resolveEffectiveTheme(
+  overrideId: string | undefined,
+  parentTheme: Theme,
+): { theme: Theme; missing: boolean; isOverridden: boolean } {
+  if (!overrideId) return { theme: parentTheme, missing: false, isOverridden: false };
+  const theme = getThemeById(overrideId);
+  return theme
+    ? { theme, missing: false, isOverridden: true }
+    : { theme: CLASSIC_THEME, missing: true, isOverridden: true };
+}
+
 /** Validates before writing; refuses built-in ids (built-ins are immutable). */
 export function saveCustomTheme(theme: Theme): { ok: true } | { ok: false; error: string } {
   if (!storageAvailable()) return { ok: false, error: 'Storage is unavailable in this browser.' };

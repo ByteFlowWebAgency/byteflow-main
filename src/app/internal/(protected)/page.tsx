@@ -66,6 +66,13 @@ export default function InternalHubPage() {
             status="live"
           />
           <HubTile
+            title="Backgrounds"
+            description="Browse all 20 built-in decorative page/slide backgrounds and preview how each recolors under any saved theme."
+            monogram="Bg"
+            href="/internal/backgrounds"
+            status="live"
+          />
+          <HubTile
             title="Monthly Reports"
             description="Recurring SEO and retainer reporting for active clients."
             monogram="Re"

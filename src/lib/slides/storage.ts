@@ -198,7 +198,6 @@ function validateSlideContent(templateId: SlideTemplateId, raw: unknown): SlideC
           subtitle: optStr(c.subtitle, 400),
           presentedTo: optStr(c.presentedTo, 200),
           date: optStr(c.date, 60),
-          backgroundDesignId: optStr(c.backgroundDesignId, 80),
         },
       };
     case 'agenda':
@@ -212,7 +211,6 @@ function validateSlideContent(templateId: SlideTemplateId, raw: unknown): SlideC
         content: {
           title: reqStr(c.title, 'title', 300),
           subtitle: optStr(c.subtitle, 400),
-          backgroundDesignId: optStr(c.backgroundDesignId, 80),
         },
       };
     case 'problemStatement':
@@ -413,7 +411,6 @@ function validateSlideContent(templateId: SlideTemplateId, raw: unknown): SlideC
         content: {
           title: reqStr(c.title, 'title', 300),
           subtitle: optStr(c.subtitle, 400),
-          backgroundDesignId: optStr(c.backgroundDesignId, 80),
         },
       };
     case 'blankCustom':
@@ -431,7 +428,12 @@ function validateSlide(input: unknown, index: number): Slide {
     throw new ValidationError(`slides[${index}] has an unknown templateId "${String(templateId)}".`);
   }
   const content = validateSlideContent(templateId as SlideTemplateId, raw.content);
-  return { id: idOr(raw.id), ...content };
+  return {
+    id: idOr(raw.id),
+    backgroundDesignId: optStr(raw.backgroundDesignId, 80),
+    themeId: optStr(raw.themeId, 100),
+    ...content,
+  };
 }
 
 /**

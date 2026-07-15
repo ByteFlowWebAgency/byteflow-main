@@ -13,7 +13,9 @@ import SlideFieldEditor from './SlideFieldEditor';
 import SlideTemplatePicker from './SlideTemplatePicker';
 import ConfirmDialog from '@/components/internal-tools/ConfirmDialog';
 import ThemePicker from '@/components/internal-tools/themes/ThemePicker';
-import { resolveTheme } from '@/components/internal-tools/themes/themeStorage';
+import ThemeOverridePicker from '@/components/internal-tools/themes/ThemeOverridePicker';
+import BackgroundDesignPicker from '@/components/background-designs/BackgroundDesignPicker';
+import { resolveTheme, resolveEffectiveTheme } from '@/components/internal-tools/themes/themeStorage';
 import { getDeck, saveDeck } from '@/lib/slides/storage';
 import { cloneSlideFresh, createSlide } from '@/lib/slides/defaults';
 import { downloadDeckPptx } from '@/lib/slides/pptxExport';
@@ -266,6 +268,31 @@ export default function DeckEditorApp({ id }: { id: string }) {
 
         {fieldPanelOpen && (
           <div className={styles.fieldPanel}>
+            <div className={styles.designSection}>
+              <div className={styles.designField}>
+                <label htmlFor="slide-bg-design" className={styles.designLabel}>
+                  Background design
+                </label>
+                <BackgroundDesignPicker
+                  id="slide-bg-design"
+                  value={slide.backgroundDesignId}
+                  onChange={(backgroundDesignId) => updateSlide(safeIndex, { ...slide, backgroundDesignId })}
+                  className={styles.designSelect}
+                />
+              </div>
+              <div className={styles.designField}>
+                <label htmlFor="slide-theme-override" className={styles.designLabel}>
+                  Theme override
+                </label>
+                <ThemeOverridePicker
+                  id="slide-theme-override"
+                  value={slide.themeId}
+                  missing={resolveEffectiveTheme(slide.themeId, theme).missing}
+                  onChange={(themeId) => updateSlide(safeIndex, { ...slide, themeId })}
+                  className={styles.designSelect}
+                />
+              </div>
+            </div>
             <p className={styles.fieldPanelHeading}>{TEMPLATE_LABELS[slide.templateId].name} — content</p>
             <SlideFieldEditor slide={slide} onChange={(next) => updateSlide(safeIndex, next)} />
           </div>

@@ -6,9 +6,11 @@
 // Tyrone sees is close to what the .pptx produces." Colors/fonts come entirely from
 // ThemedDocument's CSS custom properties — never hardcoded here.
 
+import { createContext, useContext } from 'react';
 import Image from 'next/image';
 import ThemedDocument from '@/components/internal-tools/themes/ThemedDocument';
 import BackgroundLayer from '@/components/background-designs/BackgroundLayer';
+import { resolveEffectiveTheme } from '@/components/internal-tools/themes/themeStorage';
 import type { Theme } from '@/components/internal-tools/themes/themeTypes';
 import { computePricingTotal } from '@/lib/slides/pricing';
 import type {
@@ -52,28 +54,30 @@ const LOGO = (
   />
 );
 
+/** The slide's effective theme (deck theme, or this slide's own themeId override) and
+ * backgroundDesignId — provided once by SlideRenderer, read by Canvas (and
+ * FullBleedImageSlide, which bypasses Canvas for its own full-bleed image layer). A context
+ * rather than props threaded through all 25 template functions: every template needs the
+ * same two values, and neither varies within one slide's render, so per-function prop
+ * plumbing would just be repetition with no benefit. */
+const SlideRenderCtx = createContext<{ theme: Theme; backgroundDesignId?: string } | null>(null);
+
 /**
  * Wraps every template's content in the shared 16:9 canvas + corner logo. Every template
  * carries the logo, uniformly, with no per-template exceptions — matching
  * lib/slides/pptxMasters.ts, where the logo is baked into the shared slide master and
  * therefore applies to every exported slide the same way. Keeping the preview's logo
  * policy identical avoids a preview/export mismatch (docs/slides/03-EDITOR-SCREEN.md).
+ * Every template (not just the three original full-bleed-eligible ones) can carry a
+ * background design now — legibility is the field's job to manage per-template, not this
+ * wrapper's; a dense content template with a corner-biased design is generally fine, and
+ * the picker itself doesn't editorialize about which templates "should" use one.
  */
-/** backgroundDesignId/theme are only ever passed by the three full-bleed-eligible
- * templates (titleCover, sectionDivider, thankYouClosing) — every other template calls
- * Canvas without them and gets today's plain paper background, unchanged. */
-function Canvas({
-  children,
-  backgroundDesignId,
-  theme,
-}: {
-  children: React.ReactNode;
-  backgroundDesignId?: string;
-  theme?: Theme;
-}) {
+function Canvas({ children }: { children: React.ReactNode }) {
+  const ctx = useContext(SlideRenderCtx);
   return (
     <div className={styles.canvas}>
-      {theme && <BackgroundLayer designId={backgroundDesignId} theme={theme} width={960} height={540} />}
+      {ctx && <BackgroundLayer designId={ctx.backgroundDesignId} theme={ctx.theme} width={960} height={540} />}
       <div className={styles.pad}>{children}</div>
       {LOGO}
     </div>
@@ -96,9 +100,9 @@ function Bullets({ items }: { items: string[] }) {
 
 // ---- 1. titleCover ---------------------------------------------------------------------------
 
-function TitleCoverSlide({ content, theme }: { content: TitleCoverContent; theme: Theme }) {
+function TitleCoverSlide({ content }: { content: TitleCoverContent }) {
   return (
-    <Canvas backgroundDesignId={content.backgroundDesignId} theme={theme}>
+    <Canvas>
       <div className={styles.centered} style={{ alignItems: 'flex-start', textAlign: 'left' }}>
         {content.eyebrow && (
           <p className={styles.muted} style={{ fontSize: '0.75em', fontWeight: 700, letterSpacing: '0.08em' }}>
@@ -138,9 +142,9 @@ function AgendaSlide({ content }: { content: AgendaContent }) {
 
 // ---- 3. sectionDivider ------------------------------------------------------------------------
 
-function SectionDividerSlide({ content, theme }: { content: SectionDividerContent; theme: Theme }) {
+function SectionDividerSlide({ content }: { content: SectionDividerContent }) {
   return (
-    <Canvas backgroundDesignId={content.backgroundDesignId} theme={theme}>
+    <Canvas>
       <div className={styles.centered}>
         <p className={styles.dividerTitle}>{content.title}</p>
         {content.subtitle && <p className={styles.dividerSubtitle}>{content.subtitle}</p>}
@@ -385,8 +389,12 @@ function ServicesOverviewSlide({ content }: { content: ServicesOverviewContent }
 // ---- 17. fullBleedImage -------------------------------------------------------------------------
 
 function FullBleedImageSlide({ content }: { content: FullBleedImageContent }) {
+  const ctx = useContext(SlideRenderCtx);
   return (
     <div className={styles.canvas}>
+      {/* Behind the user's own image — only visible where imageDataUrl is unset, e.g. as a
+          placeholder before an image is uploaded. */}
+      {ctx && <BackgroundLayer designId={ctx.backgroundDesignId} theme={ctx.theme} width={960} height={540} />}
       {content.imageDataUrl && (
         <div className={styles.fullBleedImage} style={{ backgroundImage: `url(${content.imageDataUrl})` }} />
       )}
@@ -511,9 +519,9 @@ function ContactNextStepsSlide({ content }: { content: ContactNextStepsContent }
 
 // ---- 24. thankYouClosing ------------------------------------------------------------------------
 
-function ThankYouClosingSlide({ content, theme }: { content: ThankYouClosingContent; theme: Theme }) {
+function ThankYouClosingSlide({ content }: { content: ThankYouClosingContent }) {
   return (
-    <Canvas backgroundDesignId={content.backgroundDesignId} theme={theme}>
+    <Canvas>
       <div className={styles.centered}>
         <p className={styles.dividerTitle}>{content.title}</p>
         {content.subtitle && <p className={styles.dividerSubtitle}>{content.subtitle}</p>}
@@ -536,19 +544,28 @@ function BlankCustomSlide({ content }: { content: BlankCustomContent }) {
 // ---- dispatcher -----------------------------------------------------------------------------
 
 /** Themed, read-only, 16:9 preview of one slide — used by the editor canvas and the
- * slide-rail thumbnails alike. */
+ * slide-rail thumbnails alike. Resolves the slide's own themeId override (if set) against
+ * the passed-in deck theme, and provides both the effective theme and backgroundDesignId
+ * to every template via context — see SlideRenderCtx above. */
 export default function SlideRenderer({ slide, theme }: { slide: Slide; theme: Theme }) {
-  return <ThemedDocument theme={theme}>{renderSlideBody(slide, theme)}</ThemedDocument>;
+  const { theme: effectiveTheme } = resolveEffectiveTheme(slide.themeId, theme);
+  return (
+    <ThemedDocument theme={effectiveTheme}>
+      <SlideRenderCtx.Provider value={{ theme: effectiveTheme, backgroundDesignId: slide.backgroundDesignId }}>
+        {renderSlideBody(slide)}
+      </SlideRenderCtx.Provider>
+    </ThemedDocument>
+  );
 }
 
-function renderSlideBody(slide: Slide, theme: Theme): React.ReactNode {
+function renderSlideBody(slide: Slide): React.ReactNode {
   switch (slide.templateId) {
     case 'titleCover':
-      return <TitleCoverSlide content={slide.content} theme={theme} />;
+      return <TitleCoverSlide content={slide.content} />;
     case 'agenda':
       return <AgendaSlide content={slide.content} />;
     case 'sectionDivider':
-      return <SectionDividerSlide content={slide.content} theme={theme} />;
+      return <SectionDividerSlide content={slide.content} />;
     case 'problemStatement':
       return <BodyPointsSlide content={slide.content} />;
     case 'solutionOverview':
@@ -590,7 +607,7 @@ function renderSlideBody(slide: Slide, theme: Theme): React.ReactNode {
     case 'contactNextSteps':
       return <ContactNextStepsSlide content={slide.content} />;
     case 'thankYouClosing':
-      return <ThankYouClosingSlide content={slide.content} theme={theme} />;
+      return <ThankYouClosingSlide content={slide.content} />;
     case 'blankCustom':
       return <BlankCustomSlide content={slide.content} />;
   }
