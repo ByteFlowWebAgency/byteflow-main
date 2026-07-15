@@ -9,7 +9,7 @@
   transition: border-color 120ms ease, background 120ms ease;
 }
 
-.tile:hover:not(.tileDisabled) {
+.tile:hover {
   background: var(--bf-color-glass-solid);
   border-color: var(--bf-color-accent-soft);
 }
@@ -17,11 +17,6 @@
 .tile:focus-visible {
   outline: var(--bf-focus-ring);
   outline-offset: var(--bf-focus-offset);
-}
-
-.tileDisabled {
-  opacity: 0.45;
-  cursor: default;
 }
 
 .monogram {
@@ -36,11 +31,6 @@
   font-family: var(--bf-font-mono);
   font-size: 15px;
   font-weight: 500;
-}
-
-.tileDisabled .monogram {
-  background: var(--bf-color-glass-solid);
-  color: var(--bf-color-fg-dim);
 }
 
 .text {
@@ -58,18 +48,6 @@
   font-weight: 700;
   letter-spacing: -0.3px;
   color: var(--bf-color-fg);
-}
-
-.badge {
-  font-family: var(--bf-font-body);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--bf-color-fg-dim);
-  border: 1px solid var(--bf-color-line-strong);
-  border-radius: 999px;
-  padding: 3px 9px;
 }
 
 .description {

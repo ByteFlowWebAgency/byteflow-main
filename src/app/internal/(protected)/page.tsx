@@ -12,8 +12,9 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 // The /internal hub — the shared entry point to the gated tools. The app shell
-// (header/footer) is provided by the (protected) layout; this page is just the landing
-// masthead plus the tool tiles.
+// (header/footer) is provided by the (protected) layout; this page is the landing
+// masthead plus the tool tiles, grouped by what the tool is *for*: the pipeline
+// itself, the deliverables that go out, and the brand system those render with.
 export default function InternalHubPage() {
   return (
     <main className={styles.page}>
@@ -29,68 +30,74 @@ export default function InternalHubPage() {
           </p>
         </header>
 
-        <div className={styles.grid}>
-          <HubTile
-            title="CRM"
-            description="Contacts, organizations, and the deal pipeline — who was referred by whom, and what to do today."
-            monogram="Cr"
-            href="/internal/crm"
-            status="live"
-          />
-          <HubTile
-            title="Budgets"
-            description="Planned vs. actual by category for project and recurring budgets. Planning only — books stay in QuickBooks."
-            monogram="Bu"
-            href="/internal/budgets"
-            status="live"
-          />
-          <HubTile
-            title="Documents"
-            description="Compose free-form, on-brand documents from typed blocks — proposals, one-pagers, audits, briefs, reports — with templates, themes, and PDF export."
-            monogram="Dc"
-            href="/internal/documents"
-            status="live"
-          />
-          <HubTile
-            title="Presentations"
-            description="25 BYTEFLOW-branded slide templates — assemble a deck, edit inline, download a real, editable .pptx for proposal follow-ups and live calls."
-            monogram="Pr"
-            href="/internal/slides"
-            status="live"
-          />
-          <HubTile
-            title="Document Themes"
-            description="Create and manage the color and font themes documents render with — including dark covers for pitch decks."
-            monogram="Th"
-            href="/internal/theme-editor"
-            status="live"
-          />
-          <HubTile
-            title="Backgrounds"
-            description="Browse all 20 built-in decorative page/slide backgrounds and preview how each recolors under any saved theme."
-            monogram="Bg"
-            href="/internal/backgrounds"
-            status="live"
-          />
-          <HubTile
-            title="Monthly Reports"
-            description="Recurring SEO and retainer reporting for active clients."
-            monogram="Re"
-            status="coming-soon"
-          />
-          <HubTile
-            title="Contracts"
-            description="Service agreements assembled from a clause library."
-            monogram="Co"
-            status="coming-soon"
-          />
-          <HubTile
-            title="Draft Emails"
-            description="Outreach and follow-up drafts that match the documents they accompany."
-            monogram="Em"
-            status="coming-soon"
-          />
-        </div>
+        <section className={styles.section} aria-labelledby="section-pipeline">
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle} id="section-pipeline">
+              Pipeline
+            </h2>
+            <p className={styles.sectionHint}>Who we&rsquo;re talking to, and what it&rsquo;s worth.</p>
+          </div>
+          <div className={styles.grid}>
+            <HubTile
+              title="CRM"
+              description="Contacts, organizations, and the deal pipeline — who was referred by whom, and what to do today."
+              monogram="Cr"
+              href="/internal/crm"
+            />
+            <HubTile
+              title="Budgets"
+              description="Planned vs. actual by category for project and recurring budgets. Planning only — books stay in QuickBooks."
+              monogram="Bu"
+              href="/internal/budgets"
+            />
+          </div>
+        </section>
+
+        <section className={styles.section} aria-labelledby="section-deliverables">
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle} id="section-deliverables">
+              Client deliverables
+            </h2>
+            <p className={styles.sectionHint}>What goes out the door.</p>
+          </div>
+          <div className={styles.grid}>
+            <HubTile
+              title="Documents"
+              description="Compose free-form, on-brand documents from typed blocks — proposals, one-pagers, audits, briefs, reports — with templates, themes, and PDF export."
+              monogram="Dc"
+              href="/internal/documents"
+            />
+            <HubTile
+              title="Presentations"
+              description="25 BYTEFLOW-branded slide templates — assemble a deck, edit inline, download a real, editable .pptx for proposal follow-ups and live calls."
+              monogram="Pr"
+              href="/internal/slides"
+            />
+          </div>
+        </section>
+
+        <section className={styles.section} aria-labelledby="section-brand">
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle} id="section-brand">
+              Brand system
+            </h2>
+            <p className={styles.sectionHint}>The shared look those deliverables render with.</p>
+          </div>
+          <div className={styles.grid}>
+            <HubTile
+              title="Document Themes"
+              description="Create and manage the color and font themes documents render with — including dark covers for pitch decks."
+              monogram="Th"
+              href="/internal/theme-editor"
+            />
+            <HubTile
+              title="Backgrounds"
+              description="Browse all 20 built-in decorative page/slide backgrounds and preview how each recolors under any saved theme."
+              monogram="Bg"
+              href="/internal/backgrounds"
+            />
+          </div>
+        </section>
       </div>
     </main>
   );

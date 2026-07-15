@@ -10,7 +10,7 @@
 }
 
 .header {
-  margin-bottom: 28px;
+  margin-bottom: 34px;
 }
 
 .headerRow {
@@ -35,6 +35,38 @@
   font-size: 15px;
   line-height: 1.5;
   color: var(--bf-color-fg-soft);
+}
+
+/* Tools are grouped by what they're for, so the hub reads as a dashboard rather than a
+   flat list of links. Section headings carry the hierarchy as text — never colour alone. */
+
+.section + .section {
+  margin-top: 30px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--bf-color-line);
+}
+
+.sectionTitle {
+  font-family: var(--bf-font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-muted);
+}
+
+.sectionHint {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--bf-color-fg-dim);
 }
 
 .grid {
