@@ -4,13 +4,20 @@ Phase 2 output (`03-RECON.md`). Everything here was read out of the code on bran
 `feat/internal-dashboard-meetings` (based on `dev`, at `1c9d592`). Where something could not
 be determined from source it says so rather than guessing.
 
-**Headline: two of this package's stated prerequisites do not exist.** Google Calendar OAuth
+**Headline: two of this package's stated prerequisites did not exist.** Google Calendar OAuth
 was never built, and documents have no CRM linkage of any kind. Both are written up in
 [`BLOCKERS.md`](./BLOCKERS.md); the summaries below cross-reference it rather than repeat it.
 
+> **Update (2026-07-15, after this document was written).** Tyrone authorised closing the
+> OAuth gap, so it was built on this branch (`3844433`) as an *authorization* grant rather
+> than the spec's NextAuth sign-in — see `BLOCKERS.md § How BLOCKER 1 was resolved`. Phase 3
+> is consequently built too. **Step 5's proposal below is now implemented** (with two
+> corrections an adversarial review forced — noted inline). The document-linkage gap
+> (Step 3) is still open and still blocks Phases 4–6.
+
 ---
 
-## Step 1 — Calendar OAuth prerequisite: **NOT IN PLACE. Hard stop.**
+## Step 1 — Calendar OAuth prerequisite: **WAS NOT IN PLACE.** *(since resolved — see update above)*
 
 `01-CONTEXT.md` lists NextAuth + Google provider + `calendar.events.readonly` +
 refresh-token persistence + session `accessToken` as already built. None of it exists — no
@@ -234,8 +241,11 @@ copy-pasted a fifth time.
 
 ## Step 5 — Proposed matching strategy (calendar event → CRM record)
 
-Stated against what recon actually found. **This is a design proposal only — none of it is
-implemented, because Phase 3 is blocked on BLOCKER 1.**
+Stated against what recon actually found.
+
+> **Status: IMPLEMENTED** in `src/lib/meetings/match.ts` (`3844433`), with two corrections an
+> adversarial review forced — both marked **[CORRECTED]** below. Accuracy on real data is still
+> unmeasured: no live calendar has been read.
 
 `03-RECON.md` offered three candidate signals. Assessed honestly:
 
@@ -252,11 +262,30 @@ There is **no `domain` field anywhere in the CRM.** The nearest thing is
 
 Any matcher must normalize on read (strip scheme, `www.`, path; lowercase).
 
+> **[CORRECTED]** An early implementation also accepted an **email** pasted into the website
+> field (taking the part after the `@`). That was a wrong-match vector: `jane@aol.co.uk` made
+> every `aol.co.uk` attendee match Jane's Barbershop, and the consumer blocklist is finite so
+> it cannot cover every provider (it has `aol.com`, not `aol.co.uk`). `normalizeDomain` now
+> returns **null** for anything email-shaped — "someone owns this mailbox" is not evidence
+> "their org owns this domain". Consumer domains and **shared hosts** (`facebook.com`,
+> `linktr.ee`, Wix/Squarespace — a Facebook page is a very common "website" for this client
+> base, and there the *path* identifies the org while we compare only hosts) are also
+> excluded on the **org** side, not just the attendee's.
+
 ### 2. Organization name fuzzy-matched against the event title — ⚠️ viable as a fallback only
 `Organization.name` is the one guaranteed-present field. Normalizing both sides (lowercase,
 strip punctuation) and substring-matching is cheap. But it's noisy — short or generic org names
 will false-positive against unrelated titles. Per `00-GUARDRAILS.md`, an ambiguous match must be
 left unmatched rather than guessed.
+
+> **[CORRECTED]** Only the **full** normalised name is matched, with word-boundary padding and
+> a ≥4-character floor. An early implementation also retried with legal suffixes stripped, so
+> "Acme Corp" would catch "Acme sync" — but the same path reduced "Vision Foundation" to
+> `vision` (matching "Q3 vision planning") and "Impact Co" to `impact` (matching "Impact
+> review with team"), silently persisting the wrong client. Stripping converts a
+> high-specificity needle into a low-specificity one; the length floor can't help, because the
+> remainder is a full-length common English word. Removed. Tier 3 is the weakest signal we
+> have, and unmatched beats wrong.
 
 ### 3. Manual only — always required as the backstop
 Non-negotiable regardless of the above, per the guardrails' "good enough, with an easy manual

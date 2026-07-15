@@ -1,16 +1,45 @@
 # Blockers
 
-Two hard prerequisite gaps found in Phase 2 recon. Together they block Phases 3–6
-(`04-CRM-LINKING.md`, `05-MEETINGS-WIDGET.md`, `06-CALENDAR-VIEW.md`,
-`07-MISSING-DOCUMENT-FLOW.md`). Phases 1 and 2 are complete and unaffected.
+Two hard prerequisite gaps found in Phase 2 recon. Both are cases where `01-CONTEXT.md`
+describes something as already built, and the code said otherwise.
 
-Both are cases where `01-CONTEXT.md` describes something as already built or already
-existing, and the code says otherwise. Neither is a small gap, and neither can be closed
-inside this package's scope.
+| | Status |
+|---|---|
+| **BLOCKER 1** — Google Calendar OAuth | ✅ **RESOLVED** — built on this branch (`3844433`) after Tyrone explicitly authorised it. One manual step remains, below. |
+| **BLOCKER 2** — documents have no CRM linkage | ⛔ **OPEN** — still blocks Phases 4–6. |
+
+Phases 1, 2 and 3 are complete. Phases 4–6 remain blocked on BLOCKER 2.
 
 ---
 
-## BLOCKER 1 — Google Calendar OAuth does not exist (hard prerequisite, blocks Phases 3–6)
+## ⚠️ ACTION REQUIRED — one manual step before the calendar connection will work
+
+**Google Cloud Console → APIs & Services → Credentials → the OAuth 2.0 Client** used by
+`GOOGLE_CLIENT_ID` needs the callback registered under **Authorized redirect URIs**. Google
+rejects the flow with `redirect_uri_mismatch` until it matches *exactly*:
+
+- Local dev: `http://localhost:3000/api/google/callback`
+- Production: `https://<your-domain>/api/google/callback`
+
+Also confirm the **Google Calendar API** is enabled for the project, and that the OAuth
+consent screen lists `calendar.events.readonly` + `userinfo.email` (per
+`GOOGLE-CALENDAR-SCOPES-CLEANUP.md`'s intent — that file doesn't exist in this repo).
+
+This is a console task and cannot be done from code. Nothing else is outstanding for the
+connection.
+
+**Also not applied:** `supabase/migrations/20260715180000_google_calendar_and_meetings.sql`
+must be applied with `supabase db push`. See the `supabase/` gitignore note below.
+
+---
+
+## BLOCKER 1 — Google Calendar OAuth did not exist ✅ RESOLVED
+
+> **Resolution (2026-07-15).** Tyrone authorised building it, and chose the
+> connect-as-authorization design over the spec's NextAuth. Built in `3844433`; the
+> original finding is preserved below because it explains *why the spec was wrong* and what
+> the credentials in `.env.local` actually were. See § "How BLOCKER 1 was resolved" at the
+> end of this section.
 
 **`01-CONTEXT.md` claims** (under "What's already done (prerequisites)"):
 
@@ -53,17 +82,36 @@ its docs in `README.md:50` / `.env.example:22`, and `00-GUARDRAILS.md:34` itself
 Credentials were provisioned in a Google Cloud project; **no code was ever written against
 them.**
 
-**Recommended next step:** run the separate, already-specified OAuth task
-(`GOOGLE-CALENDAR-OAUTH-PROMPT.md`) — which itself needs to be located or rewritten, since
-it isn't in this repo. Per `03-RECON.md` Step 1 and the master prompt, that work is
-deliberately out of scope here and was not attempted.
+### How BLOCKER 1 was resolved
 
-Note one architectural wrinkle for whoever picks it up: internal auth is **already**
-Supabase Auth. Adding NextAuth alongside it would mean two session systems on the same
-routes. Supabase's own `signInWithOAuth` + `provider_token` is likely the cheaper path to a
-Google access token here, but it is a *different architecture* from the NextAuth
-JWT-callback flow `01-CONTEXT.md` describes — so this is a real design decision, not a
-mechanical port, and it should be made deliberately rather than inside this package.
+The original recommendation was to run the separate OAuth task. Tyrone instead authorised
+building it here, and picked the design after being shown the trade-off.
+
+**Chosen: Google Calendar access is an *authorization* grant, not a sign-in.** The spec's
+NextAuth design was written believing the integration already existed, and by an author who
+didn't know the repo had moved to Supabase Auth — adding NextAuth would have put two session
+systems on the same `/internal` routes. Nobody needs to sign in with Google; they already
+sign in with email/password and separately grant read access to a calendar.
+
+What that means concretely:
+- **Sign-in is completely untouched.** Supabase Auth email/password, as before.
+- A signed-in user hits `/api/google/connect` → Google consent → `/api/google/callback`.
+- The refresh token is stored in `google_calendar_tokens` (RLS on, zero policies,
+  `service_role` GRANT only). It is **deliberately not an `EntityStore` entity**, so the
+  generic `/api/crm/<entity>` route cannot reach it — verified: it 404s.
+- Access tokens are minted on demand from the refresh token and cached in process memory.
+- Scope is **`calendar.events.readonly` only**, per `00-GUARDRAILS.md`. A test asserts the
+  consent URL carries no write-capable scope and that the client secret never appears in it.
+- Disconnect revokes the grant at Google and drops both the stored token and the cached one.
+
+Rejected alternative: Supabase's own `signInWithOAuth`. It returns `provider_token` /
+`provider_refresh_token` **only at sign-in and does not persist or refresh them** — so the
+refresh plumbing would have been hand-rolled anyway, while additionally coupling calendar
+access to how people sign in.
+
+**Still true and worth remembering:** `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET` were
+provisioned long before any code used them. That is almost certainly why the spec's author
+believed the integration was built. `src/lib/google/env.ts` is the first consumer.
 
 ---
 
@@ -135,11 +183,28 @@ guardrails forbid without a decision. **Escalating rather than hardcoding.**
 This did not affect Phase 1 (no badge was needed once the placeholders were removed), but it
 will need answering before Phase 4.
 
-### `supabase/` is gitignored
-`.gitignore:43-44` excludes `supabase/`. The three migrations exist on disk but are **not
-tracked in git**, so any new migration for a `meetings` or `documents` table would be
-untracked by default and would not travel with the branch. Worth deciding deliberately
-before Phase 3 writes one.
+### 🚩 `supabase/` is gitignored — and Phase 3 has now written a migration into it
+`.gitignore:43-44` excludes `supabase/` ("config + migrations stay out of the repo"). That
+is now a live problem rather than a hypothetical:
+
+**`supabase/migrations/20260715180000_google_calendar_and_meetings.sql` exists on this
+machine only.** It is not in the commit, it will not travel with the branch, and it will not
+survive a fresh clone. The branch's code does not work without it (both new tables live
+there). The same is true of the three pre-existing migrations.
+
+This was deliberately **not** overridden: force-adding it, or negating the ignore rule, would
+also sweep in three migrations that were previously excluded on purpose, and that is a
+repo-policy change rather than a Phase 3 change.
+
+**Recommendation:** track migrations but keep local config out —
+```gitignore
+supabase/
+!supabase/migrations/
+!supabase/migrations/*.sql
+```
+Migrations are schema, contain no secrets, and belong in version control; `config.toml` and
+local state don't. Until then, the file must be applied by hand with `supabase db push` and
+backed up outside git.
 
 ### CRM records are not deep-linkable
 `07-MISSING-DOCUMENT-FLOW.md` Step 2 needs to "link directly to that record's edit view."

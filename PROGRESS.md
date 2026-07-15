@@ -5,83 +5,115 @@ deployed; `main`/`dev` untouched.
 
 | Phase | Spec | Status |
 |---|---|---|
-| 1 | `02-DASHBOARD-CLEANUP.md` | ✅ **Complete** — gate met, committed `20d358f` |
-| 2 | `03-RECON.md` | ✅ **Complete** — gate met; found two hard prerequisite gaps |
-| 3 | `04-CRM-LINKING.md` | ⛔ **Blocked** — BLOCKER 1 (no Calendar OAuth) |
-| 4 | `05-MEETINGS-WIDGET.md` | ⛔ **Blocked** — BLOCKER 1 + BLOCKER 2 (no document↔CRM link) |
-| 5 | `06-CALENDAR-VIEW.md` | ⛔ **Blocked** — BLOCKER 1 + BLOCKER 2 |
-| 6 | `07-MISSING-DOCUMENT-FLOW.md` | ⛔ **Blocked** — BLOCKER 1 + BLOCKER 2 |
+| 1 | `02-DASHBOARD-CLEANUP.md` | ✅ **Complete** — gate met, `20d358f` |
+| 2 | `03-RECON.md` | ✅ **Complete** — gate met; found two hard prerequisite gaps, `6c177c4` |
+| 2.5 | *(not in the package)* | ✅ **Complete** — Calendar OAuth built after Tyrone authorised it, `3844433` |
+| 3 | `04-CRM-LINKING.md` | ✅ **Complete** — gate met (matching verified on fixtures, not live data — see caveat), `3844433` |
+| 4 | `05-MEETINGS-WIDGET.md` | ⛔ **Blocked** — BLOCKER 2 (no document↔CRM link) |
+| 5 | `06-CALENDAR-VIEW.md` | ⛔ **Blocked** — BLOCKER 2 |
+| 6 | `07-MISSING-DOCUMENT-FLOW.md` | ⛔ **Blocked** — BLOCKER 2 |
+
+**Two things need a human before the calendar works end to end** — see `BLOCKERS.md`:
+1. Register `…/api/google/callback` as an Authorized redirect URI in the Google Cloud
+   Console (console task, cannot be done from code).
+2. Apply `supabase/migrations/20260715180000_google_calendar_and_meetings.sql` with
+   `supabase db push` — `supabase/` is gitignored, so it is **not in the commit**.
 
 ---
 
 ## Phase 1 — Dashboard cleanup & visual pass ✅
 
-**Done:**
-- Audited all 9 hub tiles. 6 working, 3 placeholders, 0 ambiguous. Every deletion candidate
-  was independently re-verified by an agent tasked with *refuting* the placeholder verdict —
-  all three refutations failed, i.e. the verdicts held.
-- Removed Monthly Reports, Contracts, Draft Emails. No routes/components existed behind them,
-  so nothing else had to go.
-- Removed the now-dead `HubTile.status` prop, its disabled branch, and the `.tileDisabled` /
-  `.badge` CSS. `href` is now required.
-- Regrouped the 6 real tools into three sections — **Pipeline**, **Client deliverables**,
-  **Brand system** — with heading + hairline rule, so the page reads as a dashboard rather
-  than a flat list.
-- Every value pulled from existing `--bf-*` tokens. No new palette, type scale, or spacing.
+Removed Monthly Reports / Contracts / Draft Emails (all `status="coming-soon"`, no `href`,
+nothing behind them; each verdict re-verified by an agent tasked with refuting it). Dropped
+the now-dead `HubTile.status` prop and its CSS. Regrouped the 6 real tools into Pipeline /
+Client deliverables / Brand system. Only existing `--bf-*` tokens used.
 
-**Gate — met:**
-- ✅ Zero non-functional "coming soon" placeholders left (verified absent from the rendered DOM,
-  not just the source).
-- ✅ Reads as an intentional dashboard (screenshots, dark + light chrome, 1440/1280/700px).
-- ✅ Every remaining tool works identically — all 6 tiles link to the same routes as before;
-  no tool code was touched.
-- ✅ `typecheck` exit 0 / `lint` clean / `build` compiles, 18/18 pages.
+**Gate met:** zero placeholders left (verified in the rendered DOM); reads as a dashboard
+(screenshots, dark + light, 1440/1280/700px); every tool links to the same route as before;
+typecheck/lint/build green.
 
-**Deliberate deviation from the spec, flagged for review:** `02-DASHBOARD-CLEANUP.md` suggests
-a default grouping of **"Needs attention" vs "Tools"**, with the meetings widget eventually
-landing in "Needs attention". Since Phases 4–6 are blocked, that section would have shipped
-**empty** — which would have been a new placeholder, the exact thing this phase exists to
-remove. So the six real tools were grouped by purpose instead. "Needs attention" is the
-natural slot at the top of the page once the meetings widget is unblocked.
-
-**Note on QA method:** the hub is behind a Supabase Auth gate and no credentials were
-available. Rather than create a user in the live project just to screenshot, the real hub
-component was rendered through a temporary local-only route outside the `/internal` middleware
-matcher, screenshotted, and **deleted immediately**. It was never committed — verify with
-`git log -p --all -- 'src/app/hub-preview-qa/*'` (returns nothing).
+**Deliberate deviation:** the spec's suggested "Needs attention" vs "Tools" grouping would
+have shipped an **empty** section (the meetings widget is blocked) — itself a placeholder,
+the exact thing this phase removes. Grouped by purpose instead. A "Meetings" section now
+leads the page and is where the widget lands when unblocked.
 
 ---
 
 ## Phase 2 — Recon ✅
 
-**Done:** `RECON.md` and `BLOCKERS.md` written from source, not assumption. Six parallel
-readers covered the hub, CRM schema, document tagging, theme tokens, auth/Calendar, and the
-storage layer; the two highest-stakes claims were then adversarially verified.
+`RECON.md` + `BLOCKERS.md`, written from source. Six parallel readers (hub, CRM schema, doc
+tagging, theme tokens, auth/Calendar, storage layer); the two highest-stakes claims then
+adversarially verified.
 
-**Gate — met:**
-- ✅ `RECON.md` is complete, specific, and reflects the real codebase — every claim cites
-  `file:line`; unknowns are stated as unknown rather than guessed.
-- ✅ Prerequisite gaps logged in `BLOCKERS.md`.
-- ✅ A matching strategy is proposed and justified by what recon actually found — including a
-  correction to the spec's assumed signal ordering, and a mandatory consumer-email-domain
-  blocklist without which the matcher would silently mis-assign meetings.
-- ✅ No ambiguous Phase 1 items to log (there were none).
-
-**The two findings that stop the package:**
-1. **Google Calendar OAuth was never built.** `01-CONTEXT.md` lists it as a done prerequisite.
-   It does not exist on any of 40 branches or in ~400 commits. `GOOGLE_CLIENT_ID`/`SECRET`
-   exist in `.env.local` but are read by no code — provisioned, never wired up.
-2. **Documents have no CRM linkage and live only in browser localStorage.** So "does this
-   client have a document?" — the basis of the entire Ready/Needs-prep feature — is not
-   answerable today, server-side *or* client-side. This blocks Phases 4–6 **independently of
-   the OAuth gap**.
+**Gate met:** every claim cites `file:line`; unknowns stated as unknown; prerequisite gaps
+logged; matching strategy proposed and justified — including a correction to the spec's
+signal ordering and a mandatory consumer-domain blocklist.
 
 ---
 
-## Phases 3–6 ⛔ Not started
+## Phase 2.5 — Connect-Calendar OAuth ✅ *(not in the original package)*
 
-Blocked per `03-RECON.md` Step 1 ("**If this isn't in place: stop.**") and the master prompt's
-instruction not to build the OAuth flow inside this run. See `BLOCKERS.md` for evidence and
-recommended next steps.
+Built after Tyrone authorised it and chose the design. Calendar access is an
+**authorization** grant, not a sign-in — Supabase Auth sign-in is untouched. Standard OAuth
+code flow, refresh token in `google_calendar_tokens` (RLS, service_role only, not an
+EntityStore entity so `/api/crm/*` can't reach it), `calendar.events.readonly` only,
+revocable.
 
-Nothing was built speculatively against a data model that doesn't exist yet.
+**Verified:** consent URL asserted to carry no write-capable scope and no client secret (7
+tests); every route fails closed unauthenticated (307/401); `GET` disconnect → 405;
+`/api/crm/google_calendar_tokens` → 404; connection card renders in both chrome modes.
+
+**Not verified — needs you:** the actual consent round trip, token refresh against real
+Google, and reading real events. All three need a Google account to click through consent,
+plus the redirect URI registered in the Cloud Console. Nothing in the flow has been exercised
+against live Google.
+
+---
+
+## Phase 3 — Meetings ↔ CRM linking ✅
+
+`meetings` added as a CRM entity the standard way (migration + `EntityName`/`CRM_ENTITIES` +
+extractColumns + validator), so `/api/crm/meetings` is served with no new route code. Stores
+the event id, start time, and auto-vs-manual, per spec.
+
+One shared fetch/match layer: `lib/meetings/resolve.ts`, exposed as `/api/meetings?from=&to=`
+with a **date range parameter** precisely so the 7-day list and the month grid consume the
+same path. `/api/meetings/assign` is the manual override both will call.
+
+**Gate:**
+- ✅ *No duplicate event-fetching logic* — exactly one Calendar API path
+  (`lib/google/calendar.ts`), one matcher, one resolve layer.
+- ✅ *Manual override persists and is not overwritten* — a `manual` row short-circuits the
+  matcher before it runs; a manual row with no org is a deliberate "not a client meeting"
+  and is likewise never re-matched.
+- ⚠️ *"A real upcoming meeting resolves to the correct CRM record"* — **verified against
+  fixtures, not real data.** 26 tests over the real compiled matcher cover all three tiers,
+  precedence, ambiguity, and the wrong-match regressions. But no live calendar has been read
+  and no real CRM row inspected, because both need the console step + consent above. **This
+  part of the gate is not fully met and should not be reported as met.**
+
+**Also unmeasured:** whether the email/domain signals actually fire on this CRM's real data.
+`RECON.md` § Step 5 recommends sampling real `Organization.website` / `Contact.email` values
+before trusting the matcher — still worth doing.
+
+---
+
+## Adversarial review of the OAuth + matching code
+
+12 findings confirmed, 3 refuted; all 12 fixed in `3844433`. The two that mattered were both
+in code I'd added *beyond* what `RECON.md` specified:
+- **Legal-suffix stripping** reduced "Vision Foundation" → `vision`, silently matching "Q3
+  vision planning". Removed — only full names match, as the spec actually said.
+- **`normalizeDomain` accepted an email** in the free-text website field, so `jane@aol.co.uk`
+  made every aol.co.uk attendee match Jane's Barbershop. Now returns null; consumer and
+  shared hosts are also excluded on the org side.
+
+Both were the "wrong match is worse than no match" failure the guardrails single out.
+
+---
+
+## Phases 4–6 ⛔ Not started
+
+Blocked on BLOCKER 2: documents live only in browser localStorage with no CRM link, so the
+"Ready" vs "Needs prep" badge — the point of all three phases — has no data to read. Not
+started rather than built against a model that doesn't exist.
