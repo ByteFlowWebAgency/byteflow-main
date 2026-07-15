@@ -4,6 +4,17 @@ Feature branch: `feat/internal-tools-background-designs`. All 7 phase gates comp
 committed separately, repo builds clean (`npm run build`) and typechecks clean
 (`npx tsc --noEmit`) at every commit.
 
+**Update (post-handoff, same branch):** the original mega prompt scoped background designs
+(and, per a follow-up request, theme overrides) to just the 5 title-forward cover/title
+surfaces. A direct follow-up request expanded both to **every** Document Builder page kind
+(cover/sectionTitle/content/closing) and **every** one of the 25 Presentation slide
+templates, plus added a `/internal/backgrounds` gallery page and a per-page/per-slide theme
+override (independent of backgroundDesignId — a page/slide can override its theme, its
+background design, both, or neither). The architecture notes below (data model, rendering,
+PPTX) describe the file layout as of that expansion, not the original narrower version —
+see the commit history on this branch for the exact sequence if you need the intermediate
+state.
+
 ## What got wired up
 
 Per `DISCOVERY.md`, the proposal/audit tools the mega prompt hedged about no longer exist
