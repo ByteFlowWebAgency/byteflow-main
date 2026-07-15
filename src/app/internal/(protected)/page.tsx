@@ -13,14 +13,9 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-// The /internal hub — the shared entry point to the gated tools. The app shell
-// (header/footer) is provided by the (protected) layout; this page is the landing
-// masthead plus the tool tiles, grouped by what the tool is *for*: the pipeline
-// itself, the deliverables that go out, and the brand system those render with.
-//
-// "Meetings" leads because it's the section that will carry pending action — the
-// upcoming-meetings list (05-MEETINGS-WIDGET.md) lands here once its prerequisites are
-// met. Today it holds the calendar connection that makes that possible.
+// The /internal hub. Two columns at desk widths: the calendar owns the left, the tools sit
+// down the right, sized so the whole page fits one screen without scrolling. Below
+// ~1080px the columns stack — a squeezed two-column grid is worse than a scroll.
 export default async function InternalHubPage({
   searchParams,
 }: {
@@ -36,91 +31,88 @@ export default async function InternalHubPage({
             <h1 className={styles.heading}>Internal Tools</h1>
             <ChromeModeToggle />
           </div>
-          <p className={styles.subhead}>
-            Everything the ByteFlow team uses to run the pipeline and produce client
-            documents — in one place.
-          </p>
         </header>
 
-        <section className={styles.section} aria-labelledby="section-meetings">
-          <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle} id="section-meetings">
-              Meetings
-            </h2>
-            <p className={styles.sectionHint}>What&rsquo;s coming up, and who it&rsquo;s with.</p>
-          </div>
-          <CalendarConnection status={calendar} />
-          <MeetingsSectionGate />
-        </section>
+        <div className={styles.columns}>
+          <section className={styles.colLeft} aria-labelledby="section-meetings">
+            <div className={styles.sectionHead}>
+              <h2 className={styles.sectionTitle} id="section-meetings">
+                Meetings
+              </h2>
+              <p className={styles.sectionHint}>What&rsquo;s coming up, and who it&rsquo;s with.</p>
+            </div>
+            <CalendarConnection status={calendar} />
+            <MeetingsSectionGate />
+          </section>
 
-        <section className={styles.section} aria-labelledby="section-pipeline">
-          <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle} id="section-pipeline">
-              Pipeline
-            </h2>
-            <p className={styles.sectionHint}>Who we&rsquo;re talking to, and what it&rsquo;s worth.</p>
-          </div>
-          <div className={styles.grid}>
-            <HubTile
-              title="CRM"
-              description="Contacts, organizations, and the deal pipeline — who was referred by whom, and what to do today."
-              monogram="Cr"
-              href="/internal/crm"
-            />
-            <HubTile
-              title="Budgets"
-              description="Planned vs. actual by category for project and recurring budgets. Planning only — books stay in QuickBooks."
-              monogram="Bu"
-              href="/internal/budgets"
-            />
-          </div>
-        </section>
+          <div className={styles.colRight}>
+            <section className={styles.section} aria-labelledby="section-pipeline">
+              <div className={styles.sectionHead}>
+                <h2 className={styles.sectionTitle} id="section-pipeline">
+                  Pipeline
+                </h2>
+              </div>
+              <div className={styles.grid}>
+                <HubTile
+                  title="CRM"
+                  description="Contacts, organizations, and the deal pipeline."
+                  monogram="Cr"
+                  href="/internal/crm"
+                />
+                <HubTile
+                  title="Budgets"
+                  description="Planned vs. actual by category. Books stay in QuickBooks."
+                  monogram="Bu"
+                  href="/internal/budgets"
+                />
+              </div>
+            </section>
 
-        <section className={styles.section} aria-labelledby="section-deliverables">
-          <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle} id="section-deliverables">
-              Client deliverables
-            </h2>
-            <p className={styles.sectionHint}>What goes out the door.</p>
-          </div>
-          <div className={styles.grid}>
-            <HubTile
-              title="Documents"
-              description="Compose free-form, on-brand documents from typed blocks — proposals, one-pagers, audits, briefs, reports — with templates, themes, and PDF export."
-              monogram="Dc"
-              href="/internal/documents"
-            />
-            <HubTile
-              title="Presentations"
-              description="25 BYTEFLOW-branded slide templates — assemble a deck, edit inline, download a real, editable .pptx for proposal follow-ups and live calls."
-              monogram="Pr"
-              href="/internal/slides"
-            />
-          </div>
-        </section>
+            <section className={styles.section} aria-labelledby="section-deliverables">
+              <div className={styles.sectionHead}>
+                <h2 className={styles.sectionTitle} id="section-deliverables">
+                  Client deliverables
+                </h2>
+              </div>
+              <div className={styles.grid}>
+                <HubTile
+                  title="Documents"
+                  description="On-brand proposals, audits, briefs and reports, with PDF export."
+                  monogram="Dc"
+                  href="/internal/documents"
+                />
+                <HubTile
+                  title="Presentations"
+                  description="25 branded slide templates; download a real, editable .pptx."
+                  monogram="Pr"
+                  href="/internal/slides"
+                />
+              </div>
+            </section>
 
-        <section className={styles.section} aria-labelledby="section-brand">
-          <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle} id="section-brand">
-              Brand system
-            </h2>
-            <p className={styles.sectionHint}>The shared look those deliverables render with.</p>
+            <section className={styles.section} aria-labelledby="section-brand">
+              <div className={styles.sectionHead}>
+                <h2 className={styles.sectionTitle} id="section-brand">
+                  Brand system
+                </h2>
+              </div>
+              <div className={styles.grid}>
+                <HubTile
+                  title="Document Themes"
+                  description="The colour and font themes documents render with."
+                  monogram="Th"
+                  href="/internal/theme-editor"
+                />
+                <HubTile
+                  title="Backgrounds"
+                  description="All 20 decorative page/slide backgrounds, previewed per theme."
+                  monogram="Bg"
+                  href="/internal/backgrounds"
+                />
+              </div>
+            </section>
           </div>
-          <div className={styles.grid}>
-            <HubTile
-              title="Document Themes"
-              description="Create and manage the color and font themes documents render with — including dark covers for pitch decks."
-              monogram="Th"
-              href="/internal/theme-editor"
-            />
-            <HubTile
-              title="Backgrounds"
-              description="Browse all 20 built-in decorative page/slide backgrounds and preview how each recolors under any saved theme."
-              monogram="Bg"
-              href="/internal/backgrounds"
-            />
-          </div>
-        </section>
+        </div>
       </div>
     </main>
   );

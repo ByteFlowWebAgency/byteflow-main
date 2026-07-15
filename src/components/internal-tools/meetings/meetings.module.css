@@ -39,14 +39,21 @@
   background: var(--bf-color-glass);
   border: 1px solid var(--bf-color-line);
   border-radius: var(--bf-radius-lg);
-  padding: 8px;
+  padding: 6px;
+}
+
+/* The 7-day list can run long; let it scroll inside its own pane rather than pushing the
+   page past the fold. The month grid is fixed-height by construction and never needs this. */
+.listScroll {
+  max-height: 460px;
+  overflow-y: auto;
 }
 
 .viewSwitch {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 8px 10px;
+  padding: 4px 6px 8px;
   border-bottom: 1px solid var(--bf-color-line);
   margin-bottom: 4px;
   flex-wrap: wrap;
@@ -214,7 +221,7 @@
 
 .weekday {
   background: var(--bf-color-bg-2);
-  padding: 7px 6px;
+  padding: 5px 6px;
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -223,13 +230,19 @@
   text-align: center;
 }
 
+/* FIXED height, not a min-height. Six of these stack, so with a floor the grid's height
+   depended on how busy the month was — a full week would silently push the page past the
+   fold and break the whole point of the two-column layout. A fixed height plus MAX_CHIPS=2
+   and the "+N more" escape hatch makes the month exactly as tall whether it holds 0 events
+   or 200. Nothing is clipped: overflow goes to "+N more", which opens the day dialog. */
 .cell {
   background: var(--bf-color-bg);
-  min-height: 92px;
+  height: 78px;
   padding: 5px;
   display: flex;
   flex-direction: column;
   gap: 3px;
+  overflow: hidden;
 }
 
 .cellOutside {

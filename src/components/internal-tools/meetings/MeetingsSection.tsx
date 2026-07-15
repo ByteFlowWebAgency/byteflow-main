@@ -197,7 +197,10 @@ export default function MeetingsSection({ connected }: { connected: boolean }) {
       ) : loading && meetings.length === 0 ? (
         <p className={styles.empty}>Loading meetings…</p>
       ) : view === 'list' ? (
-        <MeetingsList meetings={listMeetings} onOpen={setOpen} />
+        // Bounded pane: a busy week must not grow the hub past one screen.
+        <div className={styles.listScroll}>
+          <MeetingsList meetings={listMeetings} onOpen={setOpen} />
+        </div>
       ) : (
         <CalendarGrid
           month={month}

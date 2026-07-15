@@ -1,16 +1,19 @@
+/* Two-column hub: calendar left, tools right, sized to fit one screen without scrolling.
+   Every value is an existing --bf-* token — no new palette, type scale, or spacing. */
+
 .page {
   flex: 1;
-  padding: 48px 24px 64px;
+  padding: 14px 20px 14px;
   font-family: var(--bf-font-body);
 }
 
 .inner {
-  max-width: 860px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 .header {
-  margin-bottom: 34px;
+  margin-bottom: 12px;
 }
 
 .headerRow {
@@ -21,47 +24,62 @@
   flex-wrap: wrap;
 }
 
+/* Smaller than the old masthead: at this size the heading was eating vertical space the
+   calendar needs, and the page's job is the calendar, not its own title. */
 .heading {
   font-family: var(--bf-font-display);
-  font-size: 38px;
+  font-size: 21px;
   font-weight: 700;
-  letter-spacing: -1px;
-  line-height: 1.05;
+  letter-spacing: -0.5px;
+  line-height: 1.1;
 }
 
-.subhead {
-  margin-top: 10px;
-  max-width: 560px;
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--bf-color-fg-soft);
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 22px;
+  align-items: start;
 }
 
-/* Tools are grouped by what they're for, so the hub reads as a dashboard rather than a
-   flat list of links. Section headings carry the hierarchy as text — never colour alone. */
-
-.section + .section {
-  margin-top: 30px;
+.colLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
 }
 
-/* The Meetings section stacks its connection card above the list/grid. */
-.section > * + * {
-  margin-top: 12px;
+.colRight {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Tools stack one per row in the narrow right column — two across would wrap the titles. */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .sectionHead {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
-  padding-bottom: 9px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--bf-color-line);
 }
 
 .sectionTitle {
   font-family: var(--bf-font-display);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.4px;
   text-transform: uppercase;
@@ -69,15 +87,22 @@
 }
 
 .sectionHint {
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.4;
   color: var(--bf-color-fg-dim);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+/* Below this the two columns get too narrow to be readable — a stacked page that scrolls
+   beats a cramped one that doesn't. */
+@media (max-width: 1080px) {
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 720px) {

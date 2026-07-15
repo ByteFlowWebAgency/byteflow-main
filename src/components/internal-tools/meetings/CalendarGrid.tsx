@@ -15,7 +15,7 @@ import styles from './meetings.module.css';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 /** More than this in one cell and the grid stops being readable — collapse to "+N more". */
-const MAX_CHIPS = 3;
+const MAX_CHIPS = 2;
 
 const STATUS_CLASS = {
   ready: styles.chipReady,
