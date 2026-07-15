@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     if (message.includes('already registered') || message.includes('already exists')) {
       return fail(request, 'exists');
     }
-    if (message.includes('byteflowsolutions.com')) {
+    if (!isAllowedSignupEmail(email)) {
       return fail(request, 'domain');
     }
     return fail(request, 'signup-failed');
