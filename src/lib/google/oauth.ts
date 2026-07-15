@@ -33,6 +33,14 @@ function credentials() {
  * Without BOTH, a user who has already granted consent gets an access token only, and the
  * connection silently fails to survive its first hour — so `prompt=consent` stays even
  * though it re-prompts on reconnect.
+ *
+ * Deliberately NO `include_granted_scopes`. That flag turns on incremental authorization,
+ * where the minted token inherits every scope the user has ever granted this OAuth client —
+ * so its authority is bounded by the client's consent-screen config rather than by what we
+ * ask for here. The project's Data Access page still offers `.../auth/calendar` (full
+ * delete), so a user who had previously granted it would hand this read-only integration a
+ * calendar-destroying token. We only ever want the two scopes below, and incremental
+ * authorization buys us nothing.
  */
 export function buildConsentUrl(redirectUri: string, state: string): string {
   const { clientId } = credentials();
@@ -43,7 +51,6 @@ export function buildConsentUrl(redirectUri: string, state: string): string {
     scope: OAUTH_SCOPES,
     access_type: 'offline',
     prompt: 'consent',
-    include_granted_scopes: 'true',
     state,
   });
   return `${AUTH_ENDPOINT}?${params.toString()}`;

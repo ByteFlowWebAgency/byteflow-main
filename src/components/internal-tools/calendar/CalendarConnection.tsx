@@ -23,6 +23,11 @@ const STATUS_COPY: Record<string, ConnectionNotice> = {
     message: 'Calendar access wasn’t granted. The calendar permission is required.',
     tone: 'bad',
   },
+  'scope-too-broad': {
+    message:
+      'Google returned more access than this read-only integration allows, so it was refused. Trim the OAuth consent screen’s scopes — see BLOCKERS.md.',
+    tone: 'bad',
+  },
   'no-refresh-token': {
     message: 'Google didn’t return a refresh token. Try connecting again.',
     tone: 'bad',

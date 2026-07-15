@@ -13,7 +13,7 @@ import {
   fetchGoogleEmail,
   GoogleOAuthError,
 } from '@/lib/google/oauth';
-import { CALENDAR_SCOPE, CALLBACK_PATH } from '@/lib/google/env';
+import { CALENDAR_SCOPE, CALLBACK_PATH, unexpectedScope } from '@/lib/google/env';
 import {
   isSupabaseConfigured,
   saveGoogleRefreshToken,
@@ -74,6 +74,16 @@ export async function GET(request: NextRequest) {
     // would present as "connected" and then fail confusingly at fetch time.
     if (!tokens.scope.includes(CALENDAR_SCOPE)) {
       return back(request, 'scope-declined');
+    }
+
+    // ...and refuse it if it carries MORE authority than we asked for. Checking only that
+    // read-only is present would happily accept a token that also holds `.../auth/calendar`
+    // (edit/delete every calendar) — which the project's consent screen still offers. This
+    // integration is read-only by guardrail, so a token that can write is a defect, not a
+    // bonus: drop it on the floor rather than store it.
+    const extra = unexpectedScope(tokens.scope);
+    if (extra) {
+      return back(request, 'scope-too-broad');
     }
 
     // No refresh token means the connection dies at the first access-token expiry. Treat
