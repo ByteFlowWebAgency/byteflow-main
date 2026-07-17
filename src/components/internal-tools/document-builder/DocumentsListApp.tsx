@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useCrm } from '@/components/crm/CrmContext';
-import { syncDocuments, pushDocumentToServer } from '@/lib/document-builder/sync';
+import { syncDocuments, pushDocumentToServer, deleteDocumentFromServer } from '@/lib/document-builder/sync';
 import styles from './list.module.css';
 import ConfirmDialog from '../ConfirmDialog';
 import TemplateChooser from './TemplateChooser';
@@ -49,6 +49,7 @@ export default function DocumentsListApp() {
   const [dialog, setDialog] = useState<Dialog>(null);
   const [chooserOpen, setChooserOpen] = useState(false);
   const [importError, setImportError] = useState('');
+  const [deleteNote, setDeleteNote] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Arriving from the meetings flow: /internal/documents?forOrg=<uuid> means "start a
@@ -173,6 +174,12 @@ export default function DocumentsListApp() {
         </p>
       )}
 
+      {deleteNote && (
+        <p className={styles.importError} role="alert">
+          {deleteNote}
+        </p>
+      )}
+
       <div className={styles.storageBar} title={`${usedPct}% of ~5MB used`}>
         <div className={styles.storageFill} style={{ width: `${usedPct}%` }} data-warn={usedPct >= 80} />
         <span className={styles.storageLabel}>
@@ -258,8 +265,21 @@ export default function DocumentsListApp() {
           danger
           onCancel={() => setDialog(null)}
           onConfirm={() => {
-            deleteDoc(dialog.doc.id);
+            const { id, name } = dialog.doc;
+            // Remove the local editing copy AND the shared server copy. Without the server
+            // delete, syncDocuments re-downloads the row on the next list load and the
+            // document reappears. Local removal is immediate; the server delete is awaited
+            // only to warn if it didn't land (offline/error), in which case it may resurface.
+            deleteDoc(id);
             setDialog(null);
+            setDeleteNote('');
+            void deleteDocumentFromServer(id).then((ok) => {
+              if (!ok) {
+                setDeleteNote(
+                  `“${name}” was removed here, but its shared copy couldn’t be deleted — it may reappear. Try again when you’re back online.`,
+                );
+              }
+            });
           }}
         />
       )}
