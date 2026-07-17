@@ -40,8 +40,14 @@ next-env.d.ts
 *.envs
 sendgrid.env
 
-# supabase local project (config + migrations stay out of the repo)
-supabase/
+# supabase local project. Config and local state stay out of the repo, but MIGRATIONS are
+# tracked: they're the schema the app's code depends on, they contain no secrets, and code
+# that needs a table is useless on a machine that can't create it. (Previously the whole
+# directory was ignored, which meant every migration lived on exactly one laptop.)
+supabase/*
+!supabase/migrations/
+supabase/migrations/*
+!supabase/migrations/*.sql
 
 # internal working docs (handoffs, specs, LLM prompts) — local only
 docs/

@@ -111,6 +111,33 @@ const validators: Record<EntityName, Validator> = {
     if (!isIsoTimestamp(e.createdAt)) return 'createdAt must be an ISO timestamp';
     return null;
   },
+  meetings(e) {
+    if (!isNonEmptyString(e.eventId)) return 'eventId is required';
+    if (!isOptionalUuid(e.organizationId)) return 'organizationId must be a uuid';
+    if (!isOptionalUuid(e.contactId)) return 'contactId must be a uuid';
+    if (!isOptionalUuid(e.dealId)) return 'dealId must be a uuid';
+    if (!isIsoTimestamp(e.startsAt)) return 'startsAt must be an ISO timestamp';
+    if (e.matchSource !== 'auto' && e.matchSource !== 'manual') {
+      return 'matchSource must be "auto" or "manual"';
+    }
+    // Deliberately NOT requiring an organizationId: a manual row with none is a human
+    // saying "this isn't a client meeting", which the auto matcher must then leave alone.
+    if (!isIsoTimestamp(e.createdAt)) return 'createdAt must be an ISO timestamp';
+    if (!isIsoTimestamp(e.updatedAt)) return 'updatedAt must be an ISO timestamp';
+    return null;
+  },
+  documents(e) {
+    if (!isNonEmptyString(e.name)) return 'name is required';
+    if (!isOptionalUuid(e.organizationId)) return 'organizationId must be a uuid';
+    if (!Array.isArray(e.pages)) return 'pages must be an array';
+    if (!isNonEmptyString(e.themeId)) return 'themeId is required';
+    if (!isIsoTimestamp(e.createdAt)) return 'createdAt must be an ISO timestamp';
+    if (!isIsoTimestamp(e.updatedAt)) return 'updatedAt must be an ISO timestamp';
+    // Page/block shape is validated by the document-builder's own validateDocument(), which
+    // sanitizes rich text; re-implementing it here would fork the rules. This is the
+    // structural gate only, matching this module's stated contract.
+    return null;
+  },
   budgets(e) {
     if (!isNonEmptyString(e.name)) return 'name is required';
     if (e.kind !== 'project' && e.kind !== 'recurring') {

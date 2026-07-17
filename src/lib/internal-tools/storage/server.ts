@@ -85,6 +85,18 @@ const extractColumns: Record<EntityName, (e: Row) => Row> = {
     contact_id: uuidOrNull(e.contactId),
     at: e.at,
   }),
+  meetings: (e) => ({
+    event_id: e.eventId,
+    organization_id: uuidOrNull(e.organizationId),
+    contact_id: uuidOrNull(e.contactId),
+    deal_id: uuidOrNull(e.dealId),
+    starts_at: e.startsAt,
+    match_source: e.matchSource,
+  }),
+  documents: (e) => ({
+    name: e.name,
+    organization_id: uuidOrNull(e.organizationId),
+  }),
   budgets: (e) => ({
     name: e.name,
     kind: e.kind,
@@ -169,4 +181,97 @@ export async function adminCreateConfirmedUser(
   });
   if (error) return { ok: false, error: error.message };
   return { ok: true };
+}
+
+// --- Documents ---------------------------------------------------------------------
+// `documents` IS a registered entity (so it gets /api/crm/documents, validation and
+// backup for free), but its `data` blob holds whole pages including images as data URLs
+// and runs to megabytes. listEntities() selects `data`, which is exactly what the
+// documents list and the meeting "is it ready?" badge must NOT do — hence this summary
+// read, which touches only the extracted columns.
+
+export interface DocumentSummary {
+  id: string;
+  organizationId: string | null;
+  name: string;
+  updatedAt: string;
+}
+
+export async function listDocumentSummaries(): Promise<DocumentSummary[]> {
+  const { data, error } = await getClient()
+    .from('documents')
+    .select('id, organization_id, name, updated_at')
+    .order('updated_at', { ascending: false });
+  if (error) throw new UpstreamError(error.message);
+  return (data ?? []).map((row) => ({
+    id: row.id as string,
+    organizationId: (row.organization_id as string) ?? null,
+    name: row.name as string,
+    updatedAt: row.updated_at as string,
+  }));
+}
+
+// --- Google Calendar authorization grants -----------------------------------------
+// Not an EntityStore entity: google_calendar_tokens is keyed by user_id (not a record id),
+// is never listed or exposed to the browser, and holds a credential. It lives here rather
+// than in lib/google/ purely to preserve this module's invariant — nothing else may
+// construct a service-role client.
+
+export interface GoogleConnection {
+  googleEmail: string | null;
+  scope: string;
+  connectedAt: string;
+}
+
+export async function saveGoogleRefreshToken(params: {
+  userId: string;
+  refreshToken: string;
+  googleEmail: string | null;
+  scope: string;
+}): Promise<void> {
+  const { error } = await getClient().from('google_calendar_tokens').upsert({
+    user_id: params.userId,
+    refresh_token: params.refreshToken,
+    google_email: params.googleEmail,
+    scope: params.scope,
+    updated_at: new Date().toISOString(),
+  });
+  if (error) throw new UpstreamError(error.message);
+}
+
+/** The raw refresh token. Callers must never return this to a client or log it. */
+export async function getGoogleRefreshToken(userId: string): Promise<string | null> {
+  const { data, error } = await getClient()
+    .from('google_calendar_tokens')
+    .select('refresh_token')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error) throw new UpstreamError(error.message);
+  return (data?.refresh_token as string) ?? null;
+}
+
+/** Connection metadata safe to show the user — deliberately excludes the token itself. */
+export async function getGoogleConnection(
+  userId: string,
+): Promise<GoogleConnection | null> {
+  const { data, error } = await getClient()
+    .from('google_calendar_tokens')
+    .select('google_email, scope, connected_at')
+    .eq('user_id', userId)
+    .maybeSingle();
+  if (error) throw new UpstreamError(error.message);
+  if (!data) return null;
+  return {
+    googleEmail: (data.google_email as string) ?? null,
+    scope: (data.scope as string) ?? '',
+    connectedAt: (data.connected_at as string) ?? '',
+  };
+}
+
+export async function deleteGoogleRefreshToken(userId: string): Promise<void> {
+  const { error } = await getClient()
+    .from('google_calendar_tokens')
+    .delete()
+    .eq('user_id', userId);
+  if (error) throw new UpstreamError(error.message);
 }

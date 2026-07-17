@@ -30,9 +30,18 @@ export function validateTemplate(
     return { error: 'Not a template object.' };
   }
   const raw = input as Record<string, unknown>;
-  const name = typeof raw.name === 'string' ? raw.name.slice(0, 80).trim() : '';
+  const isObj = (v: unknown): v is Record<string, unknown> =>
+    typeof v === 'object' && v !== null && !Array.isArray(v);
+  // Accept both a wrapped template ({ name, description, category, document }) and a bare
+  // BuiltDocument (top-level `pages`): a plain document file dropped on the template
+  // importer becomes a template of itself, mirroring parseDocImport unwrapping a template.
+  const documentSource = isObj(raw.document) ? raw.document : raw;
+  const docName =
+    isObj(documentSource) && typeof documentSource.name === 'string' ? documentSource.name : '';
+  const name =
+    (typeof raw.name === 'string' ? raw.name.slice(0, 80).trim() : '') || docName.slice(0, 80).trim();
   if (!name) return { error: 'Template is missing a name.' };
-  const docResult = validateDocument(raw.document);
+  const docResult = validateDocument(documentSource);
   if (!docResult.doc) return { error: `Template document invalid: ${docResult.error}` };
   return {
     template: {

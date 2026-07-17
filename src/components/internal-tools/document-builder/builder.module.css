@@ -122,11 +122,43 @@
 }
 .prose ul,
 .prose ol {
+  list-style: none;
   margin: 0 0 10px;
-  padding-left: 22px;
+  padding-left: 26px;
+}
+.prose ol {
+  counter-reset: bf-ol;
+}
+.prose ul:last-child,
+.prose ol:last-child {
+  margin-bottom: 0;
 }
 .prose li {
   margin: 0 0 4px;
+  position: relative;
+}
+.prose ol > li {
+  counter-increment: bf-ol;
+}
+/* The global reset (app/globals.css) strips native list markers with `list-style: none`.
+   Rather than restore ::marker — which html2canvas (the PDF/preview engine) positions
+   inconsistently and can't be nudged — draw the marker as an absolutely-positioned ::before
+   in the gutter. It's ordinary inline text on the item's baseline (so it lands correctly in
+   the capture), survives a <p>-wrapped <li>, and right-aligns so 10./11. stay put. The
+   `top: 0.1em` drops it a hair so numerals/dots sit level with the body text, not riding high. */
+.prose ul > li::before,
+.prose ol > li::before {
+  position: absolute;
+  right: 100%;
+  top: 0.1em;
+  padding-right: 8px;
+  white-space: nowrap;
+}
+.prose ol > li::before {
+  content: counter(bf-ol) ".";
+}
+.prose ul > li::before {
+  content: "•";
 }
 
 /* ---- image ---- */
@@ -221,6 +253,41 @@
 .callout a {
   color: var(--bf-color-accent);
   text-decoration: underline;
+}
+/* Same marker treatment as .prose (see the note there): ::before markers in the gutter. */
+.callout ul,
+.callout ol {
+  list-style: none;
+  margin: 0 0 8px;
+  padding-left: 26px;
+}
+.callout ol {
+  counter-reset: bf-callout-ol;
+}
+.callout ul:last-child,
+.callout ol:last-child {
+  margin-bottom: 0;
+}
+.callout li {
+  margin: 0 0 4px;
+  position: relative;
+}
+.callout ol > li {
+  counter-increment: bf-callout-ol;
+}
+.callout ul > li::before,
+.callout ol > li::before {
+  position: absolute;
+  right: 100%;
+  top: 0.1em;
+  padding-right: 8px;
+  white-space: nowrap;
+}
+.callout ol > li::before {
+  content: counter(bf-callout-ol) ".";
+}
+.callout ul > li::before {
+  content: "•";
 }
 
 /* ---- pricing table (mirrors the fixed proposal InvestmentTable) ---- */

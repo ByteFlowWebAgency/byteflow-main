@@ -69,6 +69,7 @@ export default function BackupControls({ onRestored }: { onRestored: () => void 
       { count: file.data.contacts.length, noun: 'contact' },
       { count: file.data.deals.length, noun: 'deal' },
       { count: file.data.activities.length, noun: 'activity', plural: 'activities' },
+      { count: file.data.meetings.length, noun: 'meeting' },
       { count: file.data.budgets.length, noun: 'budget' },
     ]) || 'no records';
 
@@ -115,7 +116,7 @@ export default function BackupControls({ onRestored }: { onRestored: () => void 
             const restored = await restoreAll(pendingRestore);
             setPendingRestore(null);
             report(
-              `Restored ${restored.organizations + restored.contacts + restored.deals + restored.activities + restored.budgets} records.`,
+              `Restored ${restored.organizations + restored.contacts + restored.deals + restored.activities + restored.meetings + restored.budgets} records.`,
               false,
             );
             onRestored();
