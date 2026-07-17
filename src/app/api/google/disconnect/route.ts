@@ -9,7 +9,7 @@ import {
   deleteGoogleRefreshToken,
 } from '@/lib/internal-tools/storage/server';
 import { revokeToken } from '@/lib/google/oauth';
-import { invalidateAccessToken } from '@/lib/google/calendar';
+import { invalidateCalendarCaches } from '@/lib/google/calendar';
 
 export const runtime = 'nodejs';
 
@@ -33,10 +33,10 @@ export async function POST(request: NextRequest) {
     const refreshToken = await getGoogleRefreshToken(user.id);
     if (refreshToken) await revokeToken(refreshToken);
     await deleteGoogleRefreshToken(user.id);
-    // Drop the live access token too, independently of whether the revoke call landed.
-    // Otherwise "disconnected" in the UI would still be able to read the calendar until
-    // the cached token expired (up to an hour).
-    invalidateAccessToken(user.id);
+    // Drop the live access token and any cached events too, independently of whether the
+    // revoke call landed. Otherwise "disconnected" in the UI would still be serving this
+    // calendar — from cached events for a minute, and from a cached token for up to an hour.
+    invalidateCalendarCaches(user.id);
     return NextResponse.json({ data: null });
   } catch {
     return NextResponse.json(

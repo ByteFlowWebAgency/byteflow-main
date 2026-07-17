@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import '@/components/internal-tools/tokens.css';
 import HubTile from '@/components/internal-tools/HubTile';
 import ChromeModeToggle from '@/components/internal-tools/ChromeModeToggle';
-import CalendarConnection from '@/components/internal-tools/calendar/CalendarConnection';
 import MeetingsSectionGate from '@/components/internal-tools/meetings/MeetingsSectionGate';
 import styles from './hub.module.css';
 
@@ -16,13 +15,11 @@ export const dynamic = 'force-dynamic';
 // The /internal hub. Two columns at desk widths: the calendar owns the left, the tools sit
 // down the right, sized so the whole page fits one screen without scrolling. Below
 // ~1080px the columns stack — a squeezed two-column grid is worse than a scroll.
-export default async function InternalHubPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ calendar?: string }>;
-}) {
-  const { calendar } = await searchParams;
-
+//
+// The Google Calendar connection card used to sit above the meetings; it's on
+// /internal/settings now. Connecting is a once-ever action, and a permanent "Connected"
+// card was spending the calendar's own space to tell you something you already knew.
+export default function InternalHubPage() {
   return (
     <main className={styles.page}>
       <div className={styles.inner}>
@@ -41,7 +38,6 @@ export default async function InternalHubPage({
               </h2>
               <p className={styles.sectionHint}>What&rsquo;s coming up, and who it&rsquo;s with.</p>
             </div>
-            <CalendarConnection status={calendar} />
             <MeetingsSectionGate />
           </section>
 

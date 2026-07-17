@@ -116,9 +116,16 @@
   cursor: pointer;
 }
 
-.navButton:hover {
+.navButton:hover:not(:disabled) {
   color: var(--bf-color-fg);
   border-color: var(--bf-color-accent-soft);
+}
+
+/* Refresh is the only .navButton that can be disabled (while a load is in flight); the
+   month arrows never are. */
+.navButton:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 /* ---- list view -------------------------------------------------------------------- */
@@ -336,6 +343,22 @@
   text-align: center;
   font-size: 13.5px;
   color: var(--bf-color-fg-soft);
+}
+
+.emptyLink {
+  color: var(--bf-color-accent-soft);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.emptyLink:hover {
+  color: var(--bf-color-fg);
+}
+
+.emptyLink:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 2px;
 }
 
 .errorNote {

@@ -103,9 +103,14 @@ export async function resolveMeetings(
   userId: string,
   from: Date,
   to: Date,
+  options: { forceRefresh?: boolean } = {},
 ): Promise<ResolvedMeeting[]> {
+  // Only the Calendar fetch is cached, deliberately. The CRM records, stored matches and
+  // document summaries are re-read every time, which is what keeps a reassignment visible
+  // the instant it's made — caching the resolved output instead would have to be busted on
+  // every write to any of the four.
   const [events, data, stored, docs] = await Promise.all([
-    listCalendarEvents(userId, from, to),
+    listCalendarEvents(userId, from, to, options),
     loadCrmData(),
     loadMeetingsByEventId(),
     // Summaries only — never the full documents. Pulling megabytes of embedded images to

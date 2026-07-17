@@ -52,8 +52,14 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  // Cache bypass for the Refresh control. Everything else — the ordinary load, and the
+  // refetch after a reassignment — is served from the events cache when it's warm.
+  const forceRefresh = request.nextUrl.searchParams.get('refresh') === '1';
+
   try {
-    return NextResponse.json({ data: await resolveMeetings(user.id, from, to) });
+    return NextResponse.json({
+      data: await resolveMeetings(user.id, from, to, { forceRefresh }),
+    });
   } catch (error) {
     if (error instanceof CalendarNotConnectedError) {
       return NextResponse.json(

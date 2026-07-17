@@ -7,8 +7,8 @@ import { isGoogleOAuthConfigured } from '@/lib/google/env';
 import CalendarConnectionView, { type ConnectionNotice } from './CalendarConnectionView';
 
 /**
- * The Google Calendar connection card on the hub — data access only; presentation lives in
- * CalendarConnectionView.
+ * The Google Calendar connection card on /internal/settings — data access only;
+ * presentation lives in CalendarConnectionView.
  *
  * This is an *authorization* grant, not a sign-in: the user is already signed in with
  * Supabase Auth, and connecting only lets the server read their calendar. Read-only, and
@@ -47,7 +47,9 @@ export default async function CalendarConnection({ status }: { status?: string }
   if (!user) return null;
 
   const configured = isGoogleOAuthConfigured() && isSupabaseConfigured();
-  // A read failure must not take the whole hub down — degrade to "not connected".
+  // A read failure must not take the settings page down — degrade to "not connected".
+  // Overstating the problem is safe *here*, unlike on the hub: this card carries a Connect
+  // button, so the worst case is a re-grant that lands on the row it already had.
   const connection = configured ? await getGoogleConnection(user.id).catch(() => null) : null;
 
   return (

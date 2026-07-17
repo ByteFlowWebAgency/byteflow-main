@@ -40,6 +40,47 @@ const accessTokenCache = new Map<string, { token: string; expiresAt: number }>()
 /** 60s safety margin so a token can't expire mid-flight. */
 const EXPIRY_SKEW_MS = 60_000;
 
+interface EventsCacheEntry {
+  /** Shared by every caller that arrives while the fetch is still in flight. */
+  events: Promise<CalendarEvent[]>;
+  /**
+   * Epoch ms, re-stamped from when the fetch *landed* rather than when it started, so a
+   * slow fetch doesn't spend its own latency as cache lifetime.
+   *
+   * Until it lands the entry carries a provisional start+TTL, which doubles as a backstop:
+   * a fetch pathological enough to outlive a whole TTL stops being shared, so later callers
+   * start their own rather than queueing behind one wedged request forever.
+   */
+  expiresAt: number;
+}
+
+/**
+ * Fetched events, cached per (user, range).
+ *
+ * Without this, every hub load — and every month the grid navigates to and back — is a
+ * fresh round trip to Google for events that almost certainly didn't change in between.
+ * The ranges the views ask for are midnight-aligned and stable for a whole day
+ * (MeetingsSection derives them from today and the displayed month, not from the clock),
+ * so the same key genuinely gets hit again rather than being unique per request.
+ *
+ * The entry holds the in-flight promise rather than only the settled array, so concurrent
+ * callers for one range share ONE Google call instead of racing. Two tabs on the hub is
+ * the ordinary case here, not a rare one.
+ *
+ * Process-local and non-authoritative, exactly like accessTokenCache above: a cold
+ * instance simply fetches. The TTL stays short because a calendar is edited elsewhere and
+ * expected to show up here; forceRefresh covers the rest.
+ */
+const eventsCache = new Map<string, EventsCacheEntry>();
+
+const EVENTS_TTL_MS = 60_000;
+
+/**
+ * Enough to hold today's list plus a year of paged-through months, but bounded so a
+ * long-lived instance can't accumulate ranges forever.
+ */
+const MAX_EVENTS_CACHE_ENTRIES = 64;
+
 export class CalendarNotConnectedError extends Error {}
 
 async function getAccessToken(userId: string): Promise<string> {
@@ -58,9 +99,41 @@ async function getAccessToken(userId: string): Promise<string> {
   return accessToken;
 }
 
-/** Drop a cached token — call when Google rejects it, so the next call re-refreshes. */
-export function invalidateAccessToken(userId: string): void {
+/**
+ * Forget everything cached about one user's calendar — the access token AND their events.
+ *
+ * Both halves matter on connect and disconnect. Dropping only the token would leave a
+ * just-disconnected user's events readable from cache for a full TTL, and would let a
+ * reconnect to a *different* Google account keep serving the old account's meetings while
+ * the UI reported the new one.
+ */
+export function invalidateCalendarCaches(userId: string): void {
   accessTokenCache.delete(userId);
+  const prefix = `${userId}|`;
+  for (const key of eventsCache.keys()) {
+    if (key.startsWith(prefix)) eventsCache.delete(key);
+  }
+}
+
+function eventsCacheKey(userId: string, timeMin: Date, timeMax: Date): string {
+  return `${userId}|${timeMin.toISOString()}|${timeMax.toISOString()}`;
+}
+
+/**
+ * Keep the cache bounded: expired entries first, then oldest-inserted (Map iterates in
+ * insertion order). Evicting an entry whose fetch is still in flight is safe — the caller
+ * awaiting it still gets its result; it just stops being served to anyone new.
+ */
+function pruneEventsCache(): void {
+  if (eventsCache.size <= MAX_EVENTS_CACHE_ENTRIES) return;
+  const now = Date.now();
+  for (const [key, entry] of eventsCache) {
+    if (entry.expiresAt <= now) eventsCache.delete(key);
+  }
+  for (const key of eventsCache.keys()) {
+    if (eventsCache.size <= MAX_EVENTS_CACHE_ENTRIES) break;
+    eventsCache.delete(key);
+  }
 }
 
 interface GoogleEventResource {
@@ -114,9 +187,11 @@ async function fetchPage(userId: string, query: URLSearchParams): Promise<Respon
   });
 
   // A cached token can be revoked server-side before its nominal expiry. One retry with a
-  // forced refresh distinguishes "stale cache" from "grant actually revoked".
+  // forced refresh distinguishes "stale cache" from "grant actually revoked". Only the
+  // token is dropped, not the events cache — the other ranges are still perfectly good,
+  // and this is a credential problem, not a data one.
   if (response.status === 401) {
-    invalidateAccessToken(userId);
+    accessTokenCache.delete(userId);
     accessToken = await getAccessToken(userId);
     response = await fetch(`${EVENTS_ENDPOINT}?${query.toString()}`, {
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -126,7 +201,7 @@ async function fetchPage(userId: string, query: URLSearchParams): Promise<Respon
   return response;
 }
 
-export async function listCalendarEvents(
+async function fetchAllEvents(
   userId: string,
   timeMin: Date,
   timeMax: Date,
@@ -164,4 +239,51 @@ export async function listCalendarEvents(
   // Hit the page cap with a token still outstanding: return what we have rather than
   // looping forever. Truncation is visible here rather than silent.
   return events;
+}
+
+/**
+ * Events on the user's primary calendar within [timeMin, timeMax).
+ *
+ * Served from the module cache when a fetch for the same range landed within EVENTS_TTL_MS.
+ * `forceRefresh` goes to Google regardless — that's the Refresh control, and nothing else:
+ * the ordinary hub load, and the refetch after a reassignment, both want the cache (an
+ * assignment changes the CRM link, not the calendar).
+ *
+ * The returned array is SHARED with every other caller for the same range — treat it as
+ * read-only. Nothing downstream mutates it today, and nothing should start.
+ */
+export function listCalendarEvents(
+  userId: string,
+  timeMin: Date,
+  timeMax: Date,
+  options: { forceRefresh?: boolean } = {},
+): Promise<CalendarEvent[]> {
+  const key = eventsCacheKey(userId, timeMin, timeMax);
+
+  if (!options.forceRefresh) {
+    const hit = eventsCache.get(key);
+    if (hit && hit.expiresAt > Date.now()) return hit.events;
+  }
+
+  const entry: EventsCacheEntry = {
+    events: fetchAllEvents(userId, timeMin, timeMax),
+    expiresAt: Date.now() + EVENTS_TTL_MS,
+  };
+  eventsCache.set(key, entry);
+  pruneEventsCache();
+
+  entry.events.then(
+    // Re-stamp from arrival, so a slow fetch doesn't spend its own latency as lifetime.
+    () => {
+      entry.expiresAt = Date.now() + EVENTS_TTL_MS;
+    },
+    // Never cache a failure: drop the entry so the next caller retries against Google
+    // instead of re-awaiting a rejected promise for a whole TTL. Guarded on identity so a
+    // late failure can't evict a newer entry that already replaced this one.
+    () => {
+      if (eventsCache.get(key) === entry) eventsCache.delete(key);
+    },
+  );
+
+  return entry.events;
 }

@@ -16,8 +16,12 @@ const TOOLS = [
   { href: '/internal/backgrounds', label: 'Backgrounds' },
 ];
 
+const SETTINGS_HREF = '/internal/settings';
+
 export default function InternalHeader({ email }: { email?: string }) {
   const pathname = usePathname();
+  const settingsActive =
+    pathname === SETTINGS_HREF || pathname.startsWith(`${SETTINGS_HREF}/`);
 
   return (
     <header className={styles.header}>
@@ -44,8 +48,17 @@ export default function InternalHeader({ email }: { email?: string }) {
           })}
         </nav>
 
+        {/* Settings sits with the session controls rather than in the tools nav above: it
+            configures the account, it isn't a tool you go and do work in. */}
         <div className={styles.session}>
           {email && <span className={styles.sessionEmail}>{email}</span>}
+          <Link
+            href={SETTINGS_HREF}
+            className={`${styles.settingsLink} ${settingsActive ? styles.settingsLinkActive : ''}`}
+            aria-current={settingsActive ? 'page' : undefined}
+          >
+            Settings
+          </Link>
           <form method="post" action="/api/internal-logout">
             <button type="submit" className={styles.logout}>
               Log out

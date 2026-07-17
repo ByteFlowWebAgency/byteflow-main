@@ -1,7 +1,9 @@
 // Step 2 of the Google Calendar authorization flow: Google redirects the user back here
-// with a one-time code. Exchange it, keep the refresh token, and send the user home.
+// with a one-time code. Exchange it, keep the refresh token, and send the user back to the
+// settings page they started from.
 //
-// Every failure path lands on /internal?calendar=<reason> with a short, non-sensitive
+// Every path lands back on /internal/settings?calendar=<reason> — where the connection
+// card lives, and therefore where the user started this flow — with a short, non-sensitive
 // reason code. Google's raw error bodies are never echoed to the browser or the log —
 // they can contain the authorization code.
 
@@ -18,14 +20,14 @@ import {
   isSupabaseConfigured,
   saveGoogleRefreshToken,
 } from '@/lib/internal-tools/storage/server';
-import { invalidateAccessToken } from '@/lib/google/calendar';
+import { invalidateCalendarCaches } from '@/lib/google/calendar';
 import { STATE_COOKIE, STATE_COOKIE_PATH } from '../state';
 
 export const runtime = 'nodejs';
 
 function back(request: NextRequest, reason: string) {
   const response = NextResponse.redirect(
-    externalUrl(request, `/internal?calendar=${reason}`),
+    externalUrl(request, `/internal/settings?calendar=${reason}`),
   );
   // The state nonce is single-use whatever the outcome. The path MUST match the one the
   // cookie was issued with (/api/google) — a bare delete() emits Path=/ and targets a
@@ -101,10 +103,10 @@ export async function GET(request: NextRequest) {
       scope: tokens.scope,
     });
 
-    // Drop any token cached against the PREVIOUS grant. Without this, reconnecting a
-    // different Google account would keep reading the old account's calendar for up to an
-    // hour while the UI reported the new one.
-    invalidateAccessToken(user.id);
+    // Drop anything cached against the PREVIOUS grant — token and events both. Without
+    // this, reconnecting a different Google account would keep reading the old account's
+    // calendar while the UI reported the new one.
+    invalidateCalendarCaches(user.id);
 
     return back(request, 'connected');
   } catch (error) {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useCrm } from '@/components/crm/CrmContext';
 import type { ResolvedMeeting } from '@/lib/meetings/types';
 import MeetingsList from './MeetingsList';
@@ -17,6 +17,9 @@ import styles from './meetings.module.css';
  * so the grid's month navigation cannot start a competing request against the list's data;
  * and a reassignment made in either view updates the one array both render from, so it
  * shows up in the other immediately with no reload.
+ *
+ * Only mounted when a calendar is actually connected — MeetingsSectionGate settles that on
+ * the server first.
  */
 
 const DAY_MS = 86_400_000;
@@ -37,7 +40,7 @@ function gridWindow(month: Date): { from: Date; to: Date } {
   return { from, to: new Date(from.getTime() + 42 * DAY_MS) };
 }
 
-export default function MeetingsSection({ connected }: { connected: boolean }) {
+export default function MeetingsSection() {
   const { data } = useCrm();
   const [view, setView] = useState<'list' | 'grid'>('list');
   const [month, setMonth] = useState(() => {
@@ -45,7 +48,7 @@ export default function MeetingsSection({ connected }: { connected: boolean }) {
     return new Date(d.getFullYear(), d.getMonth(), 1);
   });
   const [meetings, setMeetings] = useState<ResolvedMeeting[]>([]);
-  const [loading, setLoading] = useState(connected);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<ResolvedMeeting | null>(null);
   const [dayList, setDayList] = useState<{ day: Date; items: ResolvedMeeting[] } | null>(null);
@@ -61,33 +64,62 @@ export default function MeetingsSection({ connected }: { connected: boolean }) {
     };
   }, [month]);
 
-  const load = useCallback(async () => {
-    if (!connected) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        `/api/meetings?from=${range.from.toISOString()}&to=${range.to.toISOString()}`,
-        { cache: 'no-store' },
-      );
-      const body = await response.json();
-      if (!response.ok) {
-        setError(
-          body?.error?.code === 'NOT_CONNECTED'
-            ? 'Google Calendar isn’t connected.'
-            : 'Could not load meetings.',
-        );
-        setMeetings([]);
-        return;
-      }
-      setMeetings((body.data ?? []) as ResolvedMeeting[]);
-    } catch {
-      setError('Could not reach the server.');
-    } finally {
-      setLoading(false);
-    }
-  }, [connected, range]);
+  /**
+   * Serialises loads: only the newest one may write state.
+   *
+   * Refresh and month navigation now have wildly different latencies — a forced refresh
+   * goes to Google (hundreds of ms) while a month whose range is cached returns almost
+   * instantly. So "hit Refresh, then immediately page to another month" can land the two
+   * responses out of order, and the stale one would overwrite the month the user is
+   * actually looking at with events from the wrong range, leaving the grid blank until
+   * they navigated again.
+   */
+  const latestLoad = useRef(0);
 
+  /**
+   * `force` bypasses the server's Google Calendar cache. Reserved for the Refresh button:
+   * an ordinary load, and the refetch after a reassignment, both want the cached events —
+   * assigning changes the CRM link, not the calendar.
+   */
+  const load = useCallback(
+    async ({ force = false }: { force?: boolean } = {}) => {
+      const seq = ++latestLoad.current;
+      const current = () => seq === latestLoad.current;
+      setLoading(true);
+      setError(null);
+      const query = new URLSearchParams({
+        from: range.from.toISOString(),
+        to: range.to.toISOString(),
+      });
+      if (force) query.set('refresh', '1');
+      try {
+        const response = await fetch(`/api/meetings?${query.toString()}`, {
+          cache: 'no-store',
+        });
+        const body = await response.json();
+        if (!current()) return;
+        if (!response.ok) {
+          setError(
+            body?.error?.code === 'NOT_CONNECTED'
+              ? 'Google Calendar isn’t connected.'
+              : 'Could not load meetings.',
+          );
+          setMeetings([]);
+          return;
+        }
+        setMeetings((body.data ?? []) as ResolvedMeeting[]);
+      } catch {
+        if (current()) setError('Could not reach the server.');
+      } finally {
+        // A superseded load must not clear the spinner the newer one is still using.
+        if (current()) setLoading(false);
+      }
+    },
+    [range],
+  );
+
+  // Bare call, no argument: the effect must never force-refresh, or the cache would be
+  // bypassed on every mount and every month change — i.e. always.
   useEffect(() => {
     void load();
   }, [load]);
@@ -128,8 +160,6 @@ export default function MeetingsSection({ connected }: { connected: boolean }) {
       return t >= from.getTime() && t < to.getTime();
     });
   }, [meetings, month]);
-
-  if (!connected) return null;
 
   const isCurrentMonth =
     month.getMonth() === new Date().getMonth() && month.getFullYear() === new Date().getFullYear();
@@ -190,6 +220,18 @@ export default function MeetingsSection({ connected }: { connected: boolean }) {
             )}
           </>
         )}
+        {/* Events are served from a short server-side cache, so a meeting booked in Google
+            in the last minute may not be here yet. This is the way to insist. */}
+        <button
+          type="button"
+          className={styles.navButton}
+          onClick={() => void load({ force: true })}
+          disabled={loading}
+          title="Refresh from Google Calendar"
+          aria-label="Refresh from Google Calendar"
+        >
+          <span aria-hidden="true">↻</span>
+        </button>
       </div>
 
       {error ? (

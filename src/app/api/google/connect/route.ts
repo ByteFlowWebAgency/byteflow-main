@@ -20,7 +20,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(externalUrl(request, '/internal/login'));
   }
   if (!isGoogleOAuthConfigured()) {
-    return NextResponse.redirect(externalUrl(request, '/internal?calendar=not-configured'));
+    return NextResponse.redirect(
+      externalUrl(request, '/internal/settings?calendar=not-configured'),
+    );
   }
 
   // CSRF: an unguessable nonce goes out in `state` and into an httpOnly cookie. The
