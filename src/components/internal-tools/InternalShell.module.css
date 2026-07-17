@@ -119,6 +119,32 @@
   max-width: 200px;
 }
 
+/* Settings borrows the .logout pill exactly, so the two read as one session cluster
+   rather than as a link that wandered out of the nav. */
+.settingsLink {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-soft);
+  background: transparent;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: 999px;
+  padding: 8px 16px;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.settingsLink:hover,
+.settingsLinkActive {
+  color: var(--bf-color-fg);
+  border-color: var(--bf-color-accent-soft);
+}
+
+.settingsLink:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
 .logout {
   font: inherit;
   font-size: 13px;

@@ -1,0 +1,154 @@
+/* Same card treatment as HubTile (glass surface, --bf-radius-lg, --bf-color-line border)
+   so the connection reads as a native part of the dashboard rather than a bolt-on.
+   Every value is an existing --bf-* token: no new palette, type scale, or spacing.
+
+   Colour is never the only signal — "Connected" / "Not connected" is spelled out in text,
+   and the success tint only reinforces it. */
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 200px;
+  flex: 1;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--bf-font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  color: var(--bf-color-fg);
+}
+
+/* Shared pill recipe. --bf-color-cyan-soft is the codebase's established "good" tone
+   (see BudgetsApp .pctOk) and it flips correctly in light chrome; the neutral variant
+   mirrors the former HubTile badge. */
+.pillOn,
+.pillOff {
+  font-family: var(--bf-font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 3px 9px;
+  border: 1px solid var(--bf-color-line-strong);
+}
+
+.pillOn {
+  color: var(--bf-color-cyan-soft);
+  border-color: var(--bf-color-cyan-soft);
+}
+
+.pillOff {
+  color: var(--bf-color-fg-dim);
+}
+
+.description {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--bf-color-fg-soft);
+}
+
+.email {
+  color: var(--bf-color-fg-muted);
+  font-weight: 600;
+}
+
+.noticeOk,
+.noticeBad {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.noticeOk {
+  color: var(--bf-color-cyan-soft);
+}
+
+.noticeBad {
+  color: var(--bf-color-error);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.actionStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.actionError {
+  font-size: 12px;
+  color: var(--bf-color-error);
+}
+
+.connect,
+.disconnect {
+  font-family: var(--bf-font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: var(--bf-radius-sm);
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease, opacity 120ms ease;
+}
+
+.connect {
+  background: var(--bf-grad-primary);
+  color: #ffffff; /* Literal: sits on the brand gradient, which is fixed in both modes. */
+  border: 1px solid transparent;
+  text-decoration: none;
+}
+
+.connect:hover {
+  opacity: 0.9;
+}
+
+.disconnect {
+  background: var(--bf-color-glass-solid);
+  color: var(--bf-color-fg-muted);
+  border: 1px solid var(--bf-color-line-strong);
+}
+
+.disconnect:hover:not(:disabled) {
+  border-color: var(--bf-color-error);
+  color: var(--bf-color-error);
+}
+
+.disconnect:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.connect:focus-visible,
+.disconnect:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.disabledNote {
+  font-size: 13px;
+  color: var(--bf-color-fg-dim);
+}

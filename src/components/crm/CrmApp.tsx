@@ -7,6 +7,7 @@
 // adapter; nothing here touches fetch or Supabase.
 
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import '@/components/internal-tools/tokens.css';
 import styles from './CrmApp.module.css';
 import { useCrm } from './CrmContext';
@@ -29,10 +30,28 @@ type Detail =
   | { kind: 'organization'; id: string }
   | null;
 
+/**
+ * Seed the detail view from the URL, so a record can be deep-linked. The CRM's detail view
+ * is component state rather than a route, so before this there was no way to send anyone to
+ * a specific record — which the missing-document flow needs when it says "this client's
+ * record is incomplete, go fix it".
+ *
+ * Read once on mount rather than kept in sync: the URL is an entry point, not a mirror of
+ * the UI, and rewriting it on every click would fight the existing back/forward behaviour.
+ */
+function detailFromParams(params: URLSearchParams): Detail {
+  for (const kind of ['organization', 'contact', 'deal'] as const) {
+    const id = params.get(kind);
+    if (id) return { kind, id };
+  }
+  return null;
+}
+
 export default function CrmApp() {
   const { data, loading, loadError, reload } = useCrm();
+  const searchParams = useSearchParams();
   const [view, setView] = useState<View>('pipeline');
-  const [detail, setDetail] = useState<Detail>(null);
+  const [detail, setDetail] = useState<Detail>(() => detailFromParams(searchParams));
   const [showNewDeal, setShowNewDeal] = useState(false);
 
   const openDeal = (id: string) => setDetail({ kind: 'deal', id });

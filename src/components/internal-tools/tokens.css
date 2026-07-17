@@ -128,6 +128,12 @@ html:has(.bfScope)::-webkit-scrollbar-corner,
   --bf-color-cyan: #06b6d4;
   --bf-color-cyan-soft: #22d3ee;
   --bf-color-error: #f87171;
+  /* Semantic warning — "needs attention", weaker than error. NOT a new brand colour: this
+     amber was already the de-facto warning, hardcoded at BudgetsApp .pctWarn and
+     ThemeEditorApp .contrastWarn. Promoting it to a token gives it a light-mode value it
+     never had (the literal is a contrast failure on the light chrome) and stops the fourth
+     copy being pasted. Success stays --bf-color-cyan-soft, the existing convention. */
+  --bf-color-warning: #fbbf24;
 
   /* Signature gradients (verbatim from globals.css) */
   --bf-grad-primary: linear-gradient(105deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
@@ -186,6 +192,9 @@ html[data-bf-chrome='light'] .bfScope .bfScope {
   --bf-color-violet-soft: #7c3aed;
   --bf-color-cyan-soft: #0e7490;
   --bf-color-error: #b91c1c;
+  /* #fbbf24 on the light chrome is ~1.7:1 — unreadable. Step down to amber-700, which
+     clears AA against both --bf-color-bg (#eef0f7) and --bf-color-bg-2 (#ffffff). */
+  --bf-color-warning: #b45309;
   --bf-grad-text: linear-gradient(105deg, #6366f1 0%, #8b5cf6 40%, #06b6d4 100%);
 
   /* Shell surfaces whose dark values are literals (translucent ink + blur). */
