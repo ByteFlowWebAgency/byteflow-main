@@ -71,6 +71,28 @@ export async function pushDocumentToServer(doc: BuiltDocument): Promise<boolean>
   }
 }
 
+async function deleteDocument(id: string): Promise<boolean> {
+  const response = await fetch(`/api/crm/documents/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+  return response.ok;
+}
+
+/**
+ * Remove a document's shared server copy. Called from the documents list right after the
+ * local removal (deleteDoc): without it, syncDocuments re-downloads the still-present server
+ * row on the next list load and the "deleted" document reappears. Returns whether the server
+ * accepted the delete so the caller can warn when it didn't reach the server (offline/error)
+ * and the document may resurface. Awaitable, but never throws.
+ */
+export async function deleteDocumentFromServer(id: string): Promise<boolean> {
+  try {
+    return await deleteDocument(id);
+  } catch {
+    return false;
+  }
+}
+
 /** Reconcile local and server. Safe to call repeatedly; idempotent. */
 export async function syncDocuments(): Promise<SyncResult> {
   const result: SyncResult = { uploaded: 0, downloaded: 0, failed: 0 };
