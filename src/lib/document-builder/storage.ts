@@ -353,7 +353,15 @@ export function parseDocImport(
   } catch {
     return { error: 'That file is not valid JSON.' };
   }
-  const result = validateDocument(parsed);
+  // Accept both a bare BuiltDocument (top-level `pages`) and a template-wrapped export
+  // ({ name, description, category, document: {...} }). The Document Builder exports
+  // templates in the wrapped shape, so importing one here should create a document from its
+  // embedded content instead of rejecting it for having no top-level `pages` array.
+  const source =
+    isObj(parsed) && !Array.isArray(parsed.pages) && isObj(parsed.document)
+      ? parsed.document
+      : parsed;
+  const result = validateDocument(source);
   if (!result.doc) return { error: `Not a valid document file: ${result.error}` };
   if (docExists(result.doc.id)) {
     return { doc: { ...result.doc, id: crypto.randomUUID() } };

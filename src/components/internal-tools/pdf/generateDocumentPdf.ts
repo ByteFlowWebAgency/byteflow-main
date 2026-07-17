@@ -12,6 +12,13 @@ const PAGE_HEIGHT_PX = DOC_WIDTH_PX * (11 / 8.5); // 1056
 // at normal zoom.
 const CAPTURE_SCALE = 2;
 const JPEG_QUALITY = 0.92;
+// html2canvas rasterizes into a single canvas, and a canvas taller than the browser's
+// maximum renders BLANK — so a long document captured whole comes back all-white pages.
+// No single capture may exceed this many device pixels on a side; 16384 is the smallest
+// common ceiling (Safari), with Chrome/Firefox allowing more. The document is captured in
+// vertical chunks derived from this so chunkHeightPx * CAPTURE_SCALE stays under it.
+const MAX_CANVAS_PX = 16384;
+const CHUNK_HEIGHT_PX = Math.floor(MAX_CANVAS_PX / CAPTURE_SCALE);
 // Never cut a page shorter than this fraction of a full page just to keep a block whole —
 // an oversized block gets a plain cut instead.
 const MIN_PAGE_FILL = 0.25;
@@ -196,15 +203,9 @@ async function capturePages(
       }),
     );
 
-    const canvas = await html2canvas(clone, {
-      scale: CAPTURE_SCALE,
-      backgroundColor: pageBackground,
-      logging: false,
-    });
-
+    // Page geometry comes straight from the DOM (offsets/heights); deciding cut positions
+    // never needed the rasterized canvas, so compute it before capturing anything.
     const totalHeightPx = clone.offsetHeight;
-    const pxToCanvas = canvas.height / totalHeightPx;
-
     const rangesOf = (selector: string): BlockRange[] =>
       Array.from(clone.querySelectorAll<HTMLElement>(selector)).map((el) => {
         const top = offsetTopWithin(el, clone);
@@ -226,44 +227,82 @@ async function capturePages(
     const pageStarts = [0, ...cuts];
     const pageEnds = [...cuts, totalHeightPx];
 
+    // Group contiguous pages into capture chunks that each stay under the max canvas size,
+    // so a long document never rasterizes into one oversized (blank) canvas. Cuts are page
+    // boundaries, so every chunk is a whole number of pages and no page spans two chunks.
+    // A short document (e.g. a 2-3 page proposal) yields one chunk — a single capture, as
+    // before. Each page's height is at most PAGE_HEIGHT_PX, well under CHUNK_HEIGHT_PX, so
+    // every page always fits in some chunk.
+    type Chunk = { startPx: number; endPx: number; firstPage: number; lastPage: number };
+    const chunks: Chunk[] = [];
+    for (let i = 0; i < pageStarts.length; i++) {
+      const open = chunks[chunks.length - 1];
+      if (open && pageEnds[i] - open.startPx <= CHUNK_HEIGHT_PX) {
+        open.endPx = pageEnds[i];
+        open.lastPage = i;
+      } else {
+        chunks.push({ startPx: pageStarts[i], endPx: pageEnds[i], firstPage: i, lastPage: i });
+      }
+    }
+
     const pageCanvas = document.createElement('canvas');
     const context = pageCanvas.getContext('2d');
     if (!context) throw new Error('Canvas 2D context unavailable');
 
-    return pageStarts.map((startPx, pageIndex) => {
-      // Each page renders exactly [start, next cut) — a page that broke early at a block
-      // boundary is a little short at the bottom, never overlapping the next page.
-      const endPx = pageEnds[pageIndex];
-      const sliceHeightPx = endPx - startPx;
+    const out: CapturedPage[] = new Array<CapturedPage>(pageStarts.length);
+    for (const chunk of chunks) {
+      const chunkHeightPx = chunk.endPx - chunk.startPx;
+      // opts.x/opts.y are ADDED to the node's own top-left inside html2canvas, while
+      // opts.width/opts.height REPLACE its size — so this captures exactly the band
+      // [startPx, endPx) of the document, regardless of the off-screen wrapper's position.
+      const chunkCanvas = await html2canvas(clone, {
+        scale: CAPTURE_SCALE,
+        backgroundColor: pageBackground,
+        logging: false,
+        x: 0,
+        y: chunk.startPx,
+        width: DOC_WIDTH_PX,
+        height: chunkHeightPx,
+      });
+      const pxToCanvas = chunkCanvas.height / chunkHeightPx;
 
-      pageCanvas.width = canvas.width;
-      pageCanvas.height = Math.round(PAGE_HEIGHT_PX * pxToCanvas);
-      // Fill the full page with the page background so short pages aren't transparent.
-      context.fillStyle = pageBackground;
-      context.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+      for (let pageIndex = chunk.firstPage; pageIndex <= chunk.lastPage; pageIndex++) {
+        // Each page renders exactly [start, next cut) — a page that broke early at a block
+        // boundary is a little short at the bottom, never overlapping the next page.
+        const startPx = pageStarts[pageIndex];
+        const sliceHeightPx = pageEnds[pageIndex] - startPx;
 
-      // Continuation pages get a little top padding when the slice leaves room for it.
-      const sliceHeightPt = (sliceHeightPx / PAGE_HEIGHT_PX) * PAGE_HEIGHT_PT;
-      const topPadPt =
-        pageIndex === 0
-          ? 0
-          : Math.min(CONTINUATION_TOP_PAD_PT, PAGE_HEIGHT_PT - sliceHeightPt);
-      const topPadCanvas = Math.round((topPadPt / PAGE_HEIGHT_PT) * PAGE_HEIGHT_PX * pxToCanvas);
+        pageCanvas.width = chunkCanvas.width;
+        pageCanvas.height = Math.round(PAGE_HEIGHT_PX * pxToCanvas);
+        // Fill the full page with the page background so short pages aren't transparent.
+        context.fillStyle = pageBackground;
+        context.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
 
-      context.drawImage(
-        canvas,
-        0,
-        Math.round(startPx * pxToCanvas),
-        canvas.width,
-        Math.round(sliceHeightPx * pxToCanvas),
-        0,
-        topPadCanvas,
-        canvas.width,
-        Math.round(sliceHeightPx * pxToCanvas),
-      );
+        // Continuation pages get a little top padding when the slice leaves room for it.
+        const sliceHeightPt = (sliceHeightPx / PAGE_HEIGHT_PX) * PAGE_HEIGHT_PT;
+        const topPadPt =
+          pageIndex === 0
+            ? 0
+            : Math.min(CONTINUATION_TOP_PAD_PT, PAGE_HEIGHT_PT - sliceHeightPt);
+        const topPadCanvas = Math.round((topPadPt / PAGE_HEIGHT_PT) * PAGE_HEIGHT_PX * pxToCanvas);
 
-      return { dataUrl: pageCanvas.toDataURL('image/jpeg', JPEG_QUALITY) };
-    });
+        const drawHeight = Math.round(sliceHeightPx * pxToCanvas);
+        context.drawImage(
+          chunkCanvas,
+          0,
+          Math.round((startPx - chunk.startPx) * pxToCanvas),
+          chunkCanvas.width,
+          drawHeight,
+          0,
+          topPadCanvas,
+          pageCanvas.width,
+          drawHeight,
+        );
+
+        out[pageIndex] = { dataUrl: pageCanvas.toDataURL('image/jpeg', JPEG_QUALITY) };
+      }
+    }
+    return out;
   } finally {
     wrapper.remove();
   }
