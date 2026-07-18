@@ -1,0 +1,508 @@
+/* Site Audit tool. Field/control/button patterns match the CRM/document-builder
+   conventions (deliberately copied per-tool, per the internal-tools style note). */
+
+.app {
+  flex: 1;
+  padding: 32px 24px 48px;
+  font-family: var(--bf-font-body);
+}
+
+.inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.toolbar {
+  margin-bottom: 20px;
+}
+
+.title {
+  font-family: var(--bf-font-display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  line-height: 1.05;
+}
+
+.subtitle {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--bf-color-fg-soft);
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+/* --- form --- */
+
+.form {
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  background: var(--bf-color-glass);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldWide {
+  grid-column: 1 / -1;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--bf-color-fg-muted);
+}
+
+.required::after {
+  content: ' *';
+  color: var(--bf-color-accent-soft);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--bf-color-fg-dim);
+  font-weight: 400;
+}
+
+.input {
+  font: inherit;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+  background: var(--bf-color-glass-solid);
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-sm);
+  padding: 9px 12px;
+  width: 100%;
+}
+
+.input::placeholder {
+  color: var(--bf-color-fg-dim);
+}
+
+.input:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.checkGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-bottom: 16px;
+}
+
+.checkLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--bf-color-fg-muted);
+  cursor: pointer;
+}
+
+.checkLabel input {
+  accent-color: var(--bf-color-accent);
+  width: 15px;
+  height: 15px;
+}
+
+.checkLabel input:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: 1px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.formError {
+  font-size: 13px;
+  color: var(--bf-color-error);
+}
+
+.primaryButton {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  background: var(--bf-grad-primary);
+  border: 0;
+  border-radius: 999px;
+  padding: 11px 22px;
+  cursor: pointer;
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.6);
+  white-space: nowrap;
+}
+
+.primaryButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.primaryButton:focus-visible {
+  outline: var(--bf-focus-ring);
+  outline-offset: var(--bf-focus-offset);
+}
+
+.primaryButton:disabled {
+  background: var(--bf-color-glass-solid);
+  color: rgba(255, 255, 255, 0.25);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* --- state / error --- */
+
+.stateBox {
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  background: var(--bf-color-glass);
+  padding: 32px 24px;
+  text-align: center;
+  color: var(--bf-color-fg-soft);
+  font-size: 14px;
+}
+
+.stateTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+  margin-bottom: 8px;
+}
+
+.errorBanner {
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  background: rgba(248, 113, 113, 0.08);
+  border-radius: var(--bf-radius-md);
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--bf-color-error);
+  margin-bottom: 14px;
+}
+
+/* --- results --- */
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.summaryStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.summaryItem {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  padding: 10px 16px;
+}
+
+.summaryValue {
+  font-family: var(--bf-font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--bf-color-cyan-soft);
+}
+
+.summaryValueWarn {
+  color: var(--bf-color-error);
+}
+
+.summaryLabel {
+  font-size: 12px;
+  color: var(--bf-color-fg-soft);
+}
+
+.section {
+  background: var(--bf-color-glass);
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-lg);
+  padding: 20px;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--bf-color-violet-soft);
+  margin-bottom: 14px;
+}
+
+.count {
+  color: var(--bf-color-fg-dim);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.muted {
+  font-size: 13px;
+  color: var(--bf-color-fg-soft);
+}
+
+.kvRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto 1fr auto 1fr;
+  gap: 8px 12px;
+  align-items: baseline;
+  font-size: 14px;
+}
+
+.kvLabel {
+  font-size: 12px;
+  color: var(--bf-color-fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.kvValue {
+  font-family: var(--bf-font-mono);
+  font-size: 13px;
+  color: var(--bf-color-cyan-soft);
+}
+
+.callout {
+  border: 1px solid var(--bf-color-line-strong);
+  border-left: 3px solid var(--bf-color-accent-soft);
+  background: var(--bf-color-glass-solid);
+  border-radius: var(--bf-radius-md);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--bf-color-fg-muted);
+  line-height: 1.55;
+}
+
+/* --- issue lists --- */
+
+.issueList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.issueItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--bf-color-line);
+}
+
+.issueList .issueItem:first-child {
+  border-top: 0;
+}
+
+.issueBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.issueTitle {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--bf-color-fg);
+}
+
+.issueDetail {
+  font-size: 13px;
+  color: var(--bf-color-fg-soft);
+  line-height: 1.5;
+}
+
+.ruleId {
+  font-family: var(--bf-font-mono);
+  font-size: 12px;
+  color: var(--bf-color-fg-dim);
+  font-weight: 400;
+}
+
+.link {
+  color: var(--bf-color-cyan-soft);
+  text-decoration: underline;
+  text-decoration-color: rgba(34, 211, 238, 0.35);
+  text-underline-offset: 3px;
+}
+
+.link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* severity badges */
+
+.badge {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 2px 9px;
+  border: 1px solid transparent;
+  min-width: 62px;
+  text-align: center;
+}
+
+.sevCritical {
+  color: #fecaca;
+  background: rgba(220, 38, 38, 0.18);
+  border-color: rgba(248, 113, 113, 0.55);
+}
+
+.sevHigh {
+  color: #fecaca;
+  background: rgba(248, 113, 113, 0.14);
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+.sevMedium {
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.14);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.sevLow {
+  color: rgba(255, 255, 255, 0.7);
+  background: var(--bf-color-glass);
+  border-color: var(--bf-color-line-strong);
+}
+
+.sevInfo {
+  color: var(--bf-color-cyan-soft);
+  background: rgba(34, 211, 238, 0.1);
+  border-color: rgba(34, 211, 238, 0.3);
+}
+
+/* --- page cards --- */
+
+.pageList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pageCard {
+  border: 1px solid var(--bf-color-line);
+  border-radius: var(--bf-radius-md);
+  background: var(--bf-color-glass-solid);
+  padding: 14px 16px;
+}
+
+.pageHead {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+}
+
+.pageTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--bf-color-fg);
+}
+
+.pageUrl {
+  font-family: var(--bf-font-mono);
+  font-size: 12px;
+  color: var(--bf-color-fg-dim);
+  word-break: break-all;
+}
+
+.pageUrl:hover {
+  color: var(--bf-color-cyan-soft);
+}
+
+.subheading {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--bf-color-fg-muted);
+  margin: 12px 0 6px;
+}
+
+/* --- duplicates --- */
+
+.dupBlock {
+  margin-top: 4px;
+}
+
+.dupGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 0;
+  border-top: 1px solid var(--bf-color-line);
+}
+
+.dupValue {
+  font-size: 13px;
+  color: var(--bf-color-fg);
+}
+
+.dupUrls {
+  font-size: 12px;
+  color: var(--bf-color-fg-soft);
+  word-break: break-all;
+}
+
+/* --- report bar --- */
+
+.reportBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border: 1px solid var(--bf-color-line-strong);
+  border-radius: var(--bf-radius-lg);
+  background: var(--bf-color-glass-solid);
+  padding: 16px 20px;
+  margin-top: 20px;
+}
+
+.reportText {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 14px;
+  color: var(--bf-color-fg);
+}
+
+.reportActions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+@media (max-width: 700px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+  .kvRow {
+    grid-template-columns: auto 1fr;
+  }
+}

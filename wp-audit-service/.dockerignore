@@ -1,0 +1,16 @@
+# Keep the audit-service build context small. The Dockerfile only COPYs
+# requirements.txt, audit/, and main.py, but the whole context is still sent to
+# the daemon — so exclude the heavy local-only dirs. NOTE: audit/vendor/axe.min.js
+# is NOT excluded (it is the vendored axe-core the image needs).
+.venv
+__pycache__
+*.py[cod]
+.pytest_cache
+
+# local smoke-test fixtures (regenerated from the phase docs on demand)
+fixture_site
+fixture_nomap
+
+*.md
+Dockerfile
+.dockerignore

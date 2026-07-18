@@ -83,6 +83,12 @@ export default function InternalHubPage() {
                   monogram="Pr"
                   href="/internal/slides"
                 />
+                <HubTile
+                  title="Site Audit"
+                  description="Crawl a site for SEO, security and WCAG issues; export a report."
+                  monogram="Sa"
+                  href="/internal/site-audit"
+                />
               </div>
             </section>
 

@@ -1,0 +1,9 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Local smoke-test scaffolding (regenerated from the phase docs on demand)
+# NOTE: audit/vendor/axe.min.js is intentionally NOT ignored — it is the pinned,
+# vendored axe-core the Docker image copies in. Keep it committed.

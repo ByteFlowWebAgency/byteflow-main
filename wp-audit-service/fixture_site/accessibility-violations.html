@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head><title>Accessibility Test Page</title></head>
+<body>
+  <p style="color: #ccc; background-color: #fff;">Low contrast text that should fail contrast checks.</p>
+  <!-- A placeholder alone is NOT a proper label, but axe (per the accessible-name
+       spec) treats placeholder as a fallback name, so this input does NOT trip
+       the label rule. The bare input below has no accessible name at all and
+       unambiguously fails wcag412 / cat.forms so the smoke test can rely on it. -->
+  <input type="text" placeholder="no label at all">
+  <input type="text">
+  <div role="button">Looks like a button but has no keyboard handling or accessible name</div>
+  <img src="/photo.jpg">
+</body>
+</html>

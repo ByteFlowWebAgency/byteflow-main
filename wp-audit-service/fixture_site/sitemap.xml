@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>http://localhost:8931/index.html</loc></url>
+<url><loc>http://localhost:8931/about.html</loc></url>
+<url><loc>http://localhost:8931/duplicate.html</loc></url>
+<url><loc>http://localhost:8931/test-page-old.html</loc></url>
+<url><loc>http://localhost:8931/gallery.html</loc></url>
+<url><loc>http://localhost:8931/broken.html</loc></url>
+<url><loc>http://localhost:8931/accessibility-violations.html</loc></url>
+</urlset>

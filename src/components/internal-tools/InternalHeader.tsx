@@ -10,6 +10,7 @@ import styles from './InternalShell.module.css';
 const TOOLS = [
   { href: '/internal/documents', label: 'Documents' },
   { href: '/internal/slides', label: 'Presentations' },
+  { href: '/internal/site-audit', label: 'Site Audit' },
   { href: '/internal/crm', label: 'CRM' },
   { href: '/internal/budgets', label: 'Budgets' },
   { href: '/internal/theme-editor', label: 'Themes' },

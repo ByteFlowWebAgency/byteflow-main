@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Emit a self-contained server bundle (.next/standalone/server.js) so the Docker
+    // runtime image can ship just that + static assets instead of the full node_modules.
+    // No effect on `next dev` or platform deploys (e.g. Vercel) that ignore it.
+    output: "standalone",
     images: {
         remotePatterns: [
             { protocol: "https", hostname: "images.prismic.io" },

@@ -9,6 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
+    "docker:up": "docker compose --env-file .env.local up --build",
+    "docker:down": "docker compose --env-file .env.local down",
     "generate:types": "dotenv -e .env.local -- sh -c 'cf-content-types-generator -s $CONTENTFUL_SPACE_ID -t $CONTENTFUL_PERSONAL_ACCESS_TOKEN -o src/lib/contentful/types -d -r -g -X'"
   },
   "dependencies": {

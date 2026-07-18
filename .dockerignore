@@ -1,0 +1,36 @@
+# Build context for the web (root) image. Keep it lean and keep secrets out.
+
+# deps & build output — reinstalled/rebuilt inside the image
+node_modules
+.next
+out
+build
+
+# the Python service builds from its OWN context (./wp-audit-service)
+wp-audit-service
+
+# secrets & local env — never copy into the image. Contentful comes via build
+# args; all runtime secrets are injected by docker-compose at run time.
+.env
+.env.*
+
+# vcs / editor / tooling / local-only
+.git
+.gitignore
+.vercel
+.claude
+.agents
+.vscode
+.idea
+coverage
+*.log
+*.tsbuildinfo
+lint.json
+
+# docker & docs — not needed in the image
+Dockerfile
+.dockerignore
+docker-compose.yml
+docs
+*.md
+Contentful-data

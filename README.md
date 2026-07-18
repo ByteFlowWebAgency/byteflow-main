@@ -18,6 +18,39 @@ the Content Delivery API.
 - **Google Fonts** — Plus Jakarta Sans (UI) and JetBrains Mono (accents)
 - **[SendGrid][sendgrid]** for the contact form
 
+## Run everything with Docker
+
+The whole stack — this Next.js app **and** the Python site-audit microservice
+(`wp-audit-service/`, which powers `/internal/site-audit`) — runs together with one
+command, reusing the `.env.local` you already use for local dev:
+
+```bash
+npm run docker:up      # = docker compose --env-file .env.local up --build
+```
+
+Then open **http://localhost:3000** and sign in to `/internal`. Stop it with
+`npm run docker:down`.
+
+> **Why the `--env-file`?** Docker Compose does **not** read `.env.local` — that's a
+> Next.js convention. Compose only auto-loads a file literally named `.env`, so without
+> `--env-file .env.local` the build-time `CONTENTFUL_*` args arrive empty and the build
+> stops with a clear error. Running plain `docker compose up` will hit that guard; use
+> `npm run docker:up` (or pass `--env-file .env.local` yourself).
+
+- **`web`** (port 3000) — the Next.js app, built to a standalone server image.
+- **`audit-service`** (port 8000) — the FastAPI audit service. The web app reaches it
+  in-network at `http://audit-service:8000`, so the browser never sees it or the
+  `AUDIT_API_KEY`.
+
+The `--env-file .env.local` is what makes it work: it supplies the **build-time**
+Contentful credentials (`next build` renders Contentful-backed pages and fails without
+them — you'll get a clear error if they're missing) **and** the runtime secrets
+(`AUDIT_API_KEY`, `SUPABASE_*`, `GOOGLE_*`, …). `AUDIT_SERVICE_URL` is set by the compose
+file itself, so its `.env.local` value (`http://localhost:8000`) is ignored in Docker.
+Prefer a dedicated file? Copy `.env.docker.example` → `.env.docker`, fill it in, and use
+`--env-file .env.docker` instead. Files: [`Dockerfile`](Dockerfile),
+[`docker-compose.yml`](docker-compose.yml), [`wp-audit-service/Dockerfile`](wp-audit-service/Dockerfile).
+
 ## Getting started
 
 ### Prerequisites

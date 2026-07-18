@@ -28,6 +28,8 @@ yarn-error.log*
 
 # local env files
 .env*.local
+# docker-compose secrets (copied from .env.docker.example)
+.env.docker
 
 # vercel
 .vercel

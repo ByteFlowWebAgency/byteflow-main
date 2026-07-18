@@ -1,0 +1,63 @@
+# Full ByteFlow stack: the Next.js app + the Python site-audit microservice.
+#
+#   docker compose --env-file .env.local up --build
+#
+# It reuses the .env.local you already run local dev with — no separate file to
+# fill in. --env-file makes those values available for BOTH the build-time args
+# (Contentful) and the runtime env below. (.env.docker.example documents the
+# variables if you'd rather keep a dedicated file: just swap .env.local for it.)
+#
+# Open http://localhost:3000 and sign in to /internal. The web app reaches the
+# audit service in-network at http://audit-service:8000; the browser never talks
+# to the audit service directly, so the AUDIT_API_KEY never leaves the server.
+
+services:
+  audit-service:
+    build:
+      context: ./wp-audit-service
+    environment:
+      # Same key the web app sends as X-API-Key. Unset = the service runs keyless
+      # (dev only). Interpolated from --env-file .env.docker.
+      AUDIT_API_KEY: ${AUDIT_API_KEY:-}
+      ALLOWED_ORIGIN: ${ALLOWED_ORIGIN:-http://localhost:3000}
+    ports:
+      - "8000:8000" # optional — exposed only so you can curl the service directly
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=3).status == 200 else 1)"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      args:
+        # Required at BUILD time — next build fetches Contentful (see Dockerfile).
+        CONTENTFUL_SPACE_ID: ${CONTENTFUL_SPACE_ID:-}
+        CONTENTFUL_ACCESS_TOKEN: ${CONTENTFUL_ACCESS_TOKEN:-}
+    environment:
+      # The audit service is reachable by its compose service name, in-network.
+      # This overrides anything in the env file, so it's always correct here.
+      AUDIT_SERVICE_URL: http://audit-service:8000
+    env_file:
+      # Runtime secrets: AUDIT_API_KEY, Supabase, Google, Contentful, ... Reuse
+      # .env.local by default; a dedicated .env.docker also works if you make one.
+      # Both are optional here so whichever you have is used (pass the same one to
+      # --env-file so the build args get it too). AUDIT_SERVICE_URL from the file
+      # (http://localhost:8000) is intentionally overridden by `environment:` above.
+      - path: .env.local
+        required: false
+      - path: .env.docker
+        required: false
+    ports:
+      - "3000:3000"
+    depends_on:
+      audit-service:
+        condition: service_healthy
+    restart: unless-stopped
