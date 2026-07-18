@@ -1,0 +1,79 @@
+# Render Blueprint — deploys the whole ByteFlow stack (Next.js web app + Python
+# site-audit microservice) together, auto-deploying on every push to `branch`.
+#
+# To use it:
+#   1. Merge this branch (and this file) into the branch you want Render to deploy
+#      — set `branch:` below to match (defaults to `dev`).
+#   2. Render dashboard -> New -> Blueprint -> connect this GitHub repo. Render
+#      reads this file and creates both services.
+#   3. Fill in the prompted secrets (Contentful, Supabase, Google). AUDIT_API_KEY
+#      is auto-generated and shared between the two services (see envVarGroups).
+#
+# Both services MUST be in the same region to share Render's private network.
+
+envVarGroups:
+  - name: audit-shared
+    envVars:
+      # One shared key: the web app sends it as X-API-Key, the audit service checks
+      # it. generateValue makes Render mint a strong value once and give it to both.
+      - key: AUDIT_API_KEY
+        generateValue: true
+
+services:
+  # ── Python site-audit microservice — PRIVATE (only the web app reaches it) ──
+  - name: byteflow-audit-service
+    type: pserv                 # private service: no public URL
+    runtime: docker
+    branch: dev
+    region: ohio
+    plan: standard              # headless Chromium needs the RAM — free/starter
+                                # (512 MB) will OOM. standard = 2 GB.
+    dockerfilePath: ./wp-audit-service/Dockerfile
+    dockerContext: ./wp-audit-service
+    autoDeploy: true
+    envVars:
+      - fromGroup: audit-shared
+      - key: AUDIT_WCAG_CONCURRENCY
+        value: "6"
+      # PORT is provided by Render automatically; the Dockerfile binds it.
+
+  # ── Next.js web app — PUBLIC ──
+  - name: byteflow-web
+    type: web
+    runtime: docker
+    branch: dev
+    region: ohio
+    plan: starter               # bump to standard if SSR memory gets tight
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - fromGroup: audit-shared
+      # Reach the audit service over Render's private network. `hostport` is a
+      # scheme-less host:port; the app prepends http:// (see lib/audit-service/env.ts).
+      - key: AUDIT_SERVICE_URL
+        fromService:
+          name: byteflow-audit-service
+          type: pserv
+          property: hostport
+      # Contentful — REQUIRED AT BUILD. Render passes env vars as Docker build args,
+      # so setting these here satisfies the Dockerfile's build-time Contentful fetch.
+      - key: CONTENTFUL_SPACE_ID
+        sync: false
+      - key: CONTENTFUL_ACCESS_TOKEN
+        sync: false
+      # Supabase — runtime (internal auth, CRM, budgets, documents).
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      # Google OAuth — optional (Calendar / meetings).
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_PROJECT_ID
+        sync: false

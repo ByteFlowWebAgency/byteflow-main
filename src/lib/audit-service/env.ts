@@ -8,10 +8,13 @@
 // when we actually have one.
 
 export function resolveAuditServiceEnv(): { baseUrl: string; apiKey: string | null } | null {
-  const baseUrl = process.env.AUDIT_SERVICE_URL;
-  if (!baseUrl) return null;
+  const raw = process.env.AUDIT_SERVICE_URL;
+  if (!raw) return null;
+  // Accept a bare host:port (e.g. Render's private-service `hostport`, which has no
+  // scheme) by defaulting to http:// — the private network isn't TLS-terminated.
+  const withScheme = /^https?:\/\//i.test(raw) ? raw : `http://${raw}`;
   return {
-    baseUrl: baseUrl.replace(/\/+$/, ''), // tolerate a trailing slash in the env value
+    baseUrl: withScheme.replace(/\/+$/, ''), // also tolerate a trailing slash
     apiKey: process.env.AUDIT_API_KEY ?? null,
   };
 }
