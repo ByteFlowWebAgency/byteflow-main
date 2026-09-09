@@ -8,7 +8,9 @@
       "Bash(git commit -m \"fix\\(mobile\\): full responsive pass — nav, hero, and all page heroes:*)",
       "Bash(git merge:*)",
       "Bash(git tag:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Read(//run/**)",
+      "Bash(getent group *)"
     ]
   }
 }

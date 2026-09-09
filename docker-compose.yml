@@ -1,0 +1,22 @@
+name: BYTEFLOW Docker Compose Setup
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    expose:
+      - "3000"
+    env_file: .env
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+
+volumes:
+  caddy_data:

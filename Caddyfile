@@ -1,0 +1,3 @@
+byteflow.us, www.byteflow.us {
+    reverse_proxy app:3000
+}
