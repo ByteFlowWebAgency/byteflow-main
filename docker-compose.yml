@@ -2,7 +2,12 @@ name: BYTEFLOW Docker Compose Setup
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      args:
+        CONTENTFUL_SPACE_ID: ${CONTENTFUL_SPACE_ID}
+        CONTENTFUL_ACCESS_TOKEN: ${CONTENTFUL_ACCESS_TOKEN}
+        CONTENTFUL_PERSONAL_ACCESS_TOKEN: ${CONTENTFUL_PERSONAL_ACCESS_TOKEN}
     restart: unless-stopped
     expose:
       - "3000"
@@ -17,7 +22,7 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
-      
+
   db:
     image: postgres:18-alpine
     restart: unless-stopped
@@ -31,3 +36,4 @@ services:
 volumes:
   caddy_data:
   db_data:
+  
