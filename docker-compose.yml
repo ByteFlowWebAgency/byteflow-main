@@ -33,7 +33,7 @@ services:
     ports:
       - "100.103.113.18:5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql
 
 volumes:
   caddy_data:
