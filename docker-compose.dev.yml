@@ -1,0 +1,15 @@
+name: BYTEFLOW Docker Compose Setup Dev
+
+services:
+  db:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    env_file:
+      - .env.dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - dev_db_data:/var/lib/postgresql
+
+volumes:
+  dev_db_data:
