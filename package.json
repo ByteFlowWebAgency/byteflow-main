@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "generate:types": "dotenv -e .env.local -- sh -c 'cf-content-types-generator -s $CONTENTFUL_SPACE_ID -t $CONTENTFUL_PERSONAL_ACCESS_TOKEN -o src/lib/contentful/types -d -r -g -X'"
+    "generate:types": "dotenv -e .env.local -- sh -c 'cf-content-types-generator -s $CONTENTFUL_SPACE_ID -t $CONTENTFUL_PERSONAL_ACCESS_TOKEN -o src/lib/contentful/types -d -r -g -X'",
+    "db:migrate:dev": "bash scripts/migrate-dev.sh"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.6",
